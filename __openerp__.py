@@ -18,6 +18,7 @@ Módulo para generación de planilla
         'planilla.xml',
         'reports.xml',
         'wizard/planilla.xml',
+        'wizard/finiquito.xml',
         'views/recibo.xml',
     ],
     'demo': [],
