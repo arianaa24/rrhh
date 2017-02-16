@@ -66,6 +66,13 @@ class rrhh_recibo_linea(osv.osv):
         'sequence': 5,
     }
 
+class hr_contract(osv.osv):
+    _inherit = 'hr.contract'
+
+    _columns = {
+        'base_extra': fields.float('Base Extra', digits=(16,2)),
+    }
+
 class hr_payslip_run(osv.osv):
     _inherit = 'hr.payslip.run'
 
