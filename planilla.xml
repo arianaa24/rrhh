@@ -145,44 +145,67 @@
 
         <menuitem action="action_recibo" id="menu_recibo" parent="hr_payroll.payroll_configure" sequence="3"/>
 
+        <record model="ir.ui.view" id="hr_contract_view_form_rrhh">
+            <field name="name">hr.contract.view.form.rrhh</field>
+            <field name="model">hr.contract</field>
+            <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+            <field name="arch" type="xml">
+                <field name="wage" position="after">
+                    <field name="base_extra"/>
+                </field>
+            </field>
+        </record>
+
         <record model="ir.ui.view" id="view_hr_payslip_form_rrhh">
-           <field name="name">hr.payslip.form.rrhh</field>
-           <field name="model">hr.payslip</field>
-           <field name="inherit_id" ref="hr_payroll.view_hr_payslip_form"/>
-           <field name="arch" type="xml">
-               <field name="number_of_days" sum="Total Working Days" position="after">
-                   <field name="dias_totales_mes"/>
-               </field>
-           </field>
-       </record>
+            <field name="name">hr.payslip.form.rrhh</field>
+            <field name="model">hr.payslip</field>
+            <field name="inherit_id" ref="hr_payroll.view_hr_payslip_form"/>
+            <field name="arch" type="xml">
+                <field name="number_of_days" sum="Total Working Days" position="after">
+                    <field name="dias_totales_mes"/>
+                </field>
+            </field>
+        </record>
 
         <record model="ir.ui.view" id="hr_payslip_run_form_rrhh">
-           <field name="name">hr.payslip.run.form.rrhh</field>
-           <field name="model">hr.payslip.run</field>
-           <field name="inherit_id" ref="hr_payroll.hr_payslip_run_form"/>
-           <field name="arch" type="xml">
-               <data>
-                   <button string="Set to Draft" name="draft_payslip_run" type="object" states="close" position="after">
-                       <button string="Generar pagos" name="generar_pagos" type="object" states="close"/>
-                   </button>
-               </data>
-           </field>
-       </record>
+            <field name="name">hr.payslip.run.form.rrhh</field>
+            <field name="model">hr.payslip.run</field>
+            <field name="inherit_id" ref="hr_payroll.hr_payslip_run_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <button string="Set to Draft" name="draft_payslip_run" type="object" states="close" position="after">
+                        <button string="Generar pagos" name="generar_pagos" type="object" states="close"/>
+                    </button>
+                </data>
+            </field>
+        </record>
 
         <record model="ir.ui.view" id="view_employee_form_rrhh">
-           <field name="name">hr.employee.form.rrhh</field>
-           <field name="model">hr.employee</field>
-           <field name="inherit_id" ref="hr.view_employee_form"/>
-           <field name="arch" type="xml">
-               <field name="otherid" position="after">
-                   <field name="igss"/>
-                   <field name="irtra"/>
-                   <field name="nit"/>
-                   <field name="diario_pago_id"/>
-                   <field name="recibo_id"/>
-               </field>
-           </field>
-       </record>
+            <field name="name">hr.employee.form.rrhh</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <field name="otherid" position="after">
+                    <field name="igss"/>
+                    <field name="irtra"/>
+                    <field name="nit"/>
+                    <field name="diario_pago_id"/>
+                    <field name="recibo_id"/>
+                    <field name="nivel_academico"/>
+                    <field name="profesion"/>
+                    <field name="etnia"/>
+                    <field name="idioma"/>
+                    <field name="movil"/>
+                    <field name="pais_origen"/>
+                    <field name="trabajado_extranjero"/>
+                    <field name="pais"/>
+                    <field name="motivo_finalizacion"/>
+                    <field name="jornada_trabajo"/>
+                    <field name="permiso_trabajo"/>
+                    <field name="contacto_emergencia"/>
+                </field>
+            </field>
+        </record>
 
     </data>
 </openerp>

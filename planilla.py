@@ -14,6 +14,19 @@ class hr_employee(osv.osv):
         'nit': fields.char('NIT'),
         'diario_pago_id':fields.many2one('account.journal', 'Diario de Pago'),
         'recibo_id':fields.many2one('rrhh.recibo', 'Formato de recibo'),
+        'nivel_academico': fields.char('Nivel Academico'),
+        'profesion': fields.char('Profesion'),
+        'etnia': fields.char('Etnia'),
+        'idioma': fields.char('Idioma'),
+        'movil': fields.char('Movil del Trabajo'),
+        'pais_origen': fields.many2one('res.country','Pais Origen'),
+        'trabajado_extranjero': fields.boolean('A trabajado en el extranjero'),
+        'pais': fields.many2one('res.country','Pais'),
+        'motivo_finalizacion': fields.char('Motivo de finalizacion'),
+        'jornada_trabajo': fields.char('Jornada de Trabajo'),
+        'permiso_trabajo': fields.char('Permiso de Trabajo'),
+        'contacto_emergencia': fields.many2one('res.partner','Contacto de Emergencia'),
+
     }
 
 class rrhh_planilla(osv.osv):
@@ -64,6 +77,13 @@ class rrhh_recibo_linea(osv.osv):
     }
     _defaults = {
         'sequence': 5,
+    }
+
+class hr_contract(osv.osv):
+    _inherit = 'hr.contract'
+
+    _columns = {
+        'base_extra': fields.float('Base Extra', digits=(16,2)),
     }
 
 class hr_payslip_run(osv.osv):

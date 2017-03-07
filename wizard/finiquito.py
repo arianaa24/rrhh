@@ -6,7 +6,6 @@ import xlwt
 import StringIO
 import logging
 import time
-#import l10n_gt_extra.a_letras
 
 class rrhh_finiquito_wizard(osv.osv_memory):
     _name = 'rrhh.finiquito.wizard'
