@@ -8,13 +8,16 @@
             <field name="arch" type="xml">
                 <form string="Finiquito">
                     <group>
-                        <field name="empleado_id"/>
-                    </group>
-                    <group>
-                        <field name="ordinarios_id" widget="many2many_tags"/>
-                    </group>
-                    <group>
-                        <field name="extraordinarios_id" widget="many2many_tags"/>
+                        <group>
+                            <field name="empleado_id"/>
+                            <field name="ordinarios_id" widget="many2many_tags"/>
+                            <field name="extraordinarios_id" widget="many2many_tags"/>
+                        </group>
+                        <group>
+                            <field name="representante_legal"/>
+                            <field name="numero_cheque"/>
+                            <field name="banco_emisor"/>
+                        </group>
                     </group>
                     <group>
                         <field name="archivo"/>
