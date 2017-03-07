@@ -191,6 +191,18 @@
                     <field name="nit"/>
                     <field name="diario_pago_id"/>
                     <field name="recibo_id"/>
+                    <field name="nivel_academico"/>
+                    <field name="profesion"/>
+                    <field name="etnia"/>
+                    <field name="idioma"/>
+                    <field name="movil"/>
+                    <field name="pais_origen"/>
+                    <field name="trabajado_extranjero"/>
+                    <field name="pais"/>
+                    <field name="motivo_finalizacion"/>
+                    <field name="jornada_trabajo"/>
+                    <field name="permiso_trabajo"/>
+                    <field name="contacto_emergencia"/>
                 </field>
             </field>
         </record>
