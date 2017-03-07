@@ -9,6 +9,7 @@ class hr_employee(osv.osv):
     _inherit = 'hr.employee'
 
     _columns = {
+        'numero_emergencia': fields.char('Numero de Emergencia'),
         'igss': fields.char('IGSS'),
         'irtra': fields.char('IRTRA'),
         'nit': fields.char('NIT'),

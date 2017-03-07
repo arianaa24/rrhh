@@ -185,13 +185,18 @@
             <field name="model">hr.employee</field>
             <field name="inherit_id" ref="hr.view_employee_form"/>
             <field name="arch" type="xml">
-                <field name="otherid" position="after">
-                    <field name="igss"/>
-                    <field name="irtra"/>
-                    <field name="nit"/>
-                    <field name="diario_pago_id"/>
-                    <field name="recibo_id"/>
-                </field>
+                <data>
+                    <field name="address_home_id" position="after">
+                        <field name="numero_emergencia"/>
+                    </field>
+                    <field name="otherid" position="after">
+                        <field name="igss"/>
+                        <field name="irtra"/>
+                        <field name="nit"/>
+                        <field name="diario_pago_id"/>
+                        <field name="recibo_id"/>
+                    </field>
+                </data>
             </field>
         </record>
 
