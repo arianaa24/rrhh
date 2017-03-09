@@ -97,6 +97,7 @@ class rrhh_finiquito_wizard(osv.osv_memory):
                 for nomina_line in nomina.line_ids:
 
                     if nomina_line.salary_rule_id.id in ordinarios_reglas_ids:
+                        logging.warn(nomina_line.id)
                         salario_ordinario += nomina_line.total
                         total_devengado_ordinario += nomina_line.total
 
