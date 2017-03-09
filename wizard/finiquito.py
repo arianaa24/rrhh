@@ -6,6 +6,7 @@ import xlwt
 import StringIO
 import logging
 import time
+from openerp.addons.l10n_gt_extra.a_letras import num_a_letras
 
 class rrhh_finiquito_wizard(osv.osv_memory):
     _name = 'rrhh.finiquito.wizard'
@@ -64,22 +65,26 @@ class rrhh_finiquito_wizard(osv.osv_memory):
 
             nomina_ids = self.pool.get('hr.payslip').search(cr, uid, [('employee_id', '=', w.empleado_id.id), ('contract_id', '=', contrato.id)])
 
-<<<<<<< HEAD
+            logging.warn(w.empleado_id.id)
+            logging.warn(contrato.id)
             logging.warn(nomina_ids)
-            nomina_final_id = nomina_ids.pop()
+
+#            nomina_ids = [1,2]
+            if len(nomina_ids) > 0:
+                nomina_final_id = nomina_ids.pop()
+                logging.warn(nomina_final_id)
+            else:
+                nomina_final_id = False
+
             logging.warn(nomina_ids)
-            logging.warn(nomina_final_id)
+
 
             ordinarios_reglas_ids = [x.id for x in w.ordinarios_id]
-=======
-            ordinarios_reglas_ids = [x.id for x in w.ordinarios_id]
-            logging.warn('HOLA MUNDO')
-            logging.warn(ordinarios_reglas_ids)
->>>>>>> 7aa12dc1c1361822af4ec601e095530f81b25f02
             extraordinarios_reglas_ids = [x.id for x in w.extraordinarios_id]
 
             linea = 12
             numero = 1
+            salario_ordinario = 0
             total_devengado_total = 0
             total_devengado_ordinario = 0
             total_devengado_extraordinario = 0
@@ -92,10 +97,6 @@ class rrhh_finiquito_wizard(osv.osv_memory):
                 for nomina_line in nomina.line_ids:
 
                     if nomina_line.salary_rule_id.id in ordinarios_reglas_ids:
-<<<<<<< HEAD
-=======
-                        logging.warn(nomina_line.id)
->>>>>>> 7aa12dc1c1361822af4ec601e095530f81b25f02
                         salario_ordinario += nomina_line.total
                         total_devengado_ordinario += nomina_line.total
 
@@ -105,7 +106,7 @@ class rrhh_finiquito_wizard(osv.osv_memory):
 
                     salario_total += nomina_line.total
                     total_devengado_total += nomina_line.total
-                
+
                 dias_trabajados = 0
                 for nomina_dias in nomina.worked_days_line_ids:
                     dias_trabajados += nomina_dias.number_of_days
@@ -128,21 +129,22 @@ class rrhh_finiquito_wizard(osv.osv_memory):
             hoja.write(linea, 6, total_dias_trabajados)
 
             linea += 2
-<<<<<<< HEAD
             hoja.write(linea, 4, 'SUELDO MENSUAL ACTUAL')
             hoja.write(linea, 6, salario_ordinario)
-            linea += 2
+
             subtotal = 0
-            for nomina in self.pool.get('hr.payslip').browse(cr, uid, [nomina_final_id]):
-                for nomina_line in nomina.line_ids:
-                    hoja.write(linea, 1, nomina_line.salary_rule_id.code)
-                    hoja.write(linea, 2, nomina.date_from)
-                    hoja.write(linea, 3, 'AL')
-                    hoja.write(linea, 4, nomina.date_to)
-                    hoja.write(linea, 5, 'No. dias')
-                    hoja.write(linea, 6, nomina_line.total)
-                    subtotal += nomina_line.total
-                    linea += 1
+            if nomina_final_id:
+                linea += 2
+                for nomina in self.pool.get('hr.payslip').browse(cr, uid, [nomina_final_id]):
+                    for nomina_line in nomina.line_ids:
+                        hoja.write(linea, 1, nomina_line.salary_rule_id.code)
+                        hoja.write(linea, 2, nomina.date_from)
+                        hoja.write(linea, 3, 'AL')
+                        hoja.write(linea, 4, nomina.date_to)
+                        hoja.write(linea, 5, 'No. dias')
+                        hoja.write(linea, 6, nomina_line.total)
+                        subtotal += nomina_line.total
+                        linea += 1
 
             linea += 1
             hoja.write(linea, 4, 'REALES')
@@ -162,10 +164,8 @@ class rrhh_finiquito_wizard(osv.osv_memory):
             hoja.write(linea, 1, '(-) VIATICOS')
             linea += 1
             hoja.write(linea, 5, 'T O T A L')
- 
+
             linea += 2
-=======
->>>>>>> 7aa12dc1c1361822af4ec601e095530f81b25f02
             hoja.write(linea, 0, "FIRMA DE RECIBIDO:")
             hoja.write(linea, 5, "DPI: " + w.empleado_id.identification_id)
             linea += 2
@@ -173,45 +173,29 @@ class rrhh_finiquito_wizard(osv.osv_memory):
             hoja.write(linea, 5, "BANCO:")
             linea += 2
             current_user = self.pool.get('res.users').browse(cr, uid, uid)
-            hoja.write(linea, 0, "HECHO POR: " + current_user.name)            
+            hoja.write(linea, 0, "HECHO POR: " + current_user.name)
             hoja.write(linea, 5, "REVISADO POR:")
 
             linea += 2
             hoja.write(linea, 2, "FINIQUITO DE PRESTACIONES LABORALES:")
             linea += 2
-<<<<<<< HEAD
             hoja.write(linea, 0, "YO " + w.representante_legal + " REPRESENTANTE LEGAL DE " + w.empleado_id.company_id.name + " POR MEDIO DEL PRESENTE MANIFIESTO QUE")
             linea += 1
             hoja.write(linea, 0, "CON FECHA 15 DE JULIO DE 2016, EL TRABAJADOR " + w.empleado_id.name + ", RENUNCIO AL TRABAJO QUE VENIA")
             linea += 1
             hoja.write(linea, 0, "DESEMPENANDO EN " + w.empleado_id.company_id.name + ", POR LO QUE A CONTINUACION SE PROCEDE AL FINIQUITO DE PRESTACIONES")
-=======
-            hoja.write(linea, 0, "YO ALEXANDER BOTELLO REPRESENTANTE LEGAL DE TALENTOS, S.A. POR MEDIO DEL PRESENTE MANIFIESTO QUE")
-            linea += 1
-            hoja.write(linea, 0, "CON FECHA 15 DE JULIO DE 2016, EL TRABAJADOR " + w.empleado_id.name + ", RENUNCIO AL TRABAJO QUE VENIA")
-            linea += 1
-            hoja.write(linea, 0, "DESEMPENANDO EN TALENTOS, S.A., POR LO QUE A CONTINUACION SE PROCEDE AL FINIQUITO DE PRESTACIONES")
->>>>>>> 7aa12dc1c1361822af4ec601e095530f81b25f02
             linea += 1
             hoja.write(linea, 0, "LABORALES PENDIENTES DE PAGO HASTA LA FECHA.")
             linea += 2
             hoja.write(linea, 0, "YO: " + w.empleado_id.name + ", HABIENDO RECIBIDO A MI ENTERA CONFORMIDAD EL MONTO GLOBAL DE LAS")
             linea += 1
-            hoja.write(linea, 0, "PRESTACIONES LABORALES DETALLADAS ANTERIORMENTE, Y QUE SUMAN LA CANTIDAD DE MIL SETESIENTOS")
+            hoja.write(linea, 0, "PRESTACIONES LABORALES DETALLADAS ANTERIORMENTE, Y QUE SUMAN LA CANTIDAD DE ")
             linea += 1
-<<<<<<< HEAD
-            hoja.write(linea, 0, "CINCUENTA Y SEIS QUETZALES CON 36/100 CENTAVOS (Q. " + str(subtotal) + "  MEDIANTE  EL CHEQUES No " + w.numero_cheque + " DEL ")
+            hoja.write(linea, 0, num_a_letras(subtotal) + "(Q. " + str(subtotal) + "  MEDIANTE  EL CHEQUES No " + w.numero_cheque + " DEL ")
             linea += 1
             hoja.write(linea, 0, w.banco_emisor + ",  MISMOS QUE RECIBO EN ESTE MOMENTO. ME RESERVO RECLAMACION Y DEMANDA ALGUNA CONTRA LA")
             linea += 1
             hoja.write(linea, 0, "ENTIDAD  " + w.empleado_id.company_id.name + ", Y  A LA CUAL POR ESTE ACTO LE OTORGO MI MAS COMPLETO, TOTAL FINIQUITO LABORAL,")
-=======
-            hoja.write(linea, 0, "CINCUENTA Y SEIS QUETZALES CON 36/100 CENTAVOS (Q. 1,756.01  MEDIANTE  EL CHEQUES No 157.   DEL BANCO")
-            linea += 1
-            hoja.write(linea, 0, "INDUSTRIAL,  MISMOS QUE RECIBO EN ESTE MOMENTO. ME RESERVO RECLAMACION Y DEMANDA ALGUNA CONTRA LA")
-            linea += 1
-            hoja.write(linea, 0, "ENTIDAD  TALENTOS, S. A., Y  A LA CUAL POR ESTE ACTO LE OTORGO MI MAS COMPLETO, TOTAL FINIQUITO LABORAL,")
->>>>>>> 7aa12dc1c1361822af4ec601e095530f81b25f02
             linea += 1
             hoja.write(linea, 0, "BAJO PACTO EXPRESO DE NO PEDIR EN FE EXPUESTO, RECTIFICO, ACEPTO Y FIRMO EL PRESENTE FINIQUITO, EN LA")
             linea += 1
