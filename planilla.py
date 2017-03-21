@@ -143,39 +143,51 @@ class hr_payslip_run(osv.osv):
 class hr_payslip(osv.osv):
     _inherit = 'hr.payslip'
 
-    def get_worked_day_lines(self, cr, uid, contract_ids, date_from, date_to, context=None):
-        for contract in self.pool.get('hr.contract').browse(cr, uid, contract_ids, context=context):
-            if contract.date_start > date_from:
-                date_from = contract.date_start
-        res = super(hr_payslip, self).get_worked_day_lines(cr, uid, contract_ids, date_from, date_to, context)
+    _columns = {
+        'dia_del_mes': fields.integer('Dia del Mes'),
+    }
 
-        dias_totales_mes = {}
-        horas_totales_mes = {}
-        for contract in self.pool.get('hr.contract').browse(cr, uid, contract_ids, context=context):
-            dias = 0
-            horas = 0
-            day_from = datetime.strptime(date_from,"%Y-%m-%d")
-            rango = calendar.monthrange(day_from.year, day_from.month)
-            nb_of_days = (rango[1] - 1) + 1
-            for day in range(0, nb_of_days):
-                working_hours_on_day = self.pool.get('resource.calendar').working_hours_on_day(cr, uid, contract.working_hours, day_from + timedelta(days=day), context)
-                if working_hours_on_day:
-                    dias += 1.0
-                    horas += working_hours_on_day
-            dias_totales_mes[contract.id] = dias
-            horas_totales_mes[contract.id] = horas
-
-        for r in res:
-            r['dias_totales_mes'] = dias_totales_mes[r['contract_id']]
-
+    def onchange_employee_id(self, cr, uid, ids, date_from, date_to, employee_id=False, contract_id=False, context=None):
+        res = super(hr_payslip, self).onchange_employee_id(cr, uid, ids, date_from=date_from, date_to=date_to, employee_id=employee_id, contract_id=contract_id, context=context)
+        if date_to and date_to.split("-") > 2:
+            res['value'].update({
+                'dia_del_mes': int(date_to.split("-")[2])
+            })
         return res
 
     def hr_verify_sheet(self, cr, uid, ids, context=None):
         return self.write(cr, uid, ids, {'state': 'verify'}, context=context)
 
-class hr_payslip_worked_days(osv.osv):
-    _inherit = 'hr.payslip.worked_days'
+    # def get_worked_day_lines(self, cr, uid, contract_ids, date_from, date_to, context=None):
+    #     for contract in self.pool.get('hr.contract').browse(cr, uid, contract_ids, context=context):
+    #         if contract.date_start > date_from:
+    #             date_from = contract.date_start
+    #     res = super(hr_payslip, self).get_worked_day_lines(cr, uid, contract_ids, date_from, date_to, context)
+    #
+    #     dias_totales_mes = {}
+    #     horas_totales_mes = {}
+    #     for contract in self.pool.get('hr.contract').browse(cr, uid, contract_ids, context=context):
+    #         dias = 0
+    #         horas = 0
+    #         day_from = datetime.strptime(date_from,"%Y-%m-%d")
+    #         rango = calendar.monthrange(day_from.year, day_from.month)
+    #         nb_of_days = (rango[1] - 1) + 1
+    #         for day in range(0, nb_of_days):
+    #             working_hours_on_day = self.pool.get('resource.calendar').working_hours_on_day(cr, uid, contract.working_hours, day_from + timedelta(days=day), context)
+    #             if working_hours_on_day:
+    #                 dias += 1.0
+    #                 horas += working_hours_on_day
+    #         dias_totales_mes[contract.id] = dias
+    #         horas_totales_mes[contract.id] = horas
+    #
+    #     for r in res:
+    #         r['dias_totales_mes'] = dias_totales_mes[r['contract_id']]
+    #
+    #     return res
 
-    _columns = {
-        'dias_totales_mes': fields.float('Dias totales'),
-    }
+# class hr_payslip_worked_days(osv.osv):
+#     _inherit = 'hr.payslip.worked_days'
+#
+#     _columns = {
+#         'dias_totales_mes': fields.float('Dias totales'),
+#     }
