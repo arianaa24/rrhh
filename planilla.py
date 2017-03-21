@@ -14,6 +14,8 @@ class hr_employee(osv.osv):
         'nit': fields.char('NIT'),
         'diario_pago_id':fields.many2one('account.journal', 'Diario de Pago'),
         'recibo_id':fields.many2one('rrhh.recibo', 'Formato de recibo'),
+        'job_id': fields.many2one('hr.job', 'Job Title', track_visibility='onchange'),
+        'department_id': fields.many2one('hr.department', 'Department', track_visibility='onchange'),
     }
 
 class rrhh_planilla(osv.osv):
@@ -70,7 +72,8 @@ class hr_contract(osv.osv):
     _inherit = 'hr.contract'
 
     _columns = {
-        'base_extra': fields.float('Base Extra', digits=(16,2)),
+        'base_extra': fields.float('Base Extra', digits=(16,2), track_visibility='onchange'),
+        'wage': fields.float('Wage', digits=(16,2), required=True, help="Basic Salary of the employee", track_visibility='onchange'),
     }
 
 class hr_payslip_run(osv.osv):
