@@ -186,27 +186,28 @@
             <field name="inherit_id" ref="hr.view_employee_form"/>
             <field name="arch" type="xml">
                 <data>
+                    <group string="Position" position="after">
+                        <group string="Información de Pago">
+                            <field name="diario_pago_id"/>
+                            <field name="recibo_id"/>
+                        </group>
+                    </group>
                     <field name="address_home_id" position="after">
-                        <field name="numero_emergencia"/>
+                        <field name="contacto_emergencia"/>
                     </field>
                     <field name="otherid" position="after">
                         <field name="igss"/>
                         <field name="irtra"/>
                         <field name="nit"/>
-                        <field name="diario_pago_id"/>
-                        <field name="recibo_id"/>
                         <field name="nivel_academico"/>
                         <field name="profesion"/>
                         <field name="etnia"/>
                         <field name="idioma"/>
-                        <field name="movil"/>
                         <field name="pais_origen"/>
                         <field name="trabajado_extranjero"/>
-                        <field name="pais"/>
                         <field name="motivo_finalizacion"/>
                         <field name="jornada_trabajo"/>
                         <field name="permiso_trabajo"/>
-                        <field name="contacto_emergencia"/>
                     </field>
                 </data>
             </field>
