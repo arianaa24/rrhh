@@ -6,6 +6,7 @@ import xlwt
 import StringIO
 import logging
 import time
+from openerp.addons.l10n_gt_extra.a_letras import num_a_letras
 
 class rrhh_finiquito_wizard(osv.osv_memory):
     _name = 'rrhh.finiquito.wizard'
@@ -64,16 +65,26 @@ class rrhh_finiquito_wizard(osv.osv_memory):
 
             nomina_ids = self.pool.get('hr.payslip').search(cr, uid, [('employee_id', '=', w.empleado_id.id), ('contract_id', '=', contrato.id)])
 
+            logging.warn(w.empleado_id.id)
+            logging.warn(contrato.id)
             logging.warn(nomina_ids)
-            nomina_final_id = nomina_ids.pop()
+
+#            nomina_ids = [1,2]
+            if len(nomina_ids) > 0:
+                nomina_final_id = nomina_ids.pop()
+                logging.warn(nomina_final_id)
+            else:
+                nomina_final_id = False
+
             logging.warn(nomina_ids)
-            logging.warn(nomina_final_id)
+
 
             ordinarios_reglas_ids = [x.id for x in w.ordinarios_id]
             extraordinarios_reglas_ids = [x.id for x in w.extraordinarios_id]
 
             linea = 12
             numero = 1
+            salario_ordinario = 0
             total_devengado_total = 0
             total_devengado_ordinario = 0
             total_devengado_extraordinario = 0
@@ -121,18 +132,20 @@ class rrhh_finiquito_wizard(osv.osv_memory):
             linea += 2
             hoja.write(linea, 4, 'SUELDO MENSUAL ACTUAL')
             hoja.write(linea, 6, salario_ordinario)
-            linea += 2
+
             subtotal = 0
-            for nomina in self.pool.get('hr.payslip').browse(cr, uid, [nomina_final_id]):
-                for nomina_line in nomina.line_ids:
-                    hoja.write(linea, 1, nomina_line.salary_rule_id.code)
-                    hoja.write(linea, 2, nomina.date_from)
-                    hoja.write(linea, 3, 'AL')
-                    hoja.write(linea, 4, nomina.date_to)
-                    hoja.write(linea, 5, 'No. dias')
-                    hoja.write(linea, 6, nomina_line.total)
-                    subtotal += nomina_line.total
-                    linea += 1
+            if nomina_final_id:
+                linea += 2
+                for nomina in self.pool.get('hr.payslip').browse(cr, uid, [nomina_final_id]):
+                    for nomina_line in nomina.line_ids:
+                        hoja.write(linea, 1, nomina_line.salary_rule_id.code)
+                        hoja.write(linea, 2, nomina.date_from)
+                        hoja.write(linea, 3, 'AL')
+                        hoja.write(linea, 4, nomina.date_to)
+                        hoja.write(linea, 5, 'No. dias')
+                        hoja.write(linea, 6, nomina_line.total)
+                        subtotal += nomina_line.total
+                        linea += 1
 
             linea += 1
             hoja.write(linea, 4, 'REALES')
@@ -177,9 +190,9 @@ class rrhh_finiquito_wizard(osv.osv_memory):
             linea += 2
             hoja.write(linea, 0, "YO: " + w.empleado_id.name + ", HABIENDO RECIBIDO A MI ENTERA CONFORMIDAD EL MONTO GLOBAL DE LAS")
             linea += 1
-            hoja.write(linea, 0, "PRESTACIONES LABORALES DETALLADAS ANTERIORMENTE, Y QUE SUMAN LA CANTIDAD DE MIL SETESIENTOS")
+            hoja.write(linea, 0, "PRESTACIONES LABORALES DETALLADAS ANTERIORMENTE, Y QUE SUMAN LA CANTIDAD DE ")
             linea += 1
-            hoja.write(linea, 0, "CINCUENTA Y SEIS QUETZALES CON 36/100 CENTAVOS (Q. " + str(subtotal) + "  MEDIANTE  EL CHEQUES No " + w.numero_cheque + " DEL ")
+            hoja.write(linea, 0, num_a_letras(subtotal) + "(Q. " + str(subtotal) + "  MEDIANTE  EL CHEQUES No " + w.numero_cheque + " DEL ")
             linea += 1
             hoja.write(linea, 0, w.banco_emisor + ",  MISMOS QUE RECIBO EN ESTE MOMENTO. ME RESERVO RECLAMACION Y DEMANDA ALGUNA CONTRA LA")
             linea += 1
