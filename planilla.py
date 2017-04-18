@@ -19,7 +19,6 @@ class hr_employee(osv.osv):
         'profesion': fields.char('Profesion'),
         'etnia': fields.char('Etnia'),
         'idioma': fields.char('Idioma'),
-        'movil': fields.char('Movil del Trabajo'),
         'pais_origen': fields.many2one('res.country','Pais Origen'),
         'trabajado_extranjero': fields.boolean('A trabajado en el extranjero'),
         'motivo_finalizacion': fields.char('Motivo de finalizacion'),
