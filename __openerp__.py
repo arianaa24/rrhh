@@ -17,6 +17,8 @@ Módulo para generación de planilla
     'data': [
         'planilla.xml',
         'reports.xml',
+        'hr_contract.xml',
+        'hr.xml',
         'wizard/planilla.xml',
         'wizard/finiquito.xml',
         'views/recibo.xml',

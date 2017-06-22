@@ -19,6 +19,10 @@ class rrhh_finiquito_wizard(osv.osv_memory):
     'numero_cheque': fields.char("Numero de cheque"),
     'banco_emisor': fields.char("Banco emisor"),
     'archivo': fields.binary('Archivo'),
+    'fecha_inicio': fields.date('Fecha inicio', required=True),
+    'fecha_fin': fields.date('Fecha fin', required=True),
+    'otros_descuentos_id': fields.many2many('hr.salary.rule', 'otros_descuentos_regla_rel', 'finiquito_id', 'regla_id', string='Otros Descuentos'),
+    'dias_vacaciones_totales': fields.integer('Dias de vacaciones totales'),
     }
 
     def _default_empleado(self, cr, uid, context):
@@ -63,7 +67,7 @@ class rrhh_finiquito_wizard(osv.osv_memory):
             hoja.write(11, 5, 'SALARIO TOTAL')
             hoja.write(11, 6, 'DIAS TRABAJ.')
 
-            nomina_ids = self.pool.get('hr.payslip').search(cr, uid, [('employee_id', '=', w.empleado_id.id), ('contract_id', '=', contrato.id)])
+            nomina_ids = self.pool.get('hr.payslip').search(cr, uid, [('employee_id', '=', w.empleado_id.id), ('contract_id', '=', contrato.id), ('date_from', '>=', w.fecha_inicio), ('date_to', '<=', w.fecha_fin)])
 
             logging.warn(w.empleado_id.id)
             logging.warn(contrato.id)
@@ -81,6 +85,7 @@ class rrhh_finiquito_wizard(osv.osv_memory):
 
             ordinarios_reglas_ids = [x.id for x in w.ordinarios_id]
             extraordinarios_reglas_ids = [x.id for x in w.extraordinarios_id]
+            otros_descuentos_reglas_ids = [x.id for x in w.otros_descuentos_id]
 
             linea = 12
             numero = 1
@@ -88,6 +93,7 @@ class rrhh_finiquito_wizard(osv.osv_memory):
             total_devengado_total = 0
             total_devengado_ordinario = 0
             total_devengado_extraordinario = 0
+            total_otros_descuentos = 0
             total_dias_trabajados = 0
             for nomina in self.pool.get('hr.payslip').browse(cr, uid, nomina_ids):
 
@@ -97,13 +103,15 @@ class rrhh_finiquito_wizard(osv.osv_memory):
                 for nomina_line in nomina.line_ids:
 
                     if nomina_line.salary_rule_id.id in ordinarios_reglas_ids:
-                        logging.warn(nomina_line.id)
                         salario_ordinario += nomina_line.total
                         total_devengado_ordinario += nomina_line.total
 
                     if nomina_line.salary_rule_id.id in extraordinarios_reglas_ids:
                         salario_extraordinario += nomina_line.total
                         total_devengado_extraordinario += nomina_line.total
+
+                    if nomina_line.salary_rule_id.id in otros_descuentos_reglas_ids:
+                        total_otros_descuentos += nomina_line.total
 
                     salario_total += nomina_line.total
                     total_devengado_total += nomina_line.total
@@ -152,10 +160,15 @@ class rrhh_finiquito_wizard(osv.osv_memory):
             hoja.write(linea, 5, 'GOZADOS')
             linea += 1
             hoja.write(linea, 2, 'DIAS VACACIONES')
+            hoja.write(linea, 4, w.dias_vacaciones_totales)
+            hoja.write(linea, 5, w.dias_vacaciones_totales - w.empleado_id.remaining_leaves)
             linea += 2
             hoja.write(linea, 2, 'SUB-TOTAL')
             hoja.write(linea, 6, subtotal)
             linea += 2
+            hoja.write(linea, 1, '(-) OTROS DESCUENTOS')
+            hoja.write(linea, 6, total_otros_descuentos)
+            linea += 1
             hoja.write(linea, 1, '(-) RETENCION LABORAL IGSS')
             linea += 1
             hoja.write(linea, 1, '(-) COOPERATIVA COCRECER')
