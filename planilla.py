@@ -3,31 +3,28 @@
 from openerp.osv import osv, fields
 from datetime import datetime,timedelta
 import calendar
-import logging
 
 class hr_employee(osv.osv):
     _inherit = 'hr.employee'
 
     _columns = {
-        'numero_emergencia': fields.char('Numero de Emergencia'),
+        'job_id': fields.many2one('hr.job', 'Job Title', track_visibility='onchange'),
+        'department_id': fields.many2one('hr.department', 'Department', track_visibility='onchange'),
+        'diario_pago_id':fields.many2one('account.journal', 'Diario de Pago'),
         'igss': fields.char('IGSS'),
         'irtra': fields.char('IRTRA'),
         'nit': fields.char('NIT'),
-        'diario_pago_id':fields.many2one('account.journal', 'Diario de Pago'),
         'recibo_id':fields.many2one('rrhh.recibo', 'Formato de recibo'),
         'nivel_academico': fields.char('Nivel Academico'),
         'profesion': fields.char('Profesion'),
         'etnia': fields.char('Etnia'),
         'idioma': fields.char('Idioma'),
-        'movil': fields.char('Movil del Trabajo'),
         'pais_origen': fields.many2one('res.country','Pais Origen'),
         'trabajado_extranjero': fields.boolean('A trabajado en el extranjero'),
-        'pais': fields.many2one('res.country','Pais'),
         'motivo_finalizacion': fields.char('Motivo de finalizacion'),
         'jornada_trabajo': fields.char('Jornada de Trabajo'),
         'permiso_trabajo': fields.char('Permiso de Trabajo'),
         'contacto_emergencia': fields.many2one('res.partner','Contacto de Emergencia'),
-
     }
 
 class rrhh_planilla(osv.osv):
@@ -84,7 +81,8 @@ class hr_contract(osv.osv):
     _inherit = 'hr.contract'
 
     _columns = {
-        'base_extra': fields.float('Base Extra', digits=(16,2)),
+        'base_extra': fields.float('Base Extra', digits=(16,2), track_visibility='onchange'),
+        'wage': fields.float('Wage', digits=(16,2), required=True, help="Basic Salary of the employee", track_visibility='onchange'),
     }
 
 class hr_payslip_run(osv.osv):
@@ -143,6 +141,21 @@ class hr_payslip_run(osv.osv):
 class hr_payslip(osv.osv):
     _inherit = 'hr.payslip'
 
+    _columns = {
+        'dia_del_mes': fields.integer('Dia del Mes'),
+    }
+
+    def onchange_employee_id(self, cr, uid, ids, date_from, date_to, employee_id=False, contract_id=False, context=None):
+        res = super(hr_payslip, self).onchange_employee_id(cr, uid, ids, date_from=date_from, date_to=date_to, employee_id=employee_id, contract_id=contract_id, context=context)
+        if date_to and date_to.split("-") > 2:
+            res['value'].update({
+                'dia_del_mes': int(date_to.split("-")[2])
+            })
+        return res
+
+    def hr_verify_sheet(self, cr, uid, ids, context=None):
+        return self.write(cr, uid, ids, {'state': 'verify'}, context=context)
+
     def get_worked_day_lines(self, cr, uid, contract_ids, date_from, date_to, context=None):
         for contract in self.pool.get('hr.contract').browse(cr, uid, contract_ids, context=context):
             if contract.date_start > date_from:
@@ -169,9 +182,6 @@ class hr_payslip(osv.osv):
             r['dias_totales_mes'] = dias_totales_mes[r['contract_id']]
 
         return res
-
-    def hr_verify_sheet(self, cr, uid, ids, context=None):
-        return self.write(cr, uid, ids, {'state': 'verify'}, context=context)
 
 class hr_payslip_worked_days(osv.osv):
     _inherit = 'hr.payslip.worked_days'
