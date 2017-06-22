@@ -8,13 +8,13 @@ class hr_employee(osv.osv):
     _inherit = 'hr.employee'
 
     _columns = {
+        'job_id': fields.many2one('hr.job', 'Job Title', track_visibility='onchange'),
+        'department_id': fields.many2one('hr.department', 'Department', track_visibility='onchange'),
         'diario_pago_id':fields.many2one('account.journal', 'Diario de Pago'),
         'igss': fields.char('IGSS'),
         'irtra': fields.char('IRTRA'),
         'nit': fields.char('NIT'),
         'recibo_id':fields.many2one('rrhh.recibo', 'Formato de recibo'),
-        'job_id': fields.many2one('hr.job', 'Job Title', track_visibility='onchange'),
-        'department_id': fields.many2one('hr.department', 'Department', track_visibility='onchange'),
         'nivel_academico': fields.char('Nivel Academico'),
         'profesion': fields.char('Profesion'),
         'etnia': fields.char('Etnia'),
@@ -81,17 +81,9 @@ class hr_contract(osv.osv):
     _inherit = 'hr.contract'
 
     _columns = {
-        'base_extra': fields.float('Base Extra', digits=(16,2)),
-        'wage': fields.float('Wage', digits=(16,2), required=True, help="Basic Salary of the employee"),
+        'base_extra': fields.float('Base Extra', digits=(16,2), track_visibility='onchange'),
+        'wage': fields.float('Wage', digits=(16,2), required=True, help="Basic Salary of the employee", track_visibility='onchange'),
     }
-
-    def write(self, cr, uid, ids, values, context=None):
-        if 'base_extra' in values or 'wage' in values:
-            for record in self.browse(cr, uid, ids, context=context):
-                message = "El contrato cambio, el salario paso de "+'{0:,.2f}'.format(record.wage)+" a "+'{0:,.2f}'.format(values.get('wage', record.wage))+ " y la base extra de "+'{0:,.2f}'.format(record.base_extra)+" a "+'{0:,.2f}'.format(values.get('base_extra', record.base_extra))
-                self.pool.get('hr.employee').message_post(cr, uid, record.employee_id.id, body=message, context=context)
-
-        result = super(hr_contract, self).write(cr, uid, ids, values, context=context)
 
 class hr_payslip_run(osv.osv):
     _inherit = 'hr.payslip.run'
@@ -153,45 +145,47 @@ class hr_payslip(osv.osv):
         'dia_del_mes': fields.integer('Dia del Mes'),
     }
 
-    def compute_sheet(self, cr, uid, ids, context=None):
-        for payslip in self.browse(cr, uid, ids, context=context):
-            if payslip.date_to and payslip.date_to.split("-") > 2:
-                self.write(cr, uid, payslip.id, { 'dia_del_mes': int(payslip.date_to.split("-")[2]) }, context=context)
-        return super(hr_payslip, self).compute_sheet(cr, uid, ids, context=context)
+    def onchange_employee_id(self, cr, uid, ids, date_from, date_to, employee_id=False, contract_id=False, context=None):
+        res = super(hr_payslip, self).onchange_employee_id(cr, uid, ids, date_from=date_from, date_to=date_to, employee_id=employee_id, contract_id=contract_id, context=context)
+        if date_to and date_to.split("-") > 2:
+            res['value'].update({
+                'dia_del_mes': int(date_to.split("-")[2])
+            })
+        return res
 
     def hr_verify_sheet(self, cr, uid, ids, context=None):
         return self.write(cr, uid, ids, {'state': 'verify'}, context=context)
 
-    # def get_worked_day_lines(self, cr, uid, contract_ids, date_from, date_to, context=None):
-    #     for contract in self.pool.get('hr.contract').browse(cr, uid, contract_ids, context=context):
-    #         if contract.date_start > date_from:
-    #             date_from = contract.date_start
-    #     res = super(hr_payslip, self).get_worked_day_lines(cr, uid, contract_ids, date_from, date_to, context)
-    #
-    #     dias_totales_mes = {}
-    #     horas_totales_mes = {}
-    #     for contract in self.pool.get('hr.contract').browse(cr, uid, contract_ids, context=context):
-    #         dias = 0
-    #         horas = 0
-    #         day_from = datetime.strptime(date_from,"%Y-%m-%d")
-    #         rango = calendar.monthrange(day_from.year, day_from.month)
-    #         nb_of_days = (rango[1] - 1) + 1
-    #         for day in range(0, nb_of_days):
-    #             working_hours_on_day = self.pool.get('resource.calendar').working_hours_on_day(cr, uid, contract.working_hours, day_from + timedelta(days=day), context)
-    #             if working_hours_on_day:
-    #                 dias += 1.0
-    #                 horas += working_hours_on_day
-    #         dias_totales_mes[contract.id] = dias
-    #         horas_totales_mes[contract.id] = horas
-    #
-    #     for r in res:
-    #         r['dias_totales_mes'] = dias_totales_mes[r['contract_id']]
-    #
-    #     return res
+    def get_worked_day_lines(self, cr, uid, contract_ids, date_from, date_to, context=None):
+        for contract in self.pool.get('hr.contract').browse(cr, uid, contract_ids, context=context):
+            if contract.date_start > date_from:
+                date_from = contract.date_start
+        res = super(hr_payslip, self).get_worked_day_lines(cr, uid, contract_ids, date_from, date_to, context)
 
-# class hr_payslip_worked_days(osv.osv):
-#     _inherit = 'hr.payslip.worked_days'
-#
-#     _columns = {
-#         'dias_totales_mes': fields.float('Dias totales'),
-#     }
+        dias_totales_mes = {}
+        horas_totales_mes = {}
+        for contract in self.pool.get('hr.contract').browse(cr, uid, contract_ids, context=context):
+            dias = 0
+            horas = 0
+            day_from = datetime.strptime(date_from,"%Y-%m-%d")
+            rango = calendar.monthrange(day_from.year, day_from.month)
+            nb_of_days = (rango[1] - 1) + 1
+            for day in range(0, nb_of_days):
+                working_hours_on_day = self.pool.get('resource.calendar').working_hours_on_day(cr, uid, contract.working_hours, day_from + timedelta(days=day), context)
+                if working_hours_on_day:
+                    dias += 1.0
+                    horas += working_hours_on_day
+            dias_totales_mes[contract.id] = dias
+            horas_totales_mes[contract.id] = horas
+
+        for r in res:
+            r['dias_totales_mes'] = dias_totales_mes[r['contract_id']]
+
+        return res
+
+class hr_payslip_worked_days(osv.osv):
+    _inherit = 'hr.payslip.worked_days'
+
+    _columns = {
+        'dias_totales_mes': fields.float('Dias totales'),
+    }

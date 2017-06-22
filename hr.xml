@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="rrhh.hr_hr_employee_view_form2" model="ir.ui.view">
+            <field name="name">rrhh.hr.hr.employee.view.form2</field>
+            <field name="model">hr.employee</field>
+	        <field name="inherit_id" ref="hr_contract.hr_hr_employee_view_form2"/>
+	        <field name="arch" type="xml">
+                <data>
+                    <field name="vehicle_distance" position="after">
+                        <field name="promedio_salario"/>
+                    </field>
+                </data>
+	        </field>
+	    </record>
+
+     </data>
+</openerp>

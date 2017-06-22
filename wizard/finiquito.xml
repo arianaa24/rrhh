@@ -12,11 +12,15 @@
                             <field name="empleado_id"/>
                             <field name="ordinarios_id" widget="many2many_tags"/>
                             <field name="extraordinarios_id" widget="many2many_tags"/>
+                            <field name="fecha_inicio"/>
+                            <field name="fecha_fin"/>
                         </group>
                         <group>
                             <field name="representante_legal"/>
                             <field name="numero_cheque"/>
                             <field name="banco_emisor"/>
+                            <field name="otros_descuentos_id" widget="many2many_tags"/>
+                            <field name="dias_vacaciones_totales"/>
                         </group>
                     </group>
                     <group>
