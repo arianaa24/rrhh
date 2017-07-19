@@ -49,4 +49,9 @@ class hr_employee(osv.osv):
 
     _columns = {
         'promedio_salario': fields.function(_promedio_salario, string='Promedio Salario', digits_compute=dp.get_precision('Account')),
+        'numero_liquidacion': fields.char('Numero o identificacion de liquidacion'),
+        'codigo_centro_trabajo': fields.char('Codigo de centro de trabajo asignado'),
+        'codigo_ocupacion': fields.char('Codigo ocupacion'),
+        'condicion_laboral': fields.selection([('P', 'Permanente'),
+                                           ('T', 'Temporal')], 'Condicion laboral'),
     }

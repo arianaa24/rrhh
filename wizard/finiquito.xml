@@ -21,6 +21,7 @@
                             <field name="banco_emisor"/>
                             <field name="otros_descuentos_id" widget="many2many_tags"/>
                             <field name="dias_vacaciones_totales"/>
+                            <field name="nomina_descuentos_id" domain="[('employee_id','=',empleado_id)]"/>
                         </group>
                     </group>
                     <group>

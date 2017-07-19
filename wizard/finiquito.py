@@ -23,6 +23,7 @@ class rrhh_finiquito_wizard(osv.osv_memory):
     'fecha_fin': fields.date('Fecha fin', required=True),
     'otros_descuentos_id': fields.many2many('hr.salary.rule', 'otros_descuentos_regla_rel', 'finiquito_id', 'regla_id', string='Otros Descuentos'),
     'dias_vacaciones_totales': fields.integer('Dias de vacaciones totales'),
+    'nomina_descuentos_id': fields.many2one('hr.payslip', 'Nomina de descuentos', required=True),
     }
 
     def _default_empleado(self, cr, uid, context):
@@ -73,12 +74,11 @@ class rrhh_finiquito_wizard(osv.osv_memory):
             logging.warn(contrato.id)
             logging.warn(nomina_ids)
 
-#            nomina_ids = [1,2]
-            if len(nomina_ids) > 0:
-                nomina_final_id = nomina_ids.pop()
-                logging.warn(nomina_final_id)
-            else:
-                nomina_final_id = False
+            # if len(nomina_ids) > 0:
+                # nomina_final_id = nomina_ids.pop()
+                # logging.warn(nomina_final_id)
+            # else:
+                # nomina_final_id = False
 
             logging.warn(nomina_ids)
 
@@ -105,16 +105,17 @@ class rrhh_finiquito_wizard(osv.osv_memory):
                     if nomina_line.salary_rule_id.id in ordinarios_reglas_ids:
                         salario_ordinario += nomina_line.total
                         total_devengado_ordinario += nomina_line.total
+                        salario_total += nomina_line.total
+                        total_devengado_total += nomina_line.total
 
                     if nomina_line.salary_rule_id.id in extraordinarios_reglas_ids:
                         salario_extraordinario += nomina_line.total
                         total_devengado_extraordinario += nomina_line.total
+                        salario_total += nomina_line.total
+                        total_devengado_total += nomina_line.total
 
                     if nomina_line.salary_rule_id.id in otros_descuentos_reglas_ids:
                         total_otros_descuentos += nomina_line.total
-
-                    salario_total += nomina_line.total
-                    total_devengado_total += nomina_line.total
 
                 dias_trabajados = 0
                 for nomina_dias in nomina.worked_days_line_ids:
@@ -139,12 +140,12 @@ class rrhh_finiquito_wizard(osv.osv_memory):
 
             linea += 2
             hoja.write(linea, 4, 'SUELDO MENSUAL ACTUAL')
-            hoja.write(linea, 6, salario_ordinario)
+            hoja.write(linea, 6, salario_total)
 
             subtotal = 0
-            if nomina_final_id:
+            if w.nomina_descuentos_id.id:
                 linea += 2
-                for nomina in self.pool.get('hr.payslip').browse(cr, uid, [nomina_final_id]):
+                for nomina in self.pool.get('hr.payslip').browse(cr, uid, [w.nomina_descuentos_id.id]):
                     for nomina_line in nomina.line_ids:
                         hoja.write(linea, 1, nomina_line.salary_rule_id.code)
                         hoja.write(linea, 2, nomina.date_from)
