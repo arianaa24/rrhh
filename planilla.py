@@ -81,9 +81,16 @@ class hr_contract(osv.osv):
     _inherit = 'hr.contract'
 
     _columns = {
-        'base_extra': fields.float('Base Extra', digits=(16,2), track_visibility='onchange'),
-        'wage': fields.float('Wage', digits=(16,2), required=True, help="Basic Salary of the employee", track_visibility='onchange'),
+        'base_extra': fields.float('Base Extra', digits=(16,2)),
     }
+
+    def write(self, cr, uid, ids, values, context=None):
+        if 'base_extra' in values or 'wage' in values:
+            for record in self.browse(cr, uid, ids, context=context):
+                message = "El contrato cambio, el salario paso de "+'{0:,.2f}'.format(record.wage)+" a "+'{0:,.2f}'.format(values.get('wage', record.wage))+ " y la base extra de "+'{0:,.2f}'.format(record.base_extra)+" a "+'{0:,.2f}'.format(values.get('base_extra', record.base_extra))
+                self.pool.get('hr.employee').message_post(cr, uid, record.employee_id.id, body=message, context=context)
+
+        return super(hr_contract, self).write(cr, uid, ids, values, context=context)
 
 class hr_payslip_run(osv.osv):
     _inherit = 'hr.payslip.run'
