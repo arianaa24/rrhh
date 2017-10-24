@@ -1,0 +1,45 @@
+<openerp>
+  <data>
+        <record id="rrhh.view_employee_form" model="ir.ui.view">
+            <field name="name">rrhh.hr.employee.form</field>
+            <field name="model">hr.employee</field>
+	        <field name="inherit_id" ref="hr.view_employee_form"/>
+	        <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//group[@name='active_group']" position="after">
+                        <group string="IGSS">
+                            <field name="numero_liquidacion"/>
+                            <field name="codigo_centro_trabajo"/>
+                            <field name="codigo_ocupacion"/>
+                            <field name="condicion_laboral"/>
+                        </group>
+                    </xpath>
+                    <page name="public" position="inside">
+                        <group string="Información de Pago">
+                            <field name="diario_pago_id"/>
+                            <field name="recibo_id"/>
+                        </group>
+                    </page>
+                    <field name="address_home_id" position="after">
+                        <field name="contacto_emergencia"/>
+                    </field>
+                    <field name="bank_account_id" position="after">
+                        <field name="igss"/>
+                        <field name="irtra"/>
+                        <field name="nit"/>
+                        <field name="nivel_academico"/>
+                        <field name="profesion"/>
+                        <field name="etnia"/>
+                        <field name="idioma"/>
+                        <field name="pais_origen"/>
+                        <field name="trabajado_extranjero"/>
+                        <field name="motivo_finalizacion"/>
+                        <field name="jornada_trabajo"/>
+                        <field name="permiso_trabajo"/>
+                    </field>
+                </data>
+	        </field>
+	    </record>
+        
+  </data>
+</openerp>

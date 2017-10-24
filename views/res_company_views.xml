@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data>
+  <data>
 
         <record id="rrhh.view_company_form" model="ir.ui.view">
             <field name="name">rrhh.res.company.form</field>
@@ -8,7 +7,7 @@
 	        <field name="inherit_id" ref="base.view_company_form"/>
 	        <field name="arch" type="xml">
                 <data>
-                    <page string="Report Configuration" position="after">
+                    <notebook position="inside">
                         <page string="IGSS">
                             <group string="Patrono">
                                 <group>
@@ -50,10 +49,10 @@
                                 </group>
                             </group>
                         </page>
-                    </page>
+                    </notebook>
                 </data>
 	        </field>
 	    </record>
-
-     </data>
+        
+  </data>
 </openerp>
