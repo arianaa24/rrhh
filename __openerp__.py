@@ -24,6 +24,7 @@ Módulo para generación de planilla
         'wizard/igss.xml',
         'wizard/finiquito.xml',
         'views/recibo.xml',
+        'views/report_libro_salarios2.xml',
     ],
     'demo': [],
     'installable': True
