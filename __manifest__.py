@@ -1,39 +1,27 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "rrhh",
+    'name': "RRHH",
 
-    'summary': """
-        Short (1 phrase/line) summary of the module's purpose, used as
-        subtitle on modules listing or apps.openerp.com""",
+    'summary': """ Módulo de RRHH para Guatemala """,
 
     'description': """
-        Long description of module's purpose
+        Módulo de RRHH para Guatemala
     """,
 
-    'author': "My Company",
-    'website': "http://www.yourcompany.com",
+    'author': "Rodolfo Borstcheff",
+    'website': "http://www.aquih.com",
 
-    # Categories can be used to filter modules in modules listing
-    # Check https://github.com/odoo/odoo/blob/master/openerp/addons/base/module/module_data.xml
-    # for the full list
     'category': 'Uncategorized',
     'version': '0.1',
 
-    # any module necessary for this one to work correctly
     'depends': ['base', 'hr', 'hr_contract', 'hr_payroll'],
 
-    # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
         'data/rrhh_data.xml',
         'views/hr_views.xml',
         'views/hr_contract_views.xml',
         'views/hr_payroll_views.xml',
         'views/planilla_views.xml',
         'views/res_company_views.xml',
-    ],
-    # only loaded in demonstration mode
-    'demo': [
-        'demo/demo.xml',
     ],
 }
