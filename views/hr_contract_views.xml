@@ -24,6 +24,7 @@
                                     <field name="comisiones_id" widget="many2many_tags"/>
                                     <field name="septimos_asuetos_id" widget="many2many_tags"/>
                                     <field name="vacaciones_id" widget="many2many_tags"/>
+                                    <field name="liquido_recibir_id" widget="many2many_tags"/>
                                 </group>
                             </group>
                         </page>
