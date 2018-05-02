@@ -11,7 +11,7 @@ class hr_employee(models.Model):
     codigo_centro_trabajo = fields.Char('Codigo de centro de trabajo asignado')
     codigo_ocupacion = fields.Char('Codigo ocupacion')
     condicion_laboral = fields.Selection([('P', 'Permanente'), ('T', 'Temporal')], 'Condicion laboral')
-    
+
     job_id = fields.Many2one('hr.job', 'Job Title', track_visibility='onchange')
     department_id = fields.Many2one('hr.department', 'Department', track_visibility='onchange')
     diario_pago_id = fields.Many2one('account.journal', 'Diario de Pago')
@@ -45,22 +45,23 @@ class hr_employee(models.Model):
 
     def _get_edad(self):
         for employee in self:
-            diaNacimiento = int(datetime.datetime.strptime(str(employee.birthday),'%Y-%m-%d').date().strftime('%d'))
-            mesNacimiento = int(datetime.datetime.strptime(str(employee.birthday),'%Y-%m-%d').date().strftime('%m'))
-            anioNacimiento = int(datetime.datetime.strptime(str(employee.birthday),'%Y-%m-%d').date().strftime('%Y'))
-            diaActual = int(datetime.date.today().strftime('%d'))
-            mesActual = int(datetime.date.today().strftime('%m'))
-            anioActual = int(datetime.date.today().strftime('%Y'))
-            
-            restaDia = diaActual - diaNacimiento
-            restaMes = mesActual - mesNacimiento
-            restaAnio = anioActual - anioNacimiento
-            
-            if (restaMes < 0):
-                restaAnio = restaAnio -1
-            elif (restaMes == 0):
-                if (restaDia < 0):
-                    restaAnio = restaAnio - 1
-                if (restaDia > 0):
-                    restaAnio = restaAnio
-            employee.edad = restaAnio
+            if employee.birthday:
+                dia_nacimiento = int(datetime.datetime.strptime(str(employee.birthday),'%Y-%m-%d').date().strftime('%d'))
+                mes_nacimiento = int(datetime.datetime.strptime(str(employee.birthday),'%Y-%m-%d').date().strftime('%m'))
+                anio_nacimiento = int(datetime.datetime.strptime(str(employee.birthday),'%Y-%m-%d').date().strftime('%Y'))
+                dia_actual = int(datetime.date.today().strftime('%d'))
+                mes_actual = int(datetime.date.today().strftime('%m'))
+                anio_actual = int(datetime.date.today().strftime('%Y'))
+
+                resta_dia = dia_actual - dia_nacimiento
+                resta_mes = mes_actual - mes_nacimiento
+                resta_anio = anio_actual - anio_nacimiento
+
+                if (resta_es < 0):
+                    resta_anio = resta_anio -1
+                elif (resta_es == 0):
+                    if (resta_dia < 0):
+                        resta_anio = resta_anio - 1
+                    if (resta_dia > 0):
+                        resta_anio = resta_anio
+                employee.edad = resta_anio
