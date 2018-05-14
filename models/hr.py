@@ -58,7 +58,7 @@ class hr_employee(models.Model):
                 resta_anio = anio_actual - anio_nacimiento
 
                 if (resta_mes < 0):
-                    resta_anio = resta_anio -1
+                    resta_anio = resta_anio - 1
                 elif (resta_mes == 0):
                     if (resta_dia < 0):
                         resta_anio = resta_anio - 1
