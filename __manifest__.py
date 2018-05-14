@@ -23,5 +23,8 @@
         'views/hr_payroll_views.xml',
         'views/planilla_views.xml',
         'views/res_company_views.xml',
+        'views/report.xml',
+        'views/recibo.xml',
+        'wizard/planilla.xml',
     ],
 }
