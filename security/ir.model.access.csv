@@ -3,3 +3,7 @@ access_rrhh_planilla_manager,rrhh.planilla.manager,model_rrhh_planilla,hr.group_
 access_rrhh_recibo_manager,rrhh.recibo.manager,model_rrhh_recibo,hr.group_hr_manager,1,1,1,1
 access_rrhh_planilla_usuario,rrhh.planilla.usuario,model_rrhh_planilla,base.group_user,1,0,0,0
 access_rrhh_recibo_usuario,rrhh.recibo.usuario,model_rrhh_recibo,base.group_user,1,0,0,0
+access_rrhh_planilla_columna_manager,rrhh.planilla.columna.manager,model_rrhh_planilla_columna,hr.group_hr_manager,1,1,1,1
+access_rrhh_planilla_columna_usuario,rrhh.planilla.columna.usuario,model_rrhh_planilla_columna,base.group_user,1,0,0,0
+access_rrhh_recibo_linea_manager,rrhh.recibo.linea.manager,model_rrhh_recibo_linea,hr.group_hr_manager,1,1,1,1
+access_rrhh_recibo_linea_usuario,rrhh.recibo.linea.usuario,model_rrhh_recibo_linea,base.group_user,1,0,0,0
