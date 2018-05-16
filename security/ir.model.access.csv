@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_rrhh_planilla_manager,rrhh.planilla.manager,model_rrhh_planilla,hr.group_hr_manager,1,1,1,1
+access_rrhh_recibo_manager,rrhh.recibo.manager,model_rrhh_recibo,hr.group_hr_manager,1,1,1,1
+access_rrhh_planilla_usuario,rrhh.planilla.usuario,model_rrhh_planilla,base.group_user,1,0,0,0
+access_rrhh_recibo_usuario,rrhh.recibo.usuario,model_rrhh_recibo,base.group_user,1,0,0,0
