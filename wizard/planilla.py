@@ -5,7 +5,7 @@ from openerp.exceptions import UserError, ValidationError
 import time
 import base64
 import xlwt
-import StringIO
+import io
 import logging
 
 class rrhh_planilla_wizard(models.TransientModel):
@@ -98,7 +98,7 @@ class rrhh_planilla_wizard(models.TransientModel):
                 hoja.write(linea, columna, totales[columna-6], estilo)
                 columna += 1
 
-            f = StringIO.StringIO()
+            f = io.BytesIO()
             libro.save(f)
             datos = base64.b64encode(f.getvalue())
             self.archivo = datos
