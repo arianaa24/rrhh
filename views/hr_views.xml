@@ -20,6 +20,7 @@
                                     <field name="recibo_id"/>
                                 </group>
                                 <group string="Información Laboral">
+                                    <field name="codigo_empleado"/>
                                     <field name="igss"/>
                                     <field name="irtra"/>
                                     <field name="nit"/>
