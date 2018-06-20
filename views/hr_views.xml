@@ -20,6 +20,7 @@
                                     <field name="recibo_id"/>
                                 </group>
                                 <group string="Información Laboral">
+                                    <field name="codigo_empleado"/>
                                     <field name="igss"/>
                                     <field name="irtra"/>
                                     <field name="nit"/>
@@ -36,9 +37,14 @@
                                     <field name="vecindad_dpi"/>
                                 </group>
                                 <group string="Tarjetas Alimentarias">
-                                    <field name="tarjeta_salud"/>
-                                    <field name="tarjeta_manipulacion"/>
-                                    <field name="tarjeta_pulmones"/>
+                                    <group>
+                                        <field name="tarjeta_salud"/>
+                                        <field name="tarjeta_manipulacion"/>
+                                        <field name="tarjeta_pulmones"/>
+                                    </group>
+                                    <group>
+                                        <field name="tarjeta_fecha_vencimiento"/>
+                                    </group>
                                 </group>
                             </group>
                         </page>
