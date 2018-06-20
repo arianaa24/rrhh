@@ -46,7 +46,7 @@ class hr_employee(models.Model):
     
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):
-        res1 = super(Employee, self).name_search(name, args, operator=operator, limit=limit)
+        res1 = super(hr_employee, self).name_search(name, args, operator=operator, limit=limit)
 
         records = self.search([('codigo_empleado', 'ilike', name)], limit=limit)
         res2 = records.name_get()
