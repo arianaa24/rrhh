@@ -12,7 +12,9 @@
                             <field name="planilla_id"/>
                         </group>
                         <group>
-                            <field name="archivo" readonly="1"/>
+                            <field name="agrupado"/>
+                            <field name="name" colspan="4" invisible="1"/>
+                            <field name="archivo" filename="name" readonly="1"/>
                         </group>
                     </group>
                     <footer>
