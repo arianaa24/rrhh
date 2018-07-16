@@ -62,6 +62,7 @@ class rrhh_planilla_wizard(models.TransientModel):
                     hoja.write(linea, columna+1, 'Banco a depositar', estilo)
                     hoja.write(linea, columna+2, 'Cuenta a depositar', estilo)
                     hoja.write(linea, columna+3, 'Observaciones', estilo)
+                    hoja.write(linea, columna+4, 'Cuenta analítica', estilo)
                     for l in w.nomina_id.slip_ids:
                         if l.contract_id.analytic_account_id.name == i:
                             linea += 1
@@ -96,6 +97,7 @@ class rrhh_planilla_wizard(models.TransientModel):
                             hoja.write(linea, columna+1, l.employee_id.bank_account_id.bank_id.name)
                             hoja.write(linea, columna+2, l.employee_id.bank_account_id.acc_number)
                             hoja.write(linea, columna+3, l.note)
+                            hoja.write(linea, columna+4, l.contract_id.analytic_account_id.name)
 
                             num += 1
                     columna = 6
@@ -133,6 +135,7 @@ class rrhh_planilla_wizard(models.TransientModel):
                 hoja.write(linea, columna+1, 'Banco a depositar', estilo)
                 hoja.write(linea, columna+2, 'Cuenta a depositar', estilo)
                 hoja.write(linea, columna+3, 'Observaciones', estilo)
+                hoja.write(linea, columna+4, 'Cuenta analítica', estilo)
 
                 linea += 1
                 for l in w.nomina_id.slip_ids:
@@ -167,6 +170,7 @@ class rrhh_planilla_wizard(models.TransientModel):
                     hoja.write(linea, columna+1, l.employee_id.bank_account_id.bank_id.name)
                     hoja.write(linea, columna+2, l.employee_id.bank_account_id.acc_number)
                     hoja.write(linea, columna+3, l.note)
+                    hoja.write(linea, columna+4, l.contract_id.analytic_account_id.name)
 
                     linea += 1
                     num += 1
