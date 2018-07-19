@@ -42,17 +42,14 @@ class ReportRecibo(models.AbstractModel):
         return result
 
     @api.model
-    def render_html(self, docids, data=None):
+    def get_report_values(self, docids, data=None):
         self.model = 'hr.payslip'
         docs = self.env[self.model].browse(docids)
 
-        docargs = {
+        return {
             'doc_ids': docids,
             'doc_model': self.model,
             'docs': docs,
             'lineas': self.lineas,
         }
-        return self.env['report'].render('rrhh.recibo', docargs)
-
-
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
