@@ -27,7 +27,10 @@ class rrhh_planilla_wizard(models.TransientModel):
             if w.agrupado:
                 cuentas_analiticas = set([])
                 for l in w.nomina_id.slip_ids:
-                    cuentas_analiticas.add(l.contract_id.analytic_account_id.name)
+                    if l.contract_id.analytic_account_id.name:
+                        cuentas_analiticas.add(l.contract_id.analytic_account_id.name)
+                    else:
+                        cuentas_analiticas.add('Indefinido')
 
                 for i in cuentas_analiticas:
                     hoja = libro.add_sheet(i)
@@ -62,7 +65,44 @@ class rrhh_planilla_wizard(models.TransientModel):
                     hoja.write(linea, columna+1, 'Banco a depositar', estilo)
                     hoja.write(linea, columna+2, 'Cuenta a depositar', estilo)
                     hoja.write(linea, columna+3, 'Observaciones', estilo)
+                    hoja.write(linea, columna+4, 'Cuenta analitica', estilo)
                     for l in w.nomina_id.slip_ids:
+                        if l.contract_id.analytic_account_id.name == False and i == 'Indefinido':
+                            linea += 1
+                            dias = 0
+                            total_salario = 0
+
+                            hoja.write(linea, 0, num)
+                            hoja.write(linea, 1, l.employee_id.codigo_empleado)
+                            hoja.write(linea, 2, l.employee_id.name)
+                            hoja.write(linea, 3, l.contract_id.date_start)
+                            hoja.write(linea, 4, l.employee_id.job_id.name)
+                            for d in l.worked_days_line_ids:
+                                dias += d.number_of_days
+                            hoja.write(linea, 5, dias)
+
+                            columna = 6
+                            for c in w.planilla_id.columna_id:
+                                reglas = [x.id for x in c.regla_id]
+                                total_columna = 0
+                                for r in l.line_ids:
+                                    if r.salary_rule_id.id in reglas:
+                                        total_columna += r.total
+                                if c.sumar:
+                                    total_salario += total_columna
+                                totales[columna-6] += total_columna
+
+                                hoja.write(linea, columna, total_columna)
+                                columna += 1
+
+                            totales[columna-6] += total_salario
+                            hoja.write(linea, columna, total_salario)
+                            hoja.write(linea, columna+1, l.employee_id.bank_account_id.bank_id.name)
+                            hoja.write(linea, columna+2, l.employee_id.bank_account_id.acc_number)
+                            hoja.write(linea, columna+3, l.note)
+                            hoja.write(linea, columna+4, 'indefinido')
+
+                            num += 1
                         if l.contract_id.analytic_account_id.name == i:
                             linea += 1
                             dias = 0
@@ -96,6 +136,7 @@ class rrhh_planilla_wizard(models.TransientModel):
                             hoja.write(linea, columna+1, l.employee_id.bank_account_id.bank_id.name)
                             hoja.write(linea, columna+2, l.employee_id.bank_account_id.acc_number)
                             hoja.write(linea, columna+3, l.note)
+                            hoja.write(linea, columna+4, l.contract_id.analytic_account_id.name)
 
                             num += 1
                     columna = 6
@@ -133,6 +174,7 @@ class rrhh_planilla_wizard(models.TransientModel):
                 hoja.write(linea, columna+1, 'Banco a depositar', estilo)
                 hoja.write(linea, columna+2, 'Cuenta a depositar', estilo)
                 hoja.write(linea, columna+3, 'Observaciones', estilo)
+                hoja.write(linea, columna+4, 'Cuenta analitica', estilo)
 
                 linea += 1
                 for l in w.nomina_id.slip_ids:
@@ -167,6 +209,10 @@ class rrhh_planilla_wizard(models.TransientModel):
                     hoja.write(linea, columna+1, l.employee_id.bank_account_id.bank_id.name)
                     hoja.write(linea, columna+2, l.employee_id.bank_account_id.acc_number)
                     hoja.write(linea, columna+3, l.note)
+                    if l.contract_id.analytic_account_id.name:
+                        hoja.write(linea, columna+4, l.contract_id.analytic_account_id.name)
+                    else:
+                        hoja.write(linea, columna+4, 'indefinido')
 
                     linea += 1
                     num += 1
