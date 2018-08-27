@@ -3,8 +3,8 @@
         <record id="rrhh.view_employee_form" model="ir.ui.view">
             <field name="name">rrhh.hr.employee.form</field>
             <field name="model">hr.employee</field>
-	        <field name="inherit_id" ref="hr.view_employee_form"/>
-	        <field name="arch" type="xml">
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
                 <data>
                     <page name="hr_settings" position="after">
                         <page name="campos_especificos" string="Campos Especificos">
@@ -37,14 +37,10 @@
                                     <field name="vecindad_dpi"/>
                                 </group>
                                 <group string="Tarjetas Alimentarias">
-                                    <group>
-                                        <field name="tarjeta_salud"/>
-                                        <field name="tarjeta_manipulacion"/>
-                                        <field name="tarjeta_pulmones"/>
-                                    </group>
-                                    <group>
-                                        <field name="tarjeta_fecha_vencimiento"/>
-                                    </group>
+                                    <field name="tarjeta_salud"/>
+                                    <field name="tarjeta_fecha_vencimiento"/>
+                                    <field name="tarjeta_manipulacion"/>
+                                    <field name="tarjeta_pulmones"/>
                                 </group>
                             </group>
                         </page>
@@ -53,8 +49,8 @@
                         <field name="edad"/>
                     </field>
                 </data>
-	        </field>
-	    </record>
+            </field>
+        </record>
         
   </data>
 </openerp>
