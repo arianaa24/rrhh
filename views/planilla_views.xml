@@ -113,6 +113,13 @@
                                 </tree>
                             </field>
                         </page>
+                        <page string="Entradas">
+                            <field name="entrada_id">
+                                <tree editable="bottom">
+                                    <field name="input_id"/>
+                                </tree>                                
+                            </field>
+                        </page>
                     </notebook>
                 </form>
             </field>

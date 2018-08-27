@@ -42,6 +42,7 @@ class hr_employee(models.Model):
     tarjeta_salud = fields.Boolean('Tarjeta de salud')
     tarjeta_manipulacion = fields.Boolean('Tarjeta de manipulación')
     tarjeta_pulmones = fields.Boolean('Tarjeta de pulmones')
+    tarjeta_fecha_vencimiento = fields.Date('Fecha de vencimiento tarjeta de salud')
     codigo_empleado = fields.Char('Código del empleado')
     
     @api.model

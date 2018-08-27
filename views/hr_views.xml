@@ -38,6 +38,7 @@
                                 </group>
                                 <group string="Tarjetas Alimentarias">
                                     <field name="tarjeta_salud"/>
+                                    <field name="tarjeta_fecha_vencimiento"/>
                                     <field name="tarjeta_manipulacion"/>
                                     <field name="tarjeta_pulmones"/>
                                 </group>
