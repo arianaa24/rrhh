@@ -1,20 +1,6 @@
 <openerp>
   <data>
 
-        <record model="ir.ui.view" id="view_hr_payslip_form_rrhh">
-            <field name="name">hr.payslip.form.rrhh</field>
-            <field name="model">hr.payslip</field>
-            <field name="inherit_id" ref="hr_payroll.view_hr_payslip_form"/>
-            <field name="arch" type="xml">
-                <field name="payslip_run_id" position="after">
-                    <field name="dia_del_mes"/>
-                </field>
-                <!-- <field name="number_of_days" sum="Total Working Days" position="after">
-                    <field name="dias_totales_mes"/>
-                </field> -->
-            </field>
-        </record>
-
 <!--
         <record model="ir.ui.view" id="hr_payslip_run_form_rrhh">
             <field name="name">hr.payslip.run.form.rrhh</field>

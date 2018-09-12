@@ -6,9 +6,15 @@ import logging
 class HrPayslip(models.Model):
     _inherit = 'hr.payslip'
 
-    dia_del_mes = fields.Integer('Dia del Mes')
+    @api.multi
+    def action_payslip_done(self):
+        res = super(HrPayslip, self).action_payslip_done()
 
-class HrPayslipWorkedDays(models.Model):
-    _inherit = 'hr.payslip.worked_days'
+        for slip in self:
+            if slip.move_id:
+                slip.move_id.button_cancel()
+                for line in slip.move_id.line_ids:
+                    line.analytic_account_id = slip.contract_id.analytic_account_id.id
+                slip.move_id.post()
 
-    dias_totales_mes = fields.Float('Dias totales')
+        return res
