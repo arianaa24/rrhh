@@ -28,6 +28,7 @@ class rrhh_recibo(models.Model):
     linea_id = fields.One2many('rrhh.recibo.linea', 'recibo_id', 'Lineas')
     linea_ingreso_id = fields.One2many('rrhh.recibo.linea', 'recibo_id', 'Ingresos', domain=[('tipo','=','ingreso')], context={'default_tipo':'ingreso'})
     linea_deduccion_id = fields.One2many('rrhh.recibo.linea', 'recibo_id', 'Deducciones', domain=[('tipo','=','deduccion')], context={'default_tipo':'deduccion'})
+    entrada_id = fields.One2many('rrhh.entrada.linea','recibo_id',string='Entradas')
 
 class rrhh_recibo_linea(models.Model):
     _name = 'rrhh.recibo.linea'
@@ -38,3 +39,9 @@ class rrhh_recibo_linea(models.Model):
     sequence = fields.Integer('Secuencia', required=True, select=True, default=5)
     regla_id = fields.Many2many('hr.salary.rule', id1='linea_id', id2='regla_id', string='Reglas')
     recibo_id = fields.Many2one('rrhh.recibo', 'Recibo', required=False)
+
+class rrhh_entrada_linea(models.Model):
+    _name = 'rrhh.entrada.linea'
+
+    input_id = fields.Many2one('hr.rule.input',string='Entradas')
+    recibo_id = fields.Many2one('rrhh.recibo','Recibo',required=False)

@@ -42,6 +42,17 @@ class hr_employee(models.Model):
     tarjeta_salud = fields.Boolean('Tarjeta de salud')
     tarjeta_manipulacion = fields.Boolean('Tarjeta de manipulación')
     tarjeta_pulmones = fields.Boolean('Tarjeta de pulmones')
+    tarjeta_fecha_vencimiento = fields.Date('Fecha de vencimiento tarjeta de salud')
+    codigo_empleado = fields.Char('Código del empleado')
+    
+    @api.model
+    def name_search(self, name, args=None, operator='ilike', limit=100):
+        res1 = super(hr_employee, self).name_search(name, args, operator=operator, limit=limit)
+
+        records = self.search([('codigo_empleado', 'ilike', name)], limit=limit)
+        res2 = records.name_get()
+
+        return res1+res2
 
     def _get_edad(self):
         for employee in self:

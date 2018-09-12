@@ -6,6 +6,17 @@ import logging
 class ReportRecibo(models.AbstractModel):
     _name = 'report.rrhh.recibo'
 
+    def horas_extras(self,o):
+        horas_extras = 0
+        if o.employee_id.recibo_id:
+            entradas = []
+            for entrada in o.employee_id.recibo_id.entrada_id:
+                entradas.append(entrada.input_id.name)
+            for entrada in o.input_line_ids:
+                if entrada.name in entradas:
+                    horas_extras += entrada.amount
+        return horas_extras
+
     def lineas(self, o):
         result = {'lineas': [], 'totales': [0, 0]}
         if o.employee_id.recibo_id:
@@ -42,17 +53,15 @@ class ReportRecibo(models.AbstractModel):
         return result
 
     @api.model
-    def render_html(self, docids, data=None):
+    def get_report_values(self, docids, data=None):
         self.model = 'hr.payslip'
         docs = self.env[self.model].browse(docids)
 
-        docargs = {
+        return {
             'doc_ids': docids,
             'doc_model': self.model,
             'docs': docs,
             'lineas': self.lineas,
+            'horas_extras': self.horas_extras,
         }
-        return self.env['report'].render('rrhh.recibo', docargs)
-
-
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
