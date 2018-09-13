@@ -119,7 +119,7 @@
                         </div>
                         <div class="copia">
                             <h2>Recibo</h2>
-
+                            <strong>Compañia:</strong><span t-field="o.company_id.name"/>
                             <p t-field="o.name"/>
 
                             <p>
