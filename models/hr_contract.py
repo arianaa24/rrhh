@@ -15,7 +15,7 @@ class Contract(models.Model):
         ('despido', 'Despido'),
         ('despido_justificado', 'Despido Justificado'),
         ], 'Motivo de terminacion')
-    base_extra = fields.Float('Base Extra', digits=(16,2))
+    base_extra = fields.Float('Base Extra', digits=(16,2), track_visibility='onchange')
     salario_extra_ordinario_id = fields.Many2many('hr.salary.rule', 'salario_extra_regla_rel', 'contrato_id', 'regla_id', string='Salario extra ordinario')
     igss_id = fields.Many2many('hr.salary.rule', 'igss_regla_rel', 'contrato_id', 'regla_id', string='IGSS')
     otras_deducciones_legales_id = fields.Many2many('hr.salary.rule', 'otras_deducciones_legales_regla_rel', 'contrato_id', 'regla_id', string='Otras deducciones legales')
@@ -26,3 +26,4 @@ class Contract(models.Model):
     septimos_asuetos_id = fields.Many2many('hr.salary.rule', 'septimos_asuetos_regla_rel', 'contrato_id', 'regla_id', string='Septimos asuetos')
     vacaciones_id = fields.Many2many('hr.salary.rule', 'vacaciones_regla_rel', 'contrato_id', 'regla_id', string='Vacaciones')
     liquido_recibir_id = fields.Many2many('hr.salary.rule', 'liquido_recibir_regla_rel', 'contrato_id', 'regla_id', string='Liquido a recibir')
+    wage = fields.Monetary('Wage', digits=(16, 2), required=True, help="Employee's monthly gross wage.",track_visibility='onchange')

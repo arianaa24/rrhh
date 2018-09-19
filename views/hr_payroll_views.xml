@@ -9,6 +9,9 @@
                 <field name="payslip_run_id" position="after">
                     <field name="dia_del_mes"/>
                 </field>
+                <button name="action_payslip_cancel" position="after">
+                    <button string="Generar descuentos" name="generar_descuentos" type="object"/>
+                </button>
                 <!-- <field name="number_of_days" sum="Total Working Days" position="after">
                     <field name="dias_totales_mes"/>
                 </field> -->
