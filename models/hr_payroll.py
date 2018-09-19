@@ -7,9 +7,17 @@ import datetime
 class HrPayslip(models.Model):
     _inherit = 'hr.payslip'
 
-    dia_del_mes = fields.Integer('Dia del Mes')
-
-
+    @api.multi
+    def action_payslip_done(self):
+        res = super(HrPayslip, self).action_payslip_done()
+        for slip in self:
+            if slip.move_id:
+                slip.move_id.button_cancel()
+                for line in slip.move_id.line_ids:
+                    line.analytic_account_id = slip.contract_id.analytic_account_id.id
+                slip.move_id.post()
+        return res
+        
     @api.multi
     def compute_sheet(self):
         res =  super(HrPayslip, self).compute_sheet()
@@ -49,8 +57,3 @@ class HrPayslip(models.Model):
                             if mes_nomina == plan.mes and anio_nomina == plan.anio:
                                 r['amount'] = plan.monto
         return res
-
-class HrPayslipWorkedDays(models.Model):
-    _inherit = 'hr.payslip.worked_days'
-
-    dias_totales_mes = fields.Float('Dias totales')
