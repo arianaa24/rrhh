@@ -45,9 +45,9 @@ class hr_employee(models.Model):
     tarjeta_pulmones = fields.Boolean('Tarjeta de pulmones')
     tarjeta_fecha_vencimiento = fields.Date('Fecha de vencimiento tarjeta de salud')
     codigo_empleado = fields.Char('Código del empleado')
-    prestamo_ids = fields.One2many('hr.prestamo','employee_id','Prestamo')
+    prestamo_ids = fields.One2many('rrhh.prestamo','employee_id','Prestamo')
     cantidad_prestamos = fields.Integer(compute='_compute_cantidad_prestamos', string='Prestamos')
-    
+
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):
         res1 = super(hr_employee, self).name_search(name, args, operator=operator, limit=limit)
@@ -81,7 +81,7 @@ class hr_employee(models.Model):
                 employee.edad = resta_anio
 
     def _compute_cantidad_prestamos(self):
-        contract_data = self.env['hr.prestamo'].sudo().read_group([('employee_id', 'in', self.ids)], ['employee_id'], ['employee_id'])
+        contract_data = self.env['rrhh.prestamo'].sudo().read_group([('employee_id', 'in', self.ids)], ['employee_id'], ['employee_id'])
         result = dict((data['employee_id'][0], data['employee_id_count']) for data in contract_data)
         for employee in self:
             employee.cantidad_prestamos = result.get(employee.id, 0)

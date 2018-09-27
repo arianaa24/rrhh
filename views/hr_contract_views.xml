@@ -29,9 +29,13 @@
                             </group>
                         </page>
                     </notebook>
-                    <field name="wage" position="after">
-                        <field name="base_extra"/>
-                    </field>
+                    <group name="salary_and_advantages" position="inside">
+                        <label for="base_extra"/>
+                        <div class="o_row" name="base_extra">
+                            <field name="base_extra" nolabel="1"/>
+                            <span>/ mes</span>
+                        </div>
+                    </group>
                 </data>
 	        </field>
 	    </record>

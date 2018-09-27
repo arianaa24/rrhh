@@ -9,7 +9,7 @@ access_rrhh_recibo_linea_manager,rrhh.recibo.linea.manager,model_rrhh_recibo_lin
 access_rrhh_recibo_linea_usuario,rrhh.recibo.linea.usuario,model_rrhh_recibo_linea,base.group_user,1,0,0,0
 access_rrhh_entrada_linea_manager,rrhh.entrada.linea.manager,model_rrhh_entrada_linea,hr.group_hr_manager,1,1,1,1
 access_rrhh_entrada_linea_usuario,rrhh.entrada.linea.usuario,model_rrhh_entrada_linea,base.group_user,1,0,0,0
-access_hr_prestamo_usuario,hr.prestamo.usuario,model_hr_prestamo,base.group_user,1,0,0,0
-access_hr_prestamo_manager,hr.prestamo.manager,model_hr_prestamo,hr.group_hr_manager,1,1,1,1
-access_hr_prestamo_linea_usuario,hr.prestamo.linea.usuario,model_hr_prestamo_linea,base.group_user,1,0,0,0
-access_hr_prestamo_linea_manager,hr.prestamo.linea.manager,model_hr_prestamo_linea,hr.group_hr_manager,1,1,1,1
+access_rrhh_prestamo_usuario,rrhh.prestamo.usuario,model_rrhh_prestamo,base.group_user,1,0,0,0
+access_rrhh_prestamo_manager,rrhh.prestamo.manager,model_rrhh_prestamo,hr.group_hr_manager,1,1,1,1
+access_rrhh_prestamo_linea_usuario,rrhh.prestamo.linea.usuario,model_rrhh_prestamo_linea,base.group_user,1,0,0,0
+access_rrhh_prestamo_linea_manager,rrhh.prestamo.linea.manager,model_rrhh_prestamo_linea,hr.group_hr_manager,1,1,1,1

@@ -8,8 +8,8 @@ import logging
 from dateutil.relativedelta import *
 import calendar
 
-class hr_prestamo(models.Model):
-    _name = 'hr.prestamo'
+class rrhh_prestamo(models.Model):
+    _name = 'rrhh.prestamo'
     _rec_name = 'descripcion'
 
     employee_id = fields.Many2one('hr.employee','Empleado')
@@ -17,7 +17,7 @@ class hr_prestamo(models.Model):
     numero_descuentos = fields.Integer('Numero de descuentos')
     total = fields.Float('Total')
     mensualidad = fields.Float('Mensualidad')
-    plan_ids = fields.One2many('hr.prestamo.linea','plan_id',string='Plan')
+    plan_ids = fields.One2many('rrhh.prestamo.linea','plan_id',string='Plan')
     descripcion = fields.Char(string='Descripción',required=True)
     codigo = fields.Char(string='Código',required=True)
     estado = fields.Selection([
@@ -45,11 +45,11 @@ class hr_prestamo(models.Model):
                     mes = int(mes.strftime('%m'))
                     if contador < (self.numero_descuentos -1):
                         total_sumado += self.mensualidad
-                        self.env['hr.prestamo.linea'].create({'plan_id': self.id,'mes': mes,'anio': anio,'monto': self.mensualidad})
-                    else:                        
+                        self.env['rrhh.prestamo.linea'].create({'plan_id': self.id,'mes': mes,'anio': anio,'monto': self.mensualidad})
+                    else:
                         pago_restante = self.total - total_sumado
                         ultimos_pagos_mensuales = pago_restante / diferencias_meses
-                        self.env['hr.prestamo.linea'].create({'plan_id': self.id,'mes': mes,'anio': anio,'monto': pago_restante})
+                        self.env['rrhh.prestamo.linea'].create({'plan_id': self.id,'mes': mes,'anio': anio,'monto': pago_restante})
                     contador += 1
             else:
                 while contador < (self.numero_descuentos):
@@ -57,12 +57,12 @@ class hr_prestamo(models.Model):
                     anio = mes.strftime('%Y')
                     mes = int(mes.strftime('%m'))
                     if contador <= (int(numero_pagos_mensualidad) -1 ):
-                        self.env['hr.prestamo.linea'].create({'plan_id': self.id,'mes': mes,'anio': anio,'monto': self.mensualidad})
+                        self.env['rrhh.prestamo.linea'].create({'plan_id': self.id,'mes': mes,'anio': anio,'monto': self.mensualidad})
                     else:
                         pago_restante = self.total%self.mensualidad
                         ultimos_pagos_mensuales = pago_restante / diferencias_meses
                         logging.warn(ultimos_pagos_mensuales)
-                        self.env['hr.prestamo.linea'].create({'plan_id': self.id,'mes': mes,'anio': anio,'monto': ultimos_pagos_mensuales})
+                        self.env['rrhh.prestamo.linea'].create({'plan_id': self.id,'mes': mes,'anio': anio,'monto': ultimos_pagos_mensuales})
                     contador += 1
         return True
 
@@ -87,9 +87,9 @@ class hr_prestamo(models.Model):
             if not prestamo.estado == 'nuevo':
                 raise UserError(_('No puede eliminar prestamo, por que ya existen nominas asociadas'))
         return super(hr_prestamo, self).unlink()
-        
-class hr_prestamo_linea(models.Model):
-    _name = 'hr.prestamo.linea'
+
+class rrhh_prestamo_linea(models.Model):
+    _name = 'rrhh.prestamo.linea'
 
     mes = fields.Selection([
         (1, 'Enero'),
@@ -108,4 +108,4 @@ class hr_prestamo_linea(models.Model):
     monto = fields.Float('Monto')
     anio = fields.Integer('Año')
     nomina_id = fields.Many2one('hr.payslip','Nomina')
-    plan_id = fields.Many2one('hr.prestamo','Plan')
+    plan_id = fields.Many2one('rrhh.prestamo','Plan')
