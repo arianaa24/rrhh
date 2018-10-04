@@ -25,6 +25,8 @@ Módulo para generación de planilla
         'wizard/finiquito.xml',
         'views/recibo.xml',
         'views/report_libro_salarios2.xml',
+        'views/rrhh_views.xml',
+        'security/ir.model.access.csv',
     ],
     'demo': [],
     'installable': True
