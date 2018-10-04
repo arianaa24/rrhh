@@ -1,6 +1,8 @@
 from openerp.osv import fields, osv
 from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
+from openerp import api
+from openerp import SUPERUSER_ID
 from datetime import datetime, timedelta
 import datetime
 from dateutil import relativedelta
@@ -47,6 +49,13 @@ class hr_employee(osv.osv):
                     res[employee.id] = 0
         return res
 
+    def _compute_cantidad_prestamos(self, cr, uid, ids, field_name, arg, context=None):
+        Prestamo = self.pool['rrhh.prestamo']
+        return {
+            employee_id: Prestamo.search_count(cr, SUPERUSER_ID, [('employee_id', '=', employee_id)], context=context)
+            for employee_id in ids
+        }
+
     _columns = {
         'promedio_salario': fields.function(_promedio_salario, string='Promedio Salario', digits_compute=dp.get_precision('Account')),
         'numero_liquidacion': fields.char('Numero o identificacion de liquidacion'),
@@ -54,4 +63,5 @@ class hr_employee(osv.osv):
         'codigo_ocupacion': fields.char('Codigo ocupacion'),
         'condicion_laboral': fields.selection([('P', 'Permanente'),
                                            ('T', 'Temporal')], 'Condicion laboral'),
+       'cantidad_prestamos': fields.function(_compute_cantidad_prestamos, type='integer', string='Prestamos'),
     }
