@@ -34,41 +34,42 @@ class rrhh_prestamo(osv.osv):
     def generar_mensualidades(self):
         mes_inicial = datetime.datetime.strptime(self.fecha_inicio, '%Y-%m-%d').date()
         mes  = 0
-        total = self.mensualidad * self.numero_descuentos
-        if self.mensualidad <= self.total:
-            numero_pagos_mensualidad = self.total / self.mensualidad
-            mes_final_pagos_mensuales = mes_inicial + relativedelta(months=int(numero_pagos_mensualidad) -1)
-            anio_final = mes_final_pagos_mensuales.strftime('%Y')
-            diferencias_meses = self.numero_descuentos - int(numero_pagos_mensualidad)
-            contador = 0
-            if diferencias_meses < 0:
-                total_sumado = 0
-                diferencia = (diferencias_meses*-1) + self.numero_descuentos
-                while contador <= (self.numero_descuentos -1):
-                    mes = mes_inicial + relativedelta(months=contador)
-                    anio = mes.strftime('%Y')
-                    mes = int(mes.strftime('%m'))
-                    if contador < (self.numero_descuentos -1):
-                        total_sumado += self.mensualidad
-                        self.env['rrhh.prestamo.linea'].create({'prestamo_id': self.id,'mes': mes,'anio': anio,'monto': self.mensualidad})
-                    else:
-                        pago_restante = self.total - total_sumado
-                        ultimos_pagos_mensuales = pago_restante / diferencias_meses
-                        self.env['rrhh.prestamo.linea'].create({'prestamo_id': self.id,'mes': mes,'anio': anio,'monto': pago_restante})
-                    contador += 1
-            else:
-                while contador < (self.numero_descuentos):
-                    mes = mes_inicial + relativedelta(months=contador)
-                    anio = mes.strftime('%Y')
-                    mes = int(mes.strftime('%m'))
-                    if contador <= (int(numero_pagos_mensualidad) -1 ):
-                        self.env['rrhh.prestamo.linea'].create({'prestamo_id': self.id,'mes': mes,'anio': anio,'monto': self.mensualidad})
-                    else:
-                        pago_restante = self.total%self.mensualidad
-                        ultimos_pagos_mensuales = pago_restante / diferencias_meses
-                        logging.warn(ultimos_pagos_mensuales)
-                        self.env['rrhh.prestamo.linea'].create({'prestamo_id': self.id,'mes': mes,'anio': anio,'monto': ultimos_pagos_mensuales})
-                    contador += 1
+        if self.mensualidad > 0 and self.numero_descuentos > 0:
+            total = self.mensualidad * self.numero_descuentos
+            if self.mensualidad <= self.total:
+                numero_pagos_mensualidad = self.total / self.mensualidad
+                mes_final_pagos_mensuales = mes_inicial + relativedelta(months=int(numero_pagos_mensualidad) -1)
+                anio_final = mes_final_pagos_mensuales.strftime('%Y')
+                diferencias_meses = self.numero_descuentos - int(numero_pagos_mensualidad)
+                contador = 0
+                if diferencias_meses < 0:
+                    total_sumado = 0
+                    diferencia = (diferencias_meses*-1) + self.numero_descuentos
+                    while contador <= (self.numero_descuentos -1):
+                        mes = mes_inicial + relativedelta(months=contador)
+                        anio = mes.strftime('%Y')
+                        mes = int(mes.strftime('%m'))
+                        if contador < (self.numero_descuentos -1):
+                            total_sumado += self.mensualidad
+                            self.env['rrhh.prestamo.linea'].create({'prestamo_id': self.id,'mes': mes,'anio': anio,'monto': self.mensualidad})
+                        else:
+                            pago_restante = self.total - total_sumado
+                            ultimos_pagos_mensuales = pago_restante / diferencias_meses
+                            self.env['rrhh.prestamo.linea'].create({'prestamo_id': self.id,'mes': mes,'anio': anio,'monto': pago_restante})
+                        contador += 1
+                else:
+                    while contador < (self.numero_descuentos):
+                        mes = mes_inicial + relativedelta(months=contador)
+                        anio = mes.strftime('%Y')
+                        mes = int(mes.strftime('%m'))
+                        if contador <= (int(numero_pagos_mensualidad) -1 ):
+                            self.env['rrhh.prestamo.linea'].create({'prestamo_id': self.id,'mes': mes,'anio': anio,'monto': self.mensualidad})
+                        else:
+                            pago_restante = self.total%self.mensualidad
+                            ultimos_pagos_mensuales = pago_restante / diferencias_meses
+                            logging.warn(ultimos_pagos_mensuales)
+                            self.env['rrhh.prestamo.linea'].create({'prestamo_id': self.id,'mes': mes,'anio': anio,'monto': ultimos_pagos_mensuales})
+                        contador += 1
         return True
 
     @api.one
