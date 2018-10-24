@@ -17,6 +17,17 @@ import logging
 class hr_payslip(osv.osv):
     _inherit = 'hr.payslip'
 
+    def process_sheet(self, cr, uid, ids, context=None):
+        res = super(hr_payslip, self).process_sheet( cr, uid, ids, context=None)
+        move_pool = self.pool.get('account.move')
+        for slip in self.browse(cr, uid, ids, context=context):
+            if slip.move_id:
+                move_pool.button_cancel(cr, uid, [slip.move_id.id], context=context)
+                for line in slip.move_id.line_id:
+                    line.analytic_account_id = slip.contract_id.analytic_account_id.id
+                move_pool.post(cr, uid, [slip.move_id.id], context=context)
+        return res
+
     def compute_sheet(self, cr, uid, ids, context=None):
         res = super(hr_payslip, self).compute_sheet( cr, uid, ids, context=None)
         for nomina in self.browse(cr, uid, ids, context=context):
