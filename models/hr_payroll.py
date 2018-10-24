@@ -38,7 +38,6 @@ class HrPayslip(models.Model):
                             for pago in prestamo.plan_ids:
                                 if pago.nomina_id:
                                     cantidad_pagados +=1
-                            logging.warn(cantidad_pagados)
                             if cantidad_pagados > 0 and cantidad_pagados < cantidad_pagos:
                                 prestamo.estado = "proceso"
                             if cantidad_pagados == cantidad_pagos and cantidad_pagos > 0:
@@ -56,7 +55,7 @@ class HrPayslip(models.Model):
                 for prestamo in contract.employee_id.prestamo_ids:
                     for r in res:
                         anio_prestamo = int(datetime.datetime.strptime(prestamo.fecha_inicio, '%Y-%m-%d').date().strftime('%Y'))
-                        if (prestamo.codigo == r['code']) and (prestamo.estado == 'nuevo') :
+                        if (prestamo.codigo == r['code']) and ((prestamo.estado == 'nuevo') or (prestamo.estado == 'proceso')):
                             for plan in prestamo.plan_ids:
                                 if mes_nomina == plan.mes and anio_nomina == plan.anio:
                                     r['amount'] = plan.monto
