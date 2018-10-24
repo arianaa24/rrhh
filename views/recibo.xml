@@ -12,14 +12,12 @@
                         <div class="page">
                             <div class="copia">
                                 <h2>Recibo</h2>
-
+                                <strong>Compañia:</strong><span t-field="o.company_id.name"/>
                                 <p t-field="o.name"/>
-
                                 <p>
                                     Boleta de pago correspondiente al periodo del:
                                     <span t-field="o.date_from"/> al <span t-field="o.date_to"/>
                                 </p>
-
                                 <table class="table table-condensed">
                                     <tbody>
                                         <tr>
