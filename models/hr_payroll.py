@@ -32,7 +32,7 @@ class HrPayslip(models.Model):
                         if (prestamo.codigo == entrada.code) and ((prestamo.estado == 'nuevo') or (prestamo.estado == 'proceso')):
                             for plan in prestamo.plan_ids:
                                 if mes_nomina == plan.mes and anio_nomina == plan.anio:
-                                    plan.nomina_id = self.id
+                                    plan.nomina_id = nomina.id
                             cantidad_pagos = prestamo.numero_descuentos
                             cantidad_pagados = 0
                             for pago in prestamo.plan_ids:
