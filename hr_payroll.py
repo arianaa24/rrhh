@@ -43,14 +43,14 @@ class hr_payslip(osv.osv):
                             prestamo_browse = prestamo_browse[0]
                             anio_prestamo = int(datetime.datetime.strptime(prestamo_browse[0].fecha_inicio, '%Y-%m-%d').date().strftime('%Y'))
                             if (prestamo_browse.codigo == entrada.code) and ((prestamo_browse.estado == 'nuevo') or (prestamo_browse.estado == 'proceso')):
-                                for prestamo_linea in prestamo_browse.prestamo_ids:
-                                    if (prestamo_linea.mes == mes_nomina) and (prestamo_linea.anio == anio_nomina):
-                                        entrada.amount = prestamo_linea.monto
-                                        prestamo_linea.nomina_id = nomina.id
+                                for lineas in prestamo_browse.prestamo_ids:
+                                    if (lineas.mes == mes_nomina) and (lineas.anio == anio_nomina):
+                                        entrada.amount = lineas.monto
+                                        lineas.nomina_id = nomina.id
                                 cantidad_pagos = prestamo_browse.numero_descuentos
                                 cantidad_pagados = 0
-                                for pago in prestamo_browse.prestamo_ids:
-                                    if pago.nomina_id:
+                                for lineas in prestamo_browse.prestamo_ids:
+                                    if lineas.nomina_id:
                                         cantidad_pagados += 1
                                 if cantidad_pagados > 0 and cantidad_pagados < cantidad_pagos:
                                     prestamo_browse.estado = "proceso"
