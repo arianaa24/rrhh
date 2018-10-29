@@ -20,7 +20,7 @@ class rrhh_prestamo(osv.osv):
         'numero_descuentos': fields.integer('Numero de descuentos'),
         'total': fields.float('Total'),
         'mensualidad': fields.float('Mensualidad'),
-        'prestamo_ids': fields.one2many('rrhh.prestamo.linea','prestamo_id',string='Plan'),
+        'prestamo_ids': fields.one2many('rrhh.prestamo.linea','prestamo_id',string='Lineas de prestamo'),
         'descripcion': fields.char(string='Descripción',required=True),
         'codigo': fields.char(string='Código',required=True),
         'estado': fields.selection([
@@ -115,5 +115,5 @@ class rrhh_prestamo_linea(osv.osv):
         'monto': fields.float('Monto'),
         'anio': fields.integer('Año'),
         'nomina_id': fields.many2one('hr.payslip','Nomina'),
-        'prestamo_id': fields.many2one('rrhh.prestamo','Plan'),
+        'prestamo_id': fields.many2one('rrhh.prestamo','Prestamo'),
     }
