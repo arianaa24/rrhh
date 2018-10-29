@@ -30,13 +30,13 @@ class HrPayslip(models.Model):
                     for prestamo in nomina.employee_id.prestamo_ids:
                         anio_prestamo = int(datetime.datetime.strptime(prestamo.fecha_inicio, '%Y-%m-%d').date().strftime('%Y'))
                         if (prestamo.codigo == entrada.code) and ((prestamo.estado == 'nuevo') or (prestamo.estado == 'proceso')):
-                            for plan in prestamo.plan_ids:
-                                if mes_nomina == plan.mes and anio_nomina == plan.anio:
-                                    plan.nomina_id = nomina.id
+                            for lineas in prestamo.prestamo_ids:
+                                if mes_nomina == lineas.mes and anio_nomina == lineas.anio:
+                                    lineas.nomina_id = nomina.id
                             cantidad_pagos = prestamo.numero_descuentos
                             cantidad_pagados = 0
-                            for pago in prestamo.plan_ids:
-                                if pago.nomina_id:
+                            for lineas in prestamo.prestamo_ids:
+                                if lineas.nomina_id:
                                     cantidad_pagados +=1
                             if cantidad_pagados > 0 and cantidad_pagados < cantidad_pagos:
                                 prestamo.estado = "proceso"
@@ -56,7 +56,7 @@ class HrPayslip(models.Model):
                     for r in res:
                         anio_prestamo = int(datetime.datetime.strptime(prestamo.fecha_inicio, '%Y-%m-%d').date().strftime('%Y'))
                         if (prestamo.codigo == r['code']) and ((prestamo.estado == 'nuevo') or (prestamo.estado == 'proceso')):
-                            for plan in prestamo.plan_ids:
-                                if mes_nomina == plan.mes and anio_nomina == plan.anio:
-                                    r['amount'] = plan.monto
+                            for lineas in prestamo.prestamo_ids:
+                                if mes_nomina == lineas.mes and anio_nomina == lineas.anio:
+                                    r['amount'] = lineas.monto
         return res
