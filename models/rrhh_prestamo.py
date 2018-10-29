@@ -17,7 +17,7 @@ class rrhh_prestamo(models.Model):
     numero_descuentos = fields.Integer('Numero de descuentos')
     total = fields.Float('Total')
     mensualidad = fields.Float('Mensualidad')
-    prestamo_ids = fields.One2many('rrhh.prestamo.linea','prestamo_id',string='Plan')
+    prestamo_ids = fields.One2many('rrhh.prestamo.linea','prestamo_id',string='Lineas de prestamo')
     descripcion = fields.Char(string='Descripción',required=True)
     codigo = fields.Char(string='Código',required=True)
     estado = fields.Selection([
@@ -109,4 +109,4 @@ class rrhh_prestamo_linea(models.Model):
     monto = fields.Float('Monto')
     anio = fields.Integer('Año')
     nomina_id = fields.Many2one('hr.payslip','Nomina')
-    prestamo_id = fields.Many2one('rrhh.prestamo','Plan')
+    prestamo_id = fields.Many2one('rrhh.prestamo','Prestamo')
