@@ -20,6 +20,7 @@ class rrhh_prestamo(models.Model):
     prestamo_ids = fields.One2many('rrhh.prestamo.linea','prestamo_id',string='Lineas de prestamo')
     descripcion = fields.Char(string='Descripción',required=True)
     codigo = fields.Char(string='Código',required=True)
+    descuento_quincena = fields.Boolean('Descontar en quincena')
     estado = fields.Selection([
         ('nuevo', 'Nuevo'),
         ('proceso','Proceso'),

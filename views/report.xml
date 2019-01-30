@@ -10,5 +10,15 @@
             file="rrhh.recibo"
             name="rrhh.recibo"
         />
+
+        <report
+            id="action_libro_salarios"
+            string="Libro de salarios"
+            model="hr.employee"
+            report_type="qweb-pdf"
+            file="rrhh.libro_salarios"
+            name="rrhh.libro_salarios"
+            menu="False"
+        />
     </data>
 </openerp>
