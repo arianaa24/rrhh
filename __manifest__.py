@@ -26,6 +26,8 @@
         'views/report.xml',
         'views/recibo.xml',
         'wizard/planilla.xml',
+        'views/libro_salarios.xml',
+        'wizard/rrhh_libro_salarios_view.xml',
         'security/ir.model.access.csv',
     ],
 }

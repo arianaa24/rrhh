@@ -78,6 +78,13 @@
                     <field name="birthday" position="after">
                         <field name="edad"/>
                     </field>
+                    <field name="identification_id" position="after">
+                        <label for="departmento_id" string="Extendido en"/>
+                        <div class="o_address_format">
+                            <field name="departmento_id" placeholder="Departmento..." class="o_address_street"/>
+                            <field name="pais_id" placeholder="Pais..." class="o_address_street"/>
+                        </div>
+                    </field>
                 </data>
 	        </field>
 	    </record>
@@ -96,6 +103,7 @@
                             <field name="fecha_inicio"/>
                             <field name="numero_descuentos"/>
                             <field name="employee_id"/>
+                            <field name="descuento_quincena"/>
                         </group>
                         <group>
                             <field name="total"/>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="libro_salarios">
+        <t t-call="web.html_container">
+            <t t-set="data_report_margin_top" t-value="12"/>
+            <t t-set="data_report_header_spacing" t-value="9"/>
+            <t t-set="data_report_dpi" t-value="110"/>
+            <t t-foreach="docs" t-as="o">
+                <div class="article">
+                    <div class="header">
+                        <t t-set="empleado" t-value="_get_empleado(o)"/>
+                        <table>
+                            <tr>
+                                <td style="width:100px">Codigo y Nombre del Trabajador</td>
+                                <td style="width:100px"><span t-field="empleado.name"/></td>
+                                <td style="width:100px">Puesto:</td>
+                                <td style="width:100px"><span t-field="empleado.job_id.name"/></td>
+                                <t t-set="fecha" t-value="_get_contrato(o)"/>
+                                <td style="width:100px">Fecha de ingreso</td>
+                                <td style="width:100px"><span t-esc="fecha['fecha_ingreso']" t-options="{'widget': 'date'}"/></td>
+                            </tr>
+                            <tr>
+                                <td>Numero de Afiliacion IGSS</td>
+                                <td><span t-field="empleado.igss"/></td>
+                                <td>Sexo</td>
+                                <td><span t-field="empleado.gender"/></td>
+                                <td>Edad</td>
+                                <td><span t-field="empleado.edad"/> años</td>
+                                <td>Fecha finalizacion laboral</td>
+                                <td><span t-esc="fecha['fecha_finalizacion']" t-options="{'widget': 'date'}"/></td>
+                            </tr>
+                            <tr>
+                                <td>Documento Unico de Identificacion:</td>
+                                <td><span t-field="empleado.identification_id"/></td>
+                                <td>Nacionalidad:</td>
+                                <td><span t-field="empleado.country_id.name"/></td>
+                                <td colspan="4"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="page">
+                        <br/>
+                        <br/>
+                        <br/>
+                        <t t-set="nominas" t-value="_get_nominas(o,anio)"/>
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>Periodo Del</th>
+                                    <th>de Trabajo Al</th>
+                                    <th>Salario en Quetzales</th>
+                                    <th>Dias Trabajados</th>
+                                    <th>Ordinarias</th>
+                                    <th>Extras Ordinarias</th>
+                                    <th>Ordinario</th>
+                                    <th>Extra Ordinario</th>
+                                    <th>Total Salario Devengado</th>
+                                    <th>IGSS</th>
+                                    <th>SR Asalariados</th>
+                                    <th>Anticipos</th>
+                                    <th>Total Descuentos</th>
+                                    <th>Bonificacion Incentivo Decreto 37-2001</th>
+                                    <th>Bono 14, Aguinaldo, Indemnizacion</th>
+                                    <th>Liquido a Recibir</th>
+                                    <th>Firma del Colaborado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="nominas" t-as="nomina">
+                                    <td><span t-esc="nomina['fecha_inicio']" t-options="{'widget': 'date'}"/></td>
+                                    <td><span t-esc="nomina['fecha_fin']" t-options="{'widget': 'date'}"/></td>
+                                    <td><span t-esc="nomina['salario']"/></td>
+                                    <td><span t-esc="nomina['dias_trabajados']"/></td>
+                                    <td><span t-esc="nomina['ordinarias']"/></td>
+                                    <td><span t-esc="nomina['extra_ordinarias']"/></td>
+                                    <td><span t-esc="nomina['ordinario']"/></td>
+                                    <td><span t-esc="nomina['extra_ordinario']"/></td>
+                                    <td><span t-esc="nomina['total_salario_devengado']"/></td>
+                                    <td><span t-esc="nomina['igss']"/></td>
+                                    <td><span t-esc="nomina['isr']"/></td>
+                                    <td><span t-esc="nomina['anticipos']"/></td>
+                                    <td><span t-esc="nomina['total_descuentos']"/></td>
+                                    <td><span t-esc="nomina['bonificacion_id']"/></td>
+                                    <td><span t-esc="nomina['bono_agui_indem']"/></td>
+                                    <td><span t-esc="nomina['liquido_recibir']"/></td>
+                                    <td style="border-bottom: 1px solid black;"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>
