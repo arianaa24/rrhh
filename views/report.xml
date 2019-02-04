@@ -20,5 +20,15 @@
             name="rrhh.libro_salarios"
             menu="False"
         />
+
+        <report
+            id="action_informe_empleador"
+            string="Informe del empleador"
+            model="hr.employee"
+            report_type="qweb-pdf"
+            file="rrhh.informe_empleador"
+            name="rrhh.informe_empleador"
+            menu="False"
+        />
     </data>
 </openerp>

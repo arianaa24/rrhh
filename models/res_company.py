@@ -45,3 +45,16 @@ class res_company(models.Model):
     aguinaldo_id = fields.Many2one('hr.salary.rule','Aguinaldo')
     indemnizacion_id = fields.Many2one('hr.salary.rule','Indemnizacion')
     salario_id = fields.Many2one('hr.salary.rule','Salario')
+    origen_compania = fields.Selection([('nacional', 'Nacional'),
+                                    ('extranjero', 'Extranjero')], 'Nacional o Extranjero')
+    barrio_colonia = fields.Char('Barrio o Colonia')
+    nomenclatura = fields.Char('Nomenclatura')
+    sindicato = fields.Selection([('si', 'Si'),
+                                    ('no', 'No')], 'Existe sindicato')
+    contratar_personal = fields.Selection([('si', 'Si'),
+                                    ('no', 'No')], 'Contratar nuevo personal')
+    contabilidad_completa = fields.Selection([('si', 'Si'),
+                                    ('no', 'No')], 'Contabilidad completa')
+    rango_ingresos = fields.Selection([('si', 'Si'),
+                                    ('no', 'No')], 'Rango ingresos anual')
+    jefe_recursos_humanos_id = fields.Many2one('hr.employee','Jefe de recursos humanos')
