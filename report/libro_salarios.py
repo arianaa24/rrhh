@@ -70,6 +70,7 @@ class ReportLibroSalarios(models.AbstractModel):
                 nominas_lista.append({
                     'fecha_inicio': nomina.date_from,
                     'fecha_fin': nomina.date_to,
+                    'moneda_id': nomina.journal_id.currency_id,
                     'salario': salario,
                     'dias_trabajados': dias_trabajados,
                     'ordinarias': ordinarias,

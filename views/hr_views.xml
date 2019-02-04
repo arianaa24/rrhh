@@ -65,6 +65,10 @@
                                     <field name="permiso_trabajo"/>
                                     <field name="contacto_emergencia"/>
                                     <field name="vecindad_dpi"/>
+                                    <field name="documento_identificacion"/>
+                                    <field name="forma_trabajo_extranjero"/>
+                                    <field name="pais_trabajo_extranjero_id"/>
+                                    <field name="finalizacion_laboral_extranjero"/>
                                 </group>
                                 <group string="Tarjetas Alimentarias">
                                     <field name="tarjeta_salud"/>

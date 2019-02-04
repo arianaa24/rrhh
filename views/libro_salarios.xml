@@ -69,20 +69,20 @@
                                 <tr t-foreach="nominas" t-as="nomina">
                                     <td><span t-esc="nomina['fecha_inicio']" t-options="{'widget': 'date'}"/></td>
                                     <td><span t-esc="nomina['fecha_fin']" t-options="{'widget': 'date'}"/></td>
-                                    <td><span t-esc="nomina['salario']"/></td>
+                                    <td><span t-esc="nomina['salario']"  t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
                                     <td><span t-esc="nomina['dias_trabajados']"/></td>
-                                    <td><span t-esc="nomina['ordinarias']"/></td>
-                                    <td><span t-esc="nomina['extra_ordinarias']"/></td>
-                                    <td><span t-esc="nomina['ordinario']"/></td>
-                                    <td><span t-esc="nomina['extra_ordinario']"/></td>
-                                    <td><span t-esc="nomina['total_salario_devengado']"/></td>
-                                    <td><span t-esc="nomina['igss']"/></td>
-                                    <td><span t-esc="nomina['isr']"/></td>
-                                    <td><span t-esc="nomina['anticipos']"/></td>
-                                    <td><span t-esc="nomina['total_descuentos']"/></td>
-                                    <td><span t-esc="nomina['bonificacion_id']"/></td>
-                                    <td><span t-esc="nomina['bono_agui_indem']"/></td>
-                                    <td><span t-esc="nomina['liquido_recibir']"/></td>
+                                    <td><span t-esc="nomina['ordinarias']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
+                                    <td><span t-esc="nomina['extra_ordinarias']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
+                                    <td><span t-esc="nomina['ordinario']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
+                                    <td><span t-esc="nomina['extra_ordinario']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
+                                    <td><span t-esc="nomina['total_salario_devengado']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
+                                    <td><span t-esc="nomina['igss']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
+                                    <td><span t-esc="nomina['isr']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
+                                    <td><span t-esc="nomina['anticipos']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
+                                    <td><span t-esc="nomina['total_descuentos']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
+                                    <td><span t-esc="nomina['bonificacion_id']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
+                                    <td><span t-esc="nomina['bono_agui_indem']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
+                                    <td><span t-esc="nomina['liquido_recibir']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
                                     <td style="border-bottom: 1px solid black;"></td>
                                 </tr>
                             </tbody>
