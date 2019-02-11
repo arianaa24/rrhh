@@ -236,41 +236,6 @@ class rrhh_informe_empleador(models.TransientModel):
             hoja_empleado.write(0, 41, 'Retribución por vacaciones',estilo_amarillo)
             hoja_empleado.write(0, 42, 'Retribución por Indemnización (Articulo 82)',estilo_amarillo)
             hoja_empleado.write(0, 43, 'Nombre, Denominación  o Razón Social del Patrono',estilo_amarillo)
-            hoja_empleado.write(0, 44, 'Nombre, Denominación  o Razón Social del Patrono',estilo_amarillo)
-
-            datos.write(0, 0, 'No.')
-            datos.write(0, 1, 'Primer Nombre')
-            datos.write(0, 2, 'Nacionalidad')
-            datos.write(0, 3, 'Estado Civil')
-            datos.write(0, 4, 'Documento Identificación')
-            datos.write(0, 5, 'Direccion de Domicilio')
-            datos.write(0, 6, 'Pais Origen')
-            datos.write(0, 7, 'Lugar Nacimiento')
-            datos.write(0, 8, 'Irtra')
-            datos.write(0, 9, 'NIT')
-            datos.write(0, 10, 'Afiliación IGSS')
-            datos.write(0, 11, 'Cuenta de Banco (BAC)')
-            datos.write(0, 12, 'Sexo')
-            datos.write(0, 13, 'Fecha Nacimiento')
-            datos.write(0, 14, 'Cantidad de Hijos')
-            datos.write(0, 15, 'A trabajado en el extranjero ')
-            datos.write(0, 16, 'Nivel Academico')
-            datos.write(0, 17, 'Profesión')
-            datos.write(0, 18, 'Etnia')
-            datos.write(0, 19, 'Idioma')
-            datos.write(0, 20, 'Tipo Contrato')
-            datos.write(0, 21, 'Referencia de contrato')
-            datos.write(0, 22, 'Fecha Inicio Labores')
-            datos.write(0, 23, 'Puesto')
-            datos.write(0, 24, 'Departameto')
-            datos.write(0, 25, 'Ubicación')
-            datos.write(0, 26, 'Cuenta Analitica')
-            datos.write(0, 27, 'Salario Base Mensual')
-            datos.write(0, 28, 'Bonificación Decreto 78-89 (Q.250.00)')
-            datos.write(0, 29, 'TOTAL')
-            datos.write(0, 30, 'Bonificaciones Adicionales')
-            datos.write(0, 31, 'Retribución por vacaciones')
-
 
             fila = 1
             empleado_numero = 1
@@ -284,98 +249,107 @@ class rrhh_informe_empleador(models.TransientModel):
                     dias_trabajados = 0
                     salario_anual_nominal = 0
                     bonificacion = 0
+                    estado_civil = 0
+                    horas_extras = 0
                     aguinaldo = 0
                     bono = 0
+                    bonificaciones_adicionales = 0
+                    valor_horas_extras = 0
+                    retribucion_comisiones = 0
+                    viaticos = 0
+                    retribucion_vacaciones = 0
+                    indemnizacion = 0
                     for nomina in nomina_id:
                         nomina_anio = datetime.strptime(nomina.date_from, "%Y-%m-%d").year
                         if w['anio'] == nomina_anio:
                             for linea in nomina.worked_days_line_ids:
                                 dias_trabajados += linea.number_of_days
                             for linea in nomina.line_ids:
-                                if nomina.company_id.salario_id == linea.salary_rule_id:
+                                if linea.salary_rule_id in nomina.company_id.salario_ids:
                                     salario_anual_nominal += linea.total
-                                if nomina.company_id.bonificacion_id == linea.salary_rule_id:
+                                if linea.salary_rule_id in nomina.company_id.bonificacion_ids:
                                     bonificacion = linea.total
-                                if nomina.company_id.aguinaldo_id == linea.salary_rule_id:
+                                if linea.salary_rule_id in nomina.company_id.aguinaldo_ids:
                                     aguinaldo = linea.total
-                                if nomina.company_id.bono_id == linea.salary_rule_id:
+                                if linea.salary_rule_id in nomina.company_id.bono_ids:
                                     bono = linea.total
+                                if linea.salary_rule_id in nomina.company_id.horas_extras_ids:
+                                    horas_extras = linea.quantity
+                                    valor_horas_extras = linea.total
+                                if linea.salary_rule_id in nomina.company_id.retribucion_comisiones_ids:
+                                    retribucion_comisiones = linea.total
+                                if linea.salary_rule_id in nomina.company_id.viaticos_ids:
+                                    viaticos = linea.total
+                                if linea.salary_rule_id in nomina.company_id.retribucion_vacaciones_ids:
+                                    retribucion_vacaciones = linea.total
+                                if linea.salary_rule_id in nomina.company_id.indemnizacion_ids:
+                                    indemnizacion = linea.total
+                                if linea.salary_rule_id in nomina.company_id.bonificaciones_adicionales_ids:
+                                    bonificaciones_adicionales = linea.total
+                    if empleado.gender == 'male':
+                        genero = 'H'
+                    if empleado.gender == 'female':
+                        genero = 'M'
+                    if empleado.marital == 'single':
+                        estado_civil = 1
+                    if empleado.marital == 'married':
+                        estado_civil = 2
+                    if empleado.marital == 'widower':
+                        estado_civil = 3
+                    if empleado.marital == 'divorced':
+                        estado_civil = 4
+                    if empleado.marital == 'separado':
+                        estado_civil = 5
+                    if empleado.marital == 'unido':
+                        estado_civil = 6
                     hoja_empleado.write(fila, 0, empleado_numero,estilo_borde)
                     hoja_empleado.write(fila, 1, nombre_empleado[0],estilo_borde)
                     hoja_empleado.write(fila, 2, nombre_empleado[1],estilo_borde)
                     hoja_empleado.write(fila, 3, nombre_empleado[2],estilo_borde)
                     hoja_empleado.write(fila, 4, nombre_empleado[3],estilo_borde)
-                    hoja_empleado.write(fila, 5, empleado.country_id.name,estilo_borde)
-                    hoja_empleado.write(fila, 6, empleado.marital,estilo_borde)
+                    hoja_empleado.write(fila, 5, empleado.country_id.informe_empleador_id,estilo_borde)
+                    hoja_empleado.write(fila, 6, estado_civil,estilo_borde)
                     hoja_empleado.write(fila, 7, empleado.documento_identificacion,estilo_borde)
                     hoja_empleado.write(fila, 8, empleado.identification_id,estilo_borde)
                     hoja_empleado.write(fila, 9, empleado.pais_origen.name,estilo_borde)
                     hoja_empleado.write(fila, 10, empleado.place_of_birth,estilo_borde)
                     hoja_empleado.write(fila, 11, empleado.nit,estilo_borde)
                     hoja_empleado.write(fila, 12, empleado.igss,estilo_borde)
-                    hoja_empleado.write(fila, 13, empleado.gender,estilo_borde)
+                    hoja_empleado.write(fila, 13, genero,estilo_borde)
                     hoja_empleado.write(fila, 14, empleado.birthday,estilo_borde)
                     hoja_empleado.write(fila, 15, empleado.children,estilo_borde)
                     hoja_empleado.write(fila, 16, empleado.trabajado_extranjero,estilo_borde)
                     hoja_empleado.write(fila, 17, empleado.forma_trabajo_extranjero,estilo_borde)
                     hoja_empleado.write(fila, 18, empleado.pais_trabajo_extranjero_id.name,estilo_borde)
                     hoja_empleado.write(fila, 19, empleado.finalizacion_laboral_extranjero,estilo_borde)
-                    hoja_empleado.write(fila, 20, empleado.profesion,estilo_borde)
-                    hoja_empleado.write(fila, 21, empleado.etnia,estilo_borde)
-                    hoja_empleado.write(fila, 22, empleado.idioma,estilo_borde)
-                    hoja_empleado.write(fila, 23, contrato.type_id.name,estilo_borde)
-                    hoja_empleado.write(fila, 24, contrato.date_start,estilo_borde)
-                    hoja_empleado.write(fila, 25, 'fecha reinicio labores',estilo_borde)
-                    hoja_empleado.write(fila, 26, contrato.date_end,estilo_borde)
-                    hoja_empleado.write(fila, 27, contrato.job_id.name,estilo_borde)
-                    hoja_empleado.write(fila, 28, contrato.resource_calendar_id.name,estilo_borde)
-                    hoja_empleado.write(fila, 29, dias_trabajados,estilo_borde)
-                    hoja_empleado.write(fila, 30, contrato.fecha_reinicio_labores,estilo_borde)
-                    hoja_empleado.write(fila, 31, salario_anual_nominal,estilo_borde)
-                    hoja_empleado.write(fila, 32, bonificacion,estilo_borde)
-                    hoja_empleado.write(fila, 33, 'Horas extras anuales',estilo_borde)
-                    hoja_empleado.write(fila, 34, 'Valor de horas extras',estilo_borde)
-                    hoja_empleado.write(fila, 35, aguinaldo,estilo_borde)
-                    hoja_empleado.write(fila, 36, bono,estilo_borde)
-                    hoja_empleado.write(fila, 37, 'Redistribucion por comisiones',estilo_borde)
-                    hoja_empleado.write(fila, 38, 'Viaticos',estilo_borde)
-                    hoja_empleado.write(fila, 39, 'Bonificaciones adicionales',estilo_borde)
-                    hoja_empleado.write(fila, 40, 'Retribución por vacaciones',estilo_borde)
-                    hoja_empleado.write(fila, 41, 'Retribución por Indemnización (Articulo 82)',estilo_borde)
+                    hoja_empleado.write(fila, 20, empleado.nivel_academico,estilo_borde)
+                    hoja_empleado.write(fila, 21, empleado.profesion,estilo_borde)
+                    hoja_empleado.write(fila, 22, empleado.etnia,estilo_borde)
+                    hoja_empleado.write(fila, 23, empleado.idioma,estilo_borde)
+                    hoja_empleado.write(fila, 24, contrato.type_id.name,estilo_borde)
+                    hoja_empleado.write(fila, 25, contrato.date_start,estilo_borde)
+                    hoja_empleado.write(fila, 26, contrato.fecha_reinicio_labores,estilo_borde)
+                    hoja_empleado.write(fila, 27, contrato.date_end,estilo_borde)
+                    hoja_empleado.write(fila, 28, contrato.job_id.name,estilo_borde)
+                    hoja_empleado.write(fila, 29, contrato.resource_calendar_id.name,estilo_borde)
+                    hoja_empleado.write(fila, 30, dias_trabajados,estilo_borde)
+                    hoja_empleado.write(fila, 31, empleado.permiso_trabajo,estilo_borde)
+                    hoja_empleado.write(fila, 32, salario_anual_nominal,estilo_borde)
+                    hoja_empleado.write(fila, 33, bono,estilo_borde)
+                    hoja_empleado.write(fila, 34, horas_extras,estilo_borde)
+                    hoja_empleado.write(fila, 35, valor_horas_extras,estilo_borde)
+                    hoja_empleado.write(fila, 36, aguinaldo,estilo_borde)
+                    hoja_empleado.write(fila, 37, bono,estilo_borde)
+                    hoja_empleado.write(fila, 38, retribucion_comisiones,estilo_borde)
+                    hoja_empleado.write(fila, 39, viaticos,estilo_borde)
+                    hoja_empleado.write(fila, 40, bonificaciones_adicionales,estilo_borde)
+                    hoja_empleado.write(fila, 41, retribucion_vacaciones,estilo_borde)
+                    hoja_empleado.write(fila, 42, indemnizacion,estilo_borde)
+                    hoja_empleado.write(fila, 43, datos_compania.company_registry,estilo_borde)
+                    empleado_numero +=1
 
-                    datos.write(fila, 0, numero)
-                    datos.write(fila, 1, empleado.name)
-                    datos.write(fila, 2,  empleado.country_id.name)
-                    datos.write(fila, 3, empleado.marital)
-                    datos.write(fila, 4, empleado.identification_id)
-                    datos.write(fila, 5, empleado.address_home_id.street+',' +empleado.address_home_id.street2+',' +empleado.address_home_id.country_id.name )
-                    datos.write(fila, 6, empleado.pais_origen.name)
-                    datos.write(fila, 7, empleado.place_of_birth)
-                    datos.write(fila, 8, empleado.irtra)
-                    datos.write(fila, 9, empleado.nit)
-                    datos.write(fila, 10, empleado.igss)
-                    datos.write(fila, 11, 'cuenta bac')
-                    datos.write(fila, 12, empleado.gender)
-                    datos.write(fila, 13, empleado.birthday)
-                    datos.write(fila, 14, empleado.children)
-                    datos.write(fila, 15, empleado.trabajado_extranjero)
-                    datos.write(fila, 16, empleado.nivel_academico)
-                    datos.write(fila, 17, empleado.profesion)
-                    datos.write(fila, 18, empleado.etnia)
-                    datos.write(fila, 19, empleado.idioma)
-                    datos.write(fila, 20, contrato.type_id.name)
-                    datos.write(fila, 21, contrato.name)
-                    datos.write(fila, 22, contrato.date_start)
-                    datos.write(fila, 23, contrato.job_id.name)
-                    datos.write(fila, 24, contrato.department_id.name)
-                    datos.write(fila, 25, contrato.ubicacion)
-                    datos.write(fila, 26, contrato.analytic_account_id.name)
-                    datos.write(fila, 27, salario_anual_nominal)
-                    datos.write(fila, 28, bonificacion)
-                    datos.write(fila, 29, salario_anual_nominal+bonificacion)
-
-                    empleado_numero = +1
                     fila += 1
+                    numero += 1
 
             f = io.BytesIO()
             libro.save(f)
