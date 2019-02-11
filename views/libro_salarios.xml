@@ -23,7 +23,14 @@
                                 <td>Numero de Afiliacion IGSS</td>
                                 <td><span t-field="empleado.igss"/></td>
                                 <td>Sexo</td>
-                                <td><span t-field="empleado.gender"/></td>
+                                <td>
+                                    <t t-if="empleado.gender == 'male'">
+                                        Hombre
+                                    </t>
+                                    <t t-else="">
+                                        Mujer
+                                    </t>
+                                </td>
                                 <td>Edad</td>
                                 <td><span t-field="empleado.edad"/> años</td>
                                 <td>Fecha finalizacion laboral</td>

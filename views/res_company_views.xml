@@ -55,20 +55,25 @@
                             </group>
                             <group string="Libro de salarios">
                                 <group>
-                                    <field name="salario_id"/>
-                                    <field name="ordinarias_id"/>
-                                    <field name="extras_ordinarias_id"/>
-                                    <field name="ordinario_id"/>
-                                    <field name="extra_ordinario_id"/>
+                                    <field name="salario_ids" widget="many2many_tags"/>
+                                    <field name="ordinarias_ids" widget="many2many_tags"/>
+                                    <field name="extras_ordinarias_ids" widget="many2many_tags"/>
+                                    <field name="ordinario_ids" widget="many2many_tags"/>
+                                    <field name="extra_ordinario_ids" widget="many2many_tags"/>
+                                    <field name="horas_extras_ids" widget="many2many_tags"/>
+                                    <field name="retribucion_comisiones_ids" widget="many2many_tags"/>
+                                    <field name="viaticos_ids" widget="many2many_tags"/>
                                 </group>
                                 <group>
-                                    <field name="igss_id"/>
-                                    <field name="isr_id"/>
-                                    <field name="anticipos_id"/>
-                                    <field name="bonificacion_id"/>
-                                    <field name="bono_id"/>
-                                    <field name="aguinaldo_id"/>
-                                    <field name="indemnizacion_id"/>
+                                    <field name="igss_ids" widget="many2many_tags"/>
+                                    <field name="isr_ids" widget="many2many_tags"/>
+                                    <field name="anticipos_ids" widget="many2many_tags"/>
+                                    <field name="bonificacion_ids" widget="many2many_tags"/>
+                                    <field name="bono_ids" widget="many2many_tags"/>
+                                    <field name="aguinaldo_ids" widget="many2many_tags"/>
+                                    <field name="indemnizacion_ids" widget="many2many_tags"/>
+                                    <field name="retribucion_vacaciones_ids" widget="many2many_tags"/>
+                                    <field name="bonificaciones_adicionales_ids" widget="many2many_tags"/>
                                 </group>
                             </group>
                         </page>

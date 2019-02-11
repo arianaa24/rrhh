@@ -38,29 +38,29 @@ class ReportLibroSalarios(models.AbstractModel):
                 aguinaldo = 0
                 indemnizacion = 0
                 for linea in nomina.line_ids:
-                    if nomina.company_id.salario_id == linea.salary_rule_id:
+                    if linea.salary_rule_id in nomina.company_id.salario_ids:
                         salario = linea.total
-                    if nomina.company_id.ordinarias_id == linea.salary_rule_id:
+                    if linea.salary_rule_id in nomina.company_id.ordinarias_ids:
                         ordinarias = linea.total
-                    if nomina.company_id.extras_ordinarias_id == linea.salary_rule_id:
+                    if linea.salary_rule_id in nomina.company_id.extras_ordinarias_ids:
                         extra_ordinarias = linea.total
-                    if nomina.company_id.ordinario_id == linea.salary_rule_id:
+                    if linea.salary_rule_id in nomina.company_id.ordinario_ids:
                         ordinario = linea.total
-                    if nomina.company_id.extra_ordinario_id == linea.salary_rule_id:
+                    if linea.salary_rule_id in nomina.company_id.extra_ordinario_ids:
                         extra_ordinario = linea.total
-                    if nomina.company_id.igss_id == linea.salary_rule_id:
+                    if linea.salary_rule_id in nomina.company_id.igss_ids:
                         igss = linea.total
-                    if nomina.company_id.isr_id == linea.salary_rule_id:
+                    if linea.salary_rule_id in nomina.company_id.isr_ids:
                         isr = linea.total
-                    if nomina.company_id.anticipos_id == linea.salary_rule_id:
+                    if linea.salary_rule_id in nomina.company_id.anticipos_ids:
                         anticipos = linea.total
-                    if nomina.company_id.bonificacion_id == linea.salary_rule_id:
+                    if linea.salary_rule_id in nomina.company_id.bonificacion_ids:
                         bonificacion = linea.total
-                    if nomina.company_id.bono_id == linea.salary_rule_id:
+                    if linea.salary_rule_id in nomina.company_id.bono_ids:
                         bono = linea.total
-                    if nomina.company_id.aguinaldo_id == linea.salary_rule_id:
+                    if linea.salary_rule_id in nomina.company_id.aguinaldo_ids:
                         aguinaldo = linea.total
-                    if nomina.company_id.indemnizacion_id == linea.salary_rule_id:
+                    if linea.salary_rule_id in nomina.company_id.indemnizacion_ids:
                         indemnizacion = linea.total
                 for linea in nomina.worked_days_line_ids:
                     dias_trabajados += linea.number_of_days

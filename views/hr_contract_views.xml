@@ -9,7 +9,10 @@
                     <field name="type_id" position="after">
                         <field name="motivo_terminacion"/>
                     </field>
-                    <notebook position="inside">
+                    <field name="date_start" position="after">
+                        <field name="fecha_reinicio_labores"/>
+                    </field>
+                    <!-- <notebook position="inside">
                         <page string="Planilla">
                             <group string="Reglas salariales del empleado">
                                 <group>
@@ -18,7 +21,6 @@
                                     <field name="otras_deducciones_legales_id" widget="many2many_tags"/>
                                     <field name="total_deducciones_id" widget="many2many_tags"/>
                                     <field name="decreto_42_92_id" widget="many2many_tags"/>
-                                    <field name="fecha_reinicio_labores"/>
                                     <field name="ubicacion"/>
 
                                 </group>
@@ -31,7 +33,7 @@
                                 </group>
                             </group>
                         </page>
-                    </notebook>
+                    </notebook> -->
                     <group name="salary_and_advantages" position="inside">
                         <label for="base_extra"/>
                         <div class="o_row" name="base_extra">
