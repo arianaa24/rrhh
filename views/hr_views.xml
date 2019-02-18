@@ -107,7 +107,7 @@
                             <field name="fecha_inicio"/>
                             <field name="numero_descuentos"/>
                             <field name="employee_id"/>
-                            <field name="descuento_quincena"/>
+                            <field name="pendiente_pagar_prestamo"/>
                         </group>
                         <group>
                             <field name="total"/>
@@ -122,7 +122,7 @@
                             <field name="mes" attrs="{'readonly':[('nomina_id','!=',False)]}"/>
                             <field name="anio" attrs="{'readonly':[('nomina_id','!=',False)]}"/>
                             <field name="monto" attrs="{'readonly':[('nomina_id','!=',False)]}"/>
-                            <field name="nomina_id" attrs="{'readonly':[('nomina_id','!=',False)]}"/>
+                            <field name="nomina_id" widget="many2many_tags"/>
                         </tree>
                     </field>
                     </group>
