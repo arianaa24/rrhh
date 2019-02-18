@@ -20,12 +20,26 @@ class rrhh_prestamo(models.Model):
     prestamo_ids = fields.One2many('rrhh.prestamo.linea','prestamo_id',string='Lineas de prestamo')
     descripcion = fields.Char(string='Descripción',required=True)
     codigo = fields.Char(string='Código',required=True)
-    descuento_quincena = fields.Boolean('Descontar en quincena')
     estado = fields.Selection([
         ('nuevo', 'Nuevo'),
         ('proceso','Proceso'),
         ('pagado', 'Pagado')
     ], string='Status', help='Estado del prestamo',readonly=True, default='nuevo')
+    pendiente_pagar_prestamo = fields.Float(compute='_compute_prestamo', string='Pendiente a pagar del prestamos', )
+
+    def _compute_prestamo (self):
+        for prestamo in self:
+            total_prestamo = 0
+            total_prestamo_pagado = 0
+            for linea in prestamo.prestamo_ids:
+                for nomina_entrada in linea.nomina_id.input_line_ids:
+                    if prestamo.codigo == nomina_entrada.code:
+                        total_prestamo_pagado += nomina_entrada.amount
+                total_prestamo += linea.monto
+            prestamo.pendiente_pagar_prestamo = total_prestamo - total_prestamo_pagado
+            if prestamo.pendiente_pagar_prestamo == 0:
+                prestamo.estado = 'pagado'
+            return True
 
     def generar_mensualidades(self):
         mes_inicial = datetime.datetime.strptime(self.fecha_inicio, '%Y-%m-%d').date()
@@ -109,5 +123,5 @@ class rrhh_prestamo_linea(models.Model):
         ], string='Mes')
     monto = fields.Float('Monto')
     anio = fields.Integer('Año')
-    nomina_id = fields.Many2one('hr.payslip','Nomina')
+    nomina_id = fields.Many2many('hr.payslip','prestamo_nominda_id_rel',string='Nomina')
     prestamo_id = fields.Many2one('rrhh.prestamo','Prestamo')
