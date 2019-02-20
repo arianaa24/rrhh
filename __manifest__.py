@@ -30,6 +30,7 @@
         'views/res_country_view.xml',
         'wizard/rrhh_libro_salarios_view.xml',
         'wizard/rrhh_informe_empleador_view.xml',
+        'wizard/igss.xml',
         'security/ir.model.access.csv',
     ],
 }
