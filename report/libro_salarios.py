@@ -41,7 +41,9 @@ class ReportLibroSalarios(models.AbstractModel):
                     logging.warn(linea.salary_rule_id.id)
                     logging.warn([x.id for x in nomina.company_id.salario_ids])
                     if linea.salary_rule_id.id in [x.id for x in nomina.company_id.salario_ids]:
+                        logging.warn(linea.total)
                         salario += linea.total
+                        logging.warn(salario)
                     if linea.salary_rule_id in nomina.company_id.ordinarias_ids:
                         ordinarias = linea.total
                     if linea.salary_rule_id in nomina.company_id.extras_ordinarias_ids:
@@ -89,6 +91,7 @@ class ReportLibroSalarios(models.AbstractModel):
                     'liquido_recibir': total_salario_devengado - total_descuentos + bonificacion + bono_agui_indem
 
                 })
+        logging.warn(nominas_lista)
         return nominas_lista
 
     @api.model
