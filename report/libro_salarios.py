@@ -38,12 +38,8 @@ class ReportLibroSalarios(models.AbstractModel):
                 aguinaldo = 0
                 indemnizacion = 0
                 for linea in nomina.line_ids:
-                    logging.warn(linea.salary_rule_id.id)
-                    logging.warn([x.id for x in nomina.company_id.salario_ids])
-                    if linea.salary_rule_id.id in [x.id for x in nomina.company_id.salario_ids]:
-                        logging.warn(linea.total)
+                    if linea.salary_rule_id in nomina.company_id.salario_ids:
                         salario += linea.total
-                        logging.warn(salario)
                     if linea.salary_rule_id in nomina.company_id.ordinarias_ids:
                         ordinarias = linea.total
                     if linea.salary_rule_id in nomina.company_id.extras_ordinarias_ids:
@@ -74,7 +70,7 @@ class ReportLibroSalarios(models.AbstractModel):
                 nominas_lista.append({
                     'fecha_inicio': nomina.date_from,
                     'fecha_fin': nomina.date_to,
-                    'moneda_id': nomina.journal_id.currency_id,
+                    'moneda_id': nomina.company_id.currency_id,
                     'salario': salario,
                     'dias_trabajados': dias_trabajados,
                     'ordinarias': ordinarias,
@@ -89,7 +85,6 @@ class ReportLibroSalarios(models.AbstractModel):
                     'bonificacion_id': bonificacion,
                     'bono_agui_indem': bono_agui_indem,
                     'liquido_recibir': total_salario_devengado - total_descuentos + bonificacion + bono_agui_indem
-
                 })
         logging.warn(nominas_lista)
         return nominas_lista
