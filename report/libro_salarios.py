@@ -38,8 +38,10 @@ class ReportLibroSalarios(models.AbstractModel):
                 aguinaldo = 0
                 indemnizacion = 0
                 for linea in nomina.line_ids:
-                    if linea.salary_rule_id in nomina.company_id.salario_ids:
-                        salario = linea.total
+                    logging.warn(linea.salary_rule_id.id)
+                    logging.warn([x.id for x in nomina.company_id.salario_ids])
+                    if linea.salary_rule_id.id in [x.id for x in nomina.company_id.salario_ids]:
+                        salario += linea.total
                     if linea.salary_rule_id in nomina.company_id.ordinarias_ids:
                         ordinarias = linea.total
                     if linea.salary_rule_id in nomina.company_id.extras_ordinarias_ids:
