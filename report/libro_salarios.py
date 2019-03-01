@@ -84,7 +84,7 @@ class ReportLibroSalarios(models.AbstractModel):
                     'total_descuentos': total_descuentos,
                     'bonificacion_id': bonificacion,
                     'bono_agui_indem': bono_agui_indem,
-                    'liquido_recibir': total_salario_devengado - total_descuentos + bonificacion + bono_agui_indem
+                    'liquido_recibir': total_salario_devengado + total_descuentos + bonificacion + bono_agui_indem
                 })
         logging.warn(nominas_lista)
         return nominas_lista
