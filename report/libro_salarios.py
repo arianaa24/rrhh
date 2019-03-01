@@ -70,7 +70,7 @@ class ReportLibroSalarios(models.AbstractModel):
                 nominas_lista.append({
                     'fecha_inicio': nomina.date_from,
                     'fecha_fin': nomina.date_to,
-                    'moneda_id': nomina.journal_id.currency_id,
+                    'moneda_id': nomina.company_id.currency_id,
                     'salario': salario,
                     'dias_trabajados': dias_trabajados,
                     'ordinarias': ordinarias,
@@ -84,9 +84,9 @@ class ReportLibroSalarios(models.AbstractModel):
                     'total_descuentos': total_descuentos,
                     'bonificacion_id': bonificacion,
                     'bono_agui_indem': bono_agui_indem,
-                    'liquido_recibir': total_salario_devengado + total_descuentos + bonificacion + bono_agui_indem
-
+                    'liquido_recibir': total_salario_devengado - total_descuentos + bonificacion + bono_agui_indem
                 })
+        logging.warn(nominas_lista)
         return nominas_lista
 
     @api.model

@@ -15,6 +15,5 @@ class rrhh_libro_salarios(models.TransientModel):
         datas = {'ids': self.env.context.get('active_ids', [])}
         res = self.read(['anio'])
         res = res and res[0] or {}
-        res['anio'] = res['anio']
         datas['form'] = res
         return self.env.ref('rrhh.action_libro_salarios').report_action([], data=datas)
