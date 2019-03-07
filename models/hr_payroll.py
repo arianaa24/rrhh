@@ -8,8 +8,6 @@ class HrPayslip(models.Model):
     _inherit = 'hr.payslip'
 
     porcentaje_prestamo = fields.Float(related="payslip_run_id.porcentaje_prestamo",string='Prestamo (%)',store=True)
-    cuenta_analitica_id = fields.Many2one('account.analytic.account','Cuenta analitica',related='employee_id.contract_id.analytic_account_id',store=True)
-    tipo_contrato_id = fields.Many2one('hr.contract.type','Tipo de contrato',related='employee_id.contract_id.type_id',store=True )
 
     @api.multi
     def action_payslip_done(self):
