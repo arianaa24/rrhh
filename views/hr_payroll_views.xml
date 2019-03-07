@@ -26,6 +26,10 @@
                 <field name="name" position="after">
                     <field name="porcentaje_prestamo"/>
                 </field>
+                <field name="payslip_run_id" position="after">
+                    <field name="cuenta_analitica_id"/>
+                    <field name="tipo_contrato_id"/>
+                </field>
             </field>
         </record>
 
