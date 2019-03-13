@@ -78,7 +78,8 @@ class rrhh_planilla_wizard(models.TransientModel):
                             hoja.write(linea, 3, l.contract_id.date_start)
                             hoja.write(linea, 4, l.employee_id.job_id.name)
                             for d in l.worked_days_line_ids:
-                                dias += d.number_of_days
+                                if d.code == 'WORK100':
+                                    dias += d.number_of_days
                             hoja.write(linea, 5, dias)
 
                             columna = 6
@@ -114,7 +115,8 @@ class rrhh_planilla_wizard(models.TransientModel):
                             hoja.write(linea, 3, l.contract_id.date_start)
                             hoja.write(linea, 4, l.employee_id.job_id.name)
                             for d in l.worked_days_line_ids:
-                                dias += d.number_of_days
+                                if d.code == 'WORK100':
+                                    dias += d.number_of_days
                             hoja.write(linea, 5, dias)
 
                             columna = 6
@@ -187,7 +189,8 @@ class rrhh_planilla_wizard(models.TransientModel):
                     hoja.write(linea, 3, l.contract_id.date_start)
                     hoja.write(linea, 4, l.employee_id.job_id.name)
                     for d in l.worked_days_line_ids:
-                        dias += d.number_of_days
+                        if d.code == 'WORK100':
+                            dias += d.number_of_days
                     hoja.write(linea, 5, dias)
 
                     columna = 6
