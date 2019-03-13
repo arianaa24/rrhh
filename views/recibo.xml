@@ -38,7 +38,9 @@
                                         <td><strong>No. de Horas extras: </strong> <span t-esc="horas"/></td>
                                         <t t-set="dias" t-value="0.0"/>
                                         <tr t-foreach="o.worked_days_line_ids" t-as="i">
-                                             <t t-set="dias" t-value="dias + i.number_of_days"/>
+                                            <t t-if="i.code == 'WORK100'">
+                                                <t t-set="dias" t-value="dias + i.number_of_days"/>
+                                            </t>
                                         </tr>
                                         <td><strong>Dias laborados:</strong> <span t-esc="dias"/></td>
                                     </tr>
