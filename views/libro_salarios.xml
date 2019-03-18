@@ -33,8 +33,7 @@
                                 </td>
                                 <td>Edad</td>
                                 <td><span t-field="empleado.edad"/> años</td>
-                                <td>Fecha finalizacion laboral</td>
-                                <td><span t-esc="fecha['fecha_finalizacion']" t-options="{'widget': 'date'}"/></td>
+                                <td>Fecha finalizacion laboral <span t-esc="fecha['fecha_finalizacion']" t-options="{'widget': 'date'}"/></td>
                             </tr>
                             <tr>
                                 <td>Documento Unico de Identificacion:</td>

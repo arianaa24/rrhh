@@ -16,7 +16,13 @@ class ReportLibroSalarios(models.AbstractModel):
 
     def _get_empleado(self,id):
         empleado_id = self.env['hr.employee'].search([['id', '=', id]])
-        return empleado_id
+        empleado = 0
+        if empleado_id:
+            empleado = empleado_id
+        else:
+            empleado_id = self.env['hr.employee'].search([['id', '=', id],['active', '=', False]])
+            empleado = empleado_id
+        return empleado
 
     def _get_nominas(self,id,anio):
         nomina_id = self.env['hr.payslip'].search([['employee_id', '=', id]],order="date_from asc")
@@ -86,7 +92,6 @@ class ReportLibroSalarios(models.AbstractModel):
                     'bono_agui_indem': bono_agui_indem,
                     'liquido_recibir': total_salario_devengado + total_descuentos + bonificacion + bono_agui_indem
                 })
-        logging.warn(nominas_lista)
         return nominas_lista
 
     @api.model
@@ -95,7 +100,6 @@ class ReportLibroSalarios(models.AbstractModel):
         self.model = 'hr.employee'
         docs = data.get('ids', data.get('active_ids'))
         anio = data.get('form', {}).get('anio', False)
-        logging.warn(anio)
         return {
             'doc_ids': docids,
             'doc_model': self.model,
