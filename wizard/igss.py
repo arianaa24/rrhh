@@ -36,7 +36,7 @@ class rrhh_igss_wizard(models.TransientModel):
             for slip in w.payslip_run_id.slip_ids:
                 contrato_ids = self.env['hr.contract'].search( [['employee_id', '=', slip.employee_id.id]],offset=0,limit=1,order='date_start desc')
                 logging.warn(contrato_ids)
-                datos += str(slip.employee_id.numero_liquidacion) + '|' + str(slip.employee_id.igss) + '|' + str(slip.employee_id.name) + '|'
+                datos += '1' + '|' +str(slip.employee_id.numero_liquidacion) + '|' + str(slip.employee_id.igss) + '|' + str(slip.employee_id.name) + '|'
                 if contrato_ids:
                     contrato = self.env['hr.contract'].browse([contrato_ids.id])
                     if contrato.date_end:
@@ -48,6 +48,7 @@ class rrhh_igss_wizard(models.TransientModel):
                 datos += str(slip.employee_id.codigo_centro_trabajo) + '|' + str(slip.employee_id.nit) + '|' + str(slip.employee_id.codigo_ocupacion) + '|' + str(slip.employee_id.condicion_laboral) + '|' + '\r\n'
             datos += '[suspendidos]' + '\r\n'
             datos += '[licencias]' + '\r\n'
+            datos += '[juramento]' + '\r\n'
             datos += 'BAJO MI EXCLUSIVA Y ABSOLUTA RESPONSABILIDAD, DECLARO QUE LA INFORMACION QUE AQUI CONSIGNO ES FIEL Y EXACTA, QUE ESTA PLANILLA INCLUYE A TODOS LOS TRABAJADORES QUE ESTUVIERON A MI SERVICIO Y QUE SUS SALARIOS SON LOS EFECTIVAMENTE DEVENGADOS, DURANTE EL MES ARRIBA INDICADO' + '\r\n'
             datos += '[finplanilla]' + '\r\n'
             datos = datos.replace('False', '')
