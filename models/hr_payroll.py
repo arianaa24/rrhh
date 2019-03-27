@@ -95,3 +95,27 @@ class HrPayslipRun(models.Model):
     _inherit = 'hr.payslip.run'
 
     porcentaje_prestamo = fields.Float('Prestamo (%)')
+
+    def generar_pagos(self):
+        pagos = self.env['account.payment'].search([('nomina_id', '!=', False)])
+        nominas_pagadas = []
+        for pago in pagos:
+            nominas_pagadas.append(pago.nomina_id.id)
+        for nomina in self.slip_ids:
+            if nomina.id not in nominas_pagadas:
+                total_nomina = 0
+                if nomina.employee_id.diario_pago_id and nomina.state == 'done':
+                    res = self.env['report.rrhh.recibo'].lineas(nomina)
+                    total_nomina = res['totales'][0] + res['totales'][1]
+                    pago = {
+                        'payment_type': 'outbound',
+                        'partner_type': 'supplier',
+                        'payment_method_id': 2,
+                        'partner_id': nomina.employee_id.address_home_id.id,
+                        'amount': total_nomina,
+                        'journal_id': nomina.employee_id.diario_pago_id.id,
+                        'nomina_id': nomina.id
+                    }
+                    pago_id = self.env['account.payment'].create(pago)
+                    pago_id.post()
+        return True
