@@ -104,7 +104,7 @@ class HrPayslipRun(models.Model):
         for nomina in self.slip_ids:
             if nomina.id not in nominas_pagadas:
                 total_nomina = 0
-                if nomina.employee_id.diario_pago_id and nomina.state == 'done':
+                if nomina.employee_id.diario_pago_id and nomina.employee_id.address_home_id and nomina.state == 'done':
                     res = self.env['report.rrhh.recibo'].lineas(nomina)
                     total_nomina = res['totales'][0] + res['totales'][1]
                     pago = {
