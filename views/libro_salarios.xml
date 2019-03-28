@@ -8,6 +8,9 @@
             <t t-foreach="docs" t-as="o">
                 <div class="article">
                     <div class="header">
+                    </div>
+                    <div class="page">
+                        <div style="height:5.0cm"/>
                         <t t-set="empleado" t-value="_get_empleado(o)"/>
                         <table>
                             <tr>
@@ -43,11 +46,6 @@
                                 <td colspan="4"></td>
                             </tr>
                         </table>
-                    </div>
-                    <div class="page">
-                        <br/>
-                        <br/>
-                        <br/>
                         <t t-set="nominas" t-value="_get_nominas(o,anio)"/>
                         <table class="table table-condensed">
                             <thead>
