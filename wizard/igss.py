@@ -8,6 +8,7 @@ import xlwt
 import io
 import logging
 import datetime
+from datetime import datetime
 
 class rrhh_igss_wizard(models.TransientModel):
     _name = 'rrhh.igss.wizard'
@@ -26,7 +27,7 @@ class rrhh_igss_wizard(models.TransientModel):
     def generar(self):
         datos = ''
         for w in self:
-            datos += str(w.payslip_run_id.slip_ids[0].company_id.version_mensaje) + '|' + str(datetime.date.today().strftime('%d/%m/%Y')) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.numero_patronal) + '|'+ str(datetime.datetime.strptime(w.payslip_run_id.date_start,'%Y-%m-%d').date().strftime('%m')).lstrip('0')+ '|' + str(datetime.datetime.strptime(w.payslip_run_id.date_start,'%Y-%m-%d').date().strftime('%Y')).lstrip('0') + '|' + str(w.payslip_run_id.slip_ids[0].company_id.name) + '|' +str(w.payslip_run_id.slip_ids[0].company_id.vat) + '|'+ str(w.payslip_run_id.slip_ids[0].company_id.email) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.tipo_planilla) + '\r\n'
+            datos += str(w.payslip_run_id.slip_ids[0].company_id.version_mensaje) + '|' + str(datetime.today().strftime('%d/%m/%Y')) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.numero_patronal) + '|'+ str(datetime.strptime(w.payslip_run_id.date_start,'%Y-%m-%d').date().strftime('%m')).lstrip('0')+ '|' + str(datetime.strptime(w.payslip_run_id.date_start,'%Y-%m-%d').date().strftime('%Y')).lstrip('0') + '|' + str(w.payslip_run_id.slip_ids[0].company_id.name) + '|' +str(w.payslip_run_id.slip_ids[0].company_id.vat) + '|'+ str(w.payslip_run_id.slip_ids[0].company_id.email) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.tipo_planilla) + '\r\n'
             datos += '[centros]' + '\r\n'
             datos += str(w.payslip_run_id.slip_ids[0].company_id.codigo_centro_trabajo) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.nombre_centro_trabajo) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.direccion_centro_trabajo) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.zona_centro_trabajo) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.telefonos) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.fax) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.nombre_contacto) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.correo_electronico) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.codigo_departamento) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.codigo_municipio) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.codigo_actividad_economica) + '\r\n'
             datos += '[tipos de planillas]' + '\r\n'
@@ -34,18 +35,35 @@ class rrhh_igss_wizard(models.TransientModel):
             datos += '[liquidaciones]' + '\r\n'
             datos += '[empleados]' + '\r\n'
             for slip in w.payslip_run_id.slip_ids:
+                fecha_planilla = datetime.strptime(w.payslip_run_id.date_start, '%Y-%m-%d')
+                mes_planilla = fecha_planilla.month
+                anio_planilla = fecha_planilla.year
                 contrato_ids = self.env['hr.contract'].search( [['employee_id', '=', slip.employee_id.id]],offset=0,limit=1,order='date_start desc')
                 logging.warn(contrato_ids)
-                datos += '1' + '|' +str(slip.employee_id.numero_liquidacion) + '|' + str(slip.employee_id.igss) + '|' + str(slip.employee_id.name) + '|'
+                empleado = slip.employee_id.name.split()
+                if len(empleado) == 4:
+                    datos += '1' + '|' + str(slip.employee_id.igss) + '|' + empleado[0] + '|'+ empleado[1] + '|' + empleado[2] + '|' + empleado[3] + '|' + '|'
+                if len(empleado) == 3:
+                    datos += '1' + '|' + str(slip.employee_id.igss) + '|' + empleado[0] +  '|'+'|'+ empleado[1] + '|' + empleado[2]  + '|' + '|'
                 if contrato_ids:
                     contrato = self.env['hr.contract'].browse([contrato_ids.id])
                     if contrato.date_end:
-                        datos += str(contrato.wage) + '|' + str(datetime.datetime.strptime(contrato.date_start,'%Y-%m-%d').date().strftime('%d/%m/%Y')) + '|' + str(datetime.datetime.strptime(contrato.date_end,'%Y-%m-%d').date().strftime('%d/%m/%Y')) + '|'
+                        mes_contrato= datetime.strptime(contrato.date_end, '%Y-%m-%d')
+                        mes_final_contrato = mes_contrato.month
+                        anio_final_contrato = mes_contrato.year
+                        if mes_planilla == mes_final_contrato and anio_final_contrato == anio_planilla:
+                            datos += str(contrato.wage) + '|' + str(datetime.strptime(contrato.date_start,'%Y-%m-%d').date().strftime('%d/%m/%Y')) + '|' + str(datetime.strptime(contrato.date_end,'%Y-%m-%d').date().strftime('%d/%m/%Y')) + '|'
                     else:
-                        datos += str(contrato.wage) + '|' + str(datetime.datetime.strptime(contrato.date_start,'%Y-%m-%d').date().strftime('%d/%m/%Y')) + '|' + '' + '|'
+                        mes_contrato = datetime.strptime(contrato.date_start, '%Y-%m-%d')
+                        mes_final_contrato = mes_contrato.month
+                        anio_final_contrato = mes_contrato.year
+                        if mes_final_contrato == mes_planilla and anio_final_contrato == anio_planilla:
+                            datos += str(contrato.wage) + '|' + str(datetime.strptime(contrato.date_start,'%Y-%m-%d').date().strftime('%d/%m/%Y')) + '|' + '|'
+                        else:
+                            datos += str(contrato.wage) + '|' + '|' + '' + '|'
                 else:
                     datos += '|' + '|' + '|'
-                datos += str(slip.employee_id.codigo_centro_trabajo) + '|' + str(slip.employee_id.nit) + '|' + str(slip.employee_id.codigo_ocupacion) + '|' + str(slip.employee_id.condicion_laboral) + '|' + '\r\n'
+                datos += str(slip.employee_id.codigo_centro_trabajo) + '|' + str(slip.employee_id.nit) + '|' + str(slip.employee_id.codigo_ocupacion) + '|' + str(slip.employee_id.condicion_laboral) + '|' + '|' + '\r\n'
             datos += '[suspendidos]' + '\r\n'
             datos += '[licencias]' + '\r\n'
             datos += '[juramento]' + '\r\n'
