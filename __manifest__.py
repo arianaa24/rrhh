@@ -26,6 +26,7 @@
         'views/report.xml',
         'views/recibo.xml',
         'wizard/planilla.xml',
+        'wizard/igss.xml',
         'security/ir.model.access.csv',
     ],
 }
