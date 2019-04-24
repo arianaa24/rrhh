@@ -3,6 +3,7 @@
 from odoo import models, fields, api
 import logging
 import datetime
+from odoo.fields import Date, Datetime
 
 class HrPayslip(models.Model):
     _inherit = 'hr.payslip'
@@ -29,6 +30,12 @@ class HrPayslip(models.Model):
             anio_nomina = int(datetime.datetime.strptime(nomina.date_from, '%Y-%m-%d').date().strftime('%Y'))
             valor_pago = 0
             porcentaje_pagar = 0
+            if nomina.date_from <= nomina.employee_id.contract_id.date_start <= nomina.date_to:
+                dias_laborados = nomina.employee_id.get_work_days_data(Datetime.from_string(nomina.employee_id.contract_id.date_start), Datetime.from_string(nomina.date_to), calendar=nomina.employee_id.contract_id.resource_calendar_id)
+                for linea in nomina.worked_days_line_ids:
+                    if linea.code == 'WORK100':
+                        linea.number_of_days = dias_laborados['days']
+                        linea.number_of_hours = dias_laborados['hours']
             for entrada in nomina.input_line_ids:
                 for prestamo in nomina.employee_id.prestamo_ids:
                     anio_prestamo = int(datetime.datetime.strptime(prestamo.fecha_inicio, '%Y-%m-%d').date().strftime('%Y'))
