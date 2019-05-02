@@ -30,8 +30,15 @@ class HrPayslip(models.Model):
             anio_nomina = int(datetime.datetime.strptime(nomina.date_from, '%Y-%m-%d').date().strftime('%Y'))
             valor_pago = 0
             porcentaje_pagar = 0
-            if nomina.date_from <= nomina.employee_id.contract_id.date_start <= nomina.date_to:
-                dias_laborados = nomina.employee_id.get_work_days_data(Datetime.from_string(nomina.employee_id.contract_id.date_start), Datetime.from_string(nomina.date_to), calendar=nomina.employee_id.contract_id.resource_calendar_id)
+            if nomina.employee_id.contract_id.date_start:
+                if nomina.date_from <= nomina.employee_id.contract_id.date_start <= nomina.date_to:
+                    dias_laborados = nomina.employee_id.get_work_days_data(Datetime.from_string(nomina.employee_id.contract_id.date_start), Datetime.from_string(nomina.date_to), calendar=nomina.employee_id.contract_id.resource_calendar_id)
+                    for linea in nomina.worked_days_line_ids:
+                        if linea.code == 'WORK100':
+                            linea.number_of_days = dias_laborados['days']
+                            linea.number_of_hours = dias_laborados['hours']
+            else:
+                dias_laborados = nomina.employee_id.get_work_days_data(Datetime.from_string(nomina.date_from), Datetime.from_string(nomina.date_to), calendar=nomina.employee_id.contract_id.resource_calendar_id)
                 for linea in nomina.worked_days_line_ids:
                     if linea.code == 'WORK100':
                         linea.number_of_days = dias_laborados['days']

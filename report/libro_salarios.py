@@ -43,6 +43,12 @@ class ReportLibroSalarios(models.AbstractModel):
                 bono = 0
                 aguinaldo = 0
                 indemnizacion = 0
+                septimos_asuetos = 0
+                vacaciones = 0
+                decreto = 0
+                fija = 0
+                variable = 0
+                otras_deducciones = 0
                 for linea in nomina.line_ids:
                     if linea.salary_rule_id in nomina.company_id.salario_ids:
                         salario += linea.total
@@ -58,8 +64,10 @@ class ReportLibroSalarios(models.AbstractModel):
                         igss += linea.total
                     if linea.salary_rule_id in nomina.company_id.isr_ids:
                         isr += linea.total
+                        otras_deducciones += isr
                     if linea.salary_rule_id in nomina.company_id.anticipos_ids:
                         anticipos += linea.total
+                        otras_deducciones += anticipos
                     if linea.salary_rule_id in nomina.company_id.bonificacion_ids:
                         bonificacion += linea.total
                     if linea.salary_rule_id in nomina.company_id.bono_ids:
@@ -68,12 +76,24 @@ class ReportLibroSalarios(models.AbstractModel):
                         aguinaldo += linea.total
                     if linea.salary_rule_id in nomina.company_id.indemnizacion_ids:
                         indemnizacion += linea.total
+                    if linea.salary_rule_id in nomina.company_id.septimos_asuetos_ids:
+                        septimos_asuetos += linea.total
+                    if linea.salary_rule_id in nomina.company_id.vacaciones_ids:
+                        vacaciones += linea.total
+                    if linea.salary_rule_id in nomina.company_id.decreto_ids:
+                        decreto += linea.total
+                    if linea.salary_rule_id in nomina.company_id.fija_ids:
+                        fija += linea.total
+                    if linea.salary_rule_id in nomina.company_id.variable_ids:
+                        variable += linea.total
                 for linea in nomina.worked_days_line_ids:
                     dias_trabajados += linea.number_of_days
-                total_salario_devengado = ordinarias + extra_ordinarias + ordinario + extra_ordinario
-                total_descuentos = igss + isr + anticipos
+                total_salario_devengado = ordinarias + extra_ordinarias + ordinario + extra_ordinario + septimos_asuetos + vacaciones
+                # total_descuentos = igss + isr + anticipos
+                total_deducciones = igss + otras_deducciones
                 bono_agui_indem = bono + aguinaldo + indemnizacion
                 nominas_lista.append({
+                    'orden': nomina.name,
                     'fecha_inicio': nomina.date_from,
                     'fecha_fin': nomina.date_to,
                     'moneda_id': nomina.company_id.currency_id,
@@ -83,14 +103,20 @@ class ReportLibroSalarios(models.AbstractModel):
                     'extra_ordinarias': extra_ordinarias,
                     'ordinario': ordinario,
                     'extra_ordinario': extra_ordinario,
+                    'septimos_asuetos': septimos_asuetos,
+                    'vacaciones': vacaciones,
                     'total_salario_devengado': total_salario_devengado,
                     'igss': igss,
                     'isr': isr,
                     'anticipos': anticipos,
-                    'total_descuentos': total_descuentos,
+                    'otras_deducciones': otras_deducciones,
+                    'total_deducciones': total_deducciones,
                     'bonificacion_id': bonificacion,
+                    'decreto': decreto,
+                    'fija': fija,
+                    'variable': variable,
                     'bono_agui_indem': bono_agui_indem,
-                    'liquido_recibir': total_salario_devengado + total_descuentos + bonificacion + bono_agui_indem
+                    'liquido_recibir': total_salario_devengado + total_deducciones + bonificacion + bono_agui_indem + decreto + fija + variable
                 })
         return nominas_lista
 

@@ -28,3 +28,4 @@ class Contract(models.Model):
     # liquido_recibir_id = fields.Many2many('hr.salary.rule', 'liquido_recibir_regla_rel', 'contrato_id', 'regla_id', string='Liquido a recibir')
     wage = fields.Monetary('Wage', digits=(16, 2), required=True, help="Employee's monthly gross wage.",track_visibility='onchange')
     fecha_reinicio_labores = fields.Date('Fecha de reinicio labores')
+    temporalidad_contrato = fields.Char('Teporalidad del contrato')
