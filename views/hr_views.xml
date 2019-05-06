@@ -50,6 +50,7 @@
                                     <field name="recibo_id"/>
                                 </group>
                                 <group string="Información Laboral">
+                                    <field name="pueblo_pertenencia"/>
                                     <field name="codigo_empleado"/>
                                     <field name="igss"/>
                                     <field name="irtra"/>
@@ -83,9 +84,9 @@
                         <field name="edad"/>
                     </field>
                     <field name="identification_id" position="after">
-                        <label for="departmento_id" string="Extendido en"/>
+                        <label for="departamento_id" string="Extendido en"/>
                         <div class="o_address_format">
-                            <field name="departmento_id" placeholder="Departmento..." class="o_address_street"/>
+                            <field name="departamento_id" placeholder="Departmento..." class="o_address_street"/>
                             <field name="pais_id" placeholder="Pais..." class="o_address_street"/>
                         </div>
                     </field>

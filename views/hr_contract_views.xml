@@ -8,6 +8,7 @@
                 <data>
                     <field name="type_id" position="after">
                         <field name="motivo_terminacion"/>
+                        <field name="temporalidad_contrato"/>
                     </field>
                     <field name="date_start" position="after">
                         <field name="fecha_reinicio_labores"/>

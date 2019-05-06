@@ -13,9 +13,16 @@
                                 <group>
                                     <field name="version_mensaje"/>
                                     <field name="numero_patronal"/>
+                                    <field name="marca"/>
                                 </group>
                                 <group>
                                     <field name="tipo_planilla"/>
+                                    <field name="anio_inicio_operaciones"/>
+                                    <field name="tamanio_empresa_ventas"/>
+                                    <field name="tamanio_empresa_trabajadores"/>
+                                    <field name="actividad_gran_grupo"/>
+                                    <field name="sub_actividad_economica"/>
+                                    <field name="ocupacion_grupo"/>
                                 </group>
                             </group>
                             <group string="Contrato">
@@ -63,6 +70,9 @@
                                     <field name="horas_extras_ids" widget="many2many_tags"/>
                                     <field name="retribucion_comisiones_ids" widget="many2many_tags"/>
                                     <field name="viaticos_ids" widget="many2many_tags"/>
+                                    <field name="extras_ids" widget="many2many_tags"/>
+                                    <field name="descuentos_ids" widget="many2many_tags"/>
+                                    <field name="septimos_asuetos_ids" widget="many2many_tags"/>
                                 </group>
                                 <group>
                                     <field name="igss_ids" widget="many2many_tags"/>
@@ -74,6 +84,9 @@
                                     <field name="indemnizacion_ids" widget="many2many_tags"/>
                                     <field name="retribucion_vacaciones_ids" widget="many2many_tags"/>
                                     <field name="bonificaciones_adicionales_ids" widget="many2many_tags"/>
+                                    <field name="decreto_ids"/>
+                                    <field name="fija_ids"/>
+                                    <field name="variable_ids"/>
                                 </group>
                             </group>
                         </page>

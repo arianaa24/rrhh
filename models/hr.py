@@ -47,12 +47,13 @@ class hr_employee(models.Model):
     codigo_empleado = fields.Char('Código del empleado')
     prestamo_ids = fields.One2many('rrhh.prestamo','employee_id','Prestamo')
     cantidad_prestamos = fields.Integer(compute='_compute_cantidad_prestamos', string='Prestamos')
-    departmento_id = fields.Many2one('res.country.state','Departmento')
+    departamento_id = fields.Many2one('res.country.state','Departmento')
     pais_id = fields.Many2one('res.country','Pais')
     documento_identificacion = fields.Char('Tipo documento identificacion')
     forma_trabajo_extranjero = fields.Char('Forma trabajada en el extranjero')
     pais_trabajo_extranjero_id = fields.Many2one('res.country','Pais trabajado en el extranjero')
     finalizacion_laboral_extranjero = fields.Char('Motivo de finalización de la relación laboral en el extranjero')
+    pueblo_pertenencia = fields.Char('Pueblo de pertenencia')
 
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):
