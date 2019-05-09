@@ -18,7 +18,7 @@ class ReportRecibo(models.AbstractModel):
         return horas_extras
 
     def lineas(self, o):
-        result = {'lineas': [], 'totales': [0, 0]}
+        result = {'lineas': [], 'totales': [0, 0, 0]}
         if o.employee_id.recibo_id:
 
             lineas_reglas = {}
@@ -26,6 +26,12 @@ class ReportRecibo(models.AbstractModel):
                 if l.salary_rule_id.id not in lineas_reglas:
                     lineas_reglas[l.salary_rule_id.id] = 0
                 lineas_reglas[l.salary_rule_id.id] += l.total
+
+            for l in o.input_line_ids:
+                input_id = self.env['hr.rule.input'].search([('name', '=', l.name )])
+                if input_id.id not in lineas_reglas:
+                    lineas_reglas[input_id.id] = 0
+                lineas_reglas[input_id.id] += l.amount
 
             recibo = o.employee_id.recibo_id
             lineas_ingresos = []
@@ -44,11 +50,26 @@ class ReportRecibo(models.AbstractModel):
                     result['totales'][1] += lineas_reglas.get(r.id, 0)
                 lineas_deducciones.append(datos)
 
-            largo = max(len(lineas_ingresos), len(lineas_deducciones))
+            lineas_entradas = []
+            entradas = []
+            entradas_datos = []
+            for le in recibo.entrada_id:
+               entradas.append(le.input_id.name)
+               entradas_datos.append({'nombre': le.input_id.name, 'input_id': le.input_id.id})
+            for entrada in o.input_line_ids:
+                if entrada.name in entradas:
+                    datos = {'nombre': entrada.name, 'total': entrada.amount, 'regla_id': entrada.id}
+                    for regla_entrada in entradas_datos:
+                        if entrada.name == regla_entrada['nombre']:
+                            result['totales'][2] += lineas_reglas.get(regla_entrada['input_id'], 0)
+                            lineas_entradas.append(datos)
+
+            largo = max(len(lineas_ingresos), len(lineas_deducciones), len(lineas_entradas))
             lineas_ingresos += [None] * (largo - len(lineas_ingresos))
             lineas_deducciones += [None] * (largo - len(lineas_deducciones))
+            lineas_entradas += [None] * (largo - len(lineas_entradas))
 
-            result['lineas'] = zip(lineas_ingresos, lineas_deducciones)
+            result['lineas'] = zip(lineas_ingresos, lineas_deducciones, lineas_entradas)
 
         return result
 

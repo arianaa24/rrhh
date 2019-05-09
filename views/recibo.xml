@@ -35,7 +35,7 @@
                                     <tr>
                                         <td><strong>Sueldo base mensual:</strong> <span t-field="o.contract_id.wage"/></td>
                                         <t t-set="horas" t-value="horas_extras(o)"/>
-                                        <td><strong>No. de Horas extras: </strong> <span t-esc="horas"/></td>
+                                        <td></td>
                                         <t t-set="dias" t-value="0.0"/>
                                         <tr t-foreach="o.worked_days_line_ids" t-as="i">
                                             <t t-if="i.code == 'WORK100'">
@@ -48,15 +48,18 @@
                             </table>
 
                             <div class="row">
-                                <div class="col-xs-6">
+                                <div class="col-xs-4">
                                     <strong>Ingresos</strong>
                                 </div>
-                                <div class="col-xs-6">
+                                <div class="col-xs-4">
                                     <strong>Deducciones</strong>
+                                </div>
+                                <div class="col-xs-4">
+                                    <strong>Horas extras</strong>
                                 </div>
                             </div>
                             <div class="row" t-foreach="lineas(o)['lineas']" t-as="l">
-                                <div class="col-xs-3">
+                                <div class="col-xs-2">
                                     <t t-if="l[0]">
                                         <span t-esc="l[0]['nombre']"></span>
                                     </t>
@@ -68,9 +71,6 @@
                                 </div>
 
                                 <div class="col-xs-2">
-                                </div>
-
-                                <div class="col-xs-3">
                                     <t t-if="l[1]">
                                         <span t-esc="l[1]['nombre']"></span>
                                     </t>
@@ -80,10 +80,22 @@
                                         <span t-esc="l[1]['total']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
                                     </t>
                                 </div>
+
+                                <div class="col-xs-2">
+                                    <t t-if="l[2]">
+                                        <span t-esc="l[2]['nombre']"></span>
+                                    </t>
+                                </div>
+                                <div class="col-xs-2 text-right">
+                                    <t t-if="l[2]">
+                                        <span t-esc="l[2]['total']"/>
+                                    </t>
+                                </div>
+
                             </div>
 
                             <div class="row">
-                                <div class="col-xs-3">
+                                <div class="col-xs-2">
                                     Subtotal
                                 </div>
                                 <div class="col-xs-2 text-right">
@@ -91,13 +103,17 @@
                                 </div>
 
                                 <div class="col-xs-2">
-                                </div>
-
-                                <div class="col-xs-3">
                                     Subtotal
                                 </div>
                                 <div class="col-xs-2 text-right">
                                     <span t-esc="lineas(o)['totales'][1]" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
+                                </div>
+
+                                <div class="col-xs-2">
+                                    Subtotal
+                                </div>
+                                <div class="col-xs-2 text-right">
+                                    <span t-esc="lineas(o)['totales'][2]"/>
                                 </div>
                             </div>
 
@@ -146,7 +162,7 @@
                                     <tr>
                                         <td><strong>Sueldo base mensual:</strong> <span t-field="o.contract_id.wage"/></td>
                                         <t t-set="horas" t-value="horas_extras(o)"/>
-                                        <td><strong>No. de Horas extras: </strong> <span t-esc="horas"/></td>
+                                        <td></td>
                                         <t t-set="dias" t-value="0.0"/>
                                         <tr t-foreach="o.worked_days_line_ids" t-as="i">
                                             <t t-if="i.code == 'WORK100'">
@@ -159,15 +175,18 @@
                             </table>
 
                             <div class="row">
-                                <div class="col-xs-6">
+                                <div class="col-xs-4">
                                     <strong>Ingresos</strong>
                                 </div>
-                                <div class="col-xs-6">
+                                <div class="col-xs-4">
                                     <strong>Deducciones</strong>
+                                </div>
+                                <div class="col-xs-4">
+                                    <strong>Horas extras</strong>
                                 </div>
                             </div>
                             <div class="row" t-foreach="lineas(o)['lineas']" t-as="l">
-                                <div class="col-xs-3">
+                                <div class="col-xs-2">
                                     <t t-if="l[0]">
                                         <span t-esc="l[0]['nombre']"></span>
                                     </t>
@@ -179,9 +198,6 @@
                                 </div>
 
                                 <div class="col-xs-2">
-                                </div>
-
-                                <div class="col-xs-3">
                                     <t t-if="l[1]">
                                         <span t-esc="l[1]['nombre']"></span>
                                     </t>
@@ -191,10 +207,22 @@
                                         <span t-esc="l[1]['total']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
                                     </t>
                                 </div>
+
+                                <div class="col-xs-2">
+                                    <t t-if="l[2]">
+                                        <span t-esc="l[2]['nombre']"></span>
+                                    </t>
+                                </div>
+                                <div class="col-xs-2 text-right">
+                                    <t t-if="l[2]">
+                                        <span t-esc="l[2]['total']"/>
+                                    </t>
+                                </div>
+
                             </div>
 
                             <div class="row">
-                                <div class="col-xs-3">
+                                <div class="col-xs-2">
                                     Subtotal
                                 </div>
                                 <div class="col-xs-2 text-right">
@@ -202,13 +230,17 @@
                                 </div>
 
                                 <div class="col-xs-2">
-                                </div>
-
-                                <div class="col-xs-3">
                                     Subtotal
                                 </div>
                                 <div class="col-xs-2 text-right">
                                     <span t-esc="lineas(o)['totales'][1]" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
+                                </div>
+
+                                <div class="col-xs-2">
+                                    Subtotal
+                                </div>
+                                <div class="col-xs-2 text-right">
+                                    <span t-esc="lineas(o)['totales'][2]"/>
                                 </div>
                             </div>
 
@@ -221,7 +253,6 @@
                                     <p class="text-center"><strong t-field="o.employee_id.name"></strong></p>
                                 </div>
                             </div>
-
                             <t t-if="o.move_id">
                                 <div class="row">
                                     <p class="text-right">Fecha: <span t-field="o.move_id.date"/></p>
