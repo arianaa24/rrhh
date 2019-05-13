@@ -87,8 +87,10 @@ class HrPayslip(models.Model):
                                     if active_id:
                                         [data] = self.env['hr.payslip.run'].browse(active_id).read(['porcentaje_prestamo'])
                                         r['amount'] = lineas.monto*(data.get('porcentaje_prestamo')/100)
-            dias_nomina = contract.employee_id.get_work_days_data(Datetime.from_string(date_from), Datetime.from_string(date_to), calendar=contract.resource_calendar_id)
-            res.append({'name': 'Dias de nómina','code': 'DINO','amount': dias_nomina['days'], 'contract_id': contract.id})
+            # dias_nomina = contract.employee_id.get_work_days_data(Datetime.from_string(date_from), Datetime.from_string(date_to), calendar=contract.resource_calendar_id)
+            # res.append({'name': 'Dias de nómina','code': 'DINO','amount': dias_nomina['days'], 'contract_id': contract.id})
+            dias_nomina = (datetime.datetime.strptime(date_to, '%Y-%m-%d') - datetime.datetime.strptime(date_from, '%Y-%m-%d')).days
+            res.append({'name': 'Dias de nomina','code': 'DINO','amount': dias_nomina + 1, 'contract_id': contract.id})
         return res
 
     @api.onchange('employee_id', 'date_from', 'date_to','porcentaje_prestamo')
