@@ -137,3 +137,12 @@ class HrPayslipRun(models.Model):
                     pago_id = self.env['account.payment'].create(pago)
                     pago_id.post()
         return True
+
+    @api.multi
+    def close_payslip_run(self):
+        for slip in self.slip_ids:
+            if slip.state == 'draft':
+                slip.action_payslip_done()
+
+        res = super(HrPayslipRun, self).close_payslip_run()
+        return res
