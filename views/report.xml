@@ -18,6 +18,7 @@
             report_type="qweb-pdf"
             file="rrhh.libro_salarios"
             name="rrhh.libro_salarios"
+            paperformat ="paperformat_libro_salarios"
             menu="False"
         />
 
