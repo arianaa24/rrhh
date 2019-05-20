@@ -113,7 +113,7 @@ class HrPayslipRun(models.Model):
         for nomina in self.slip_ids:
             if nomina.id not in nominas_pagadas:
                 total_nomina = 0
-                if nomina.employee_id.diario_pago_id and nomina.state == 'done':
+                if nomina.employee_id.diario_pago_id and nomina.employee_id.address_home_id and nomina.state == 'done':
                     res = self.env['report.rrhh.recibo'].lineas(nomina)
                     total_nomina = res['totales'][0] + res['totales'][1]
                     pago = {
@@ -128,3 +128,12 @@ class HrPayslipRun(models.Model):
                     pago_id = self.env['account.payment'].create(pago)
                     pago_id.post()
         return True
+
+    @api.multi
+    def close_payslip_run(self):
+        for slip in self.slip_ids:
+            if slip.state == 'draft':
+                slip.action_payslip_done()
+
+        res = super(HrPayslipRun, self).close_payslip_run()
+        return res

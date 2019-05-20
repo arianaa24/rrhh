@@ -147,7 +147,7 @@
             </field>
         </record>
 
-        <record id="rrhh_prestamo_view_search" model="ir.ui.view">
+        <!--<record id="rrhh_prestamo_view_search" model="ir.ui.view">
             <field name="name">rrhh.prestamo.search</field>
             <field name="model">rrhh.prestamo</field>
             <field name="arch" type="xml">
@@ -167,7 +167,7 @@
                     </group>
                 </search>
             </field>
-        </record>
+        </record>-->
 
         <record id="rrhh_view_employee_prestamo_linea_form" model="ir.ui.view">
             <field name="name">rrhh.employee.prestamo.linea.form</field>
@@ -191,7 +191,7 @@
             <field name="view_mode">tree,form</field>
             <field name="domain">[('employee_id', '!=', False)]</field>
             <field name="context">{'search_default_current':1, 'search_default_group_by_state': 1}</field>
-            <field name="search_view_id" ref="rrhh_prestamo_view_search"/>
+            <!--<field name="search_view_id" ref="rrhh_prestamo_view_search"/>-->
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
                Click para crear un nuevo prestamo.
