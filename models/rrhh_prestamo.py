@@ -42,7 +42,7 @@ class rrhh_prestamo(models.Model):
             return True
 
     def generar_mensualidades(self):
-        mes_inicial = datetime.datetime.strptime(self.fecha_inicio, '%Y-%m-%d').date()
+        mes_inicial = datetime.datetime.strptime(str(self.fecha_inicio), '%Y-%m-%d').date()
         mes  = 0
         if self.mensualidad > 0 and self.numero_descuentos > 0:
             total = self.mensualidad * self.numero_descuentos
