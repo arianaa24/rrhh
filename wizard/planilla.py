@@ -24,6 +24,7 @@ class rrhh_planilla_wizard(models.TransientModel):
             xlwt.add_palette_colour("custom_colour", 0x21)
             libro.set_colour_RGB(0x21, 200, 200, 200)
             estilo = xlwt.easyxf('pattern: pattern solid, fore_colour custom_colour')
+            logging.warn(w.planilla_id.entrada_id)
             if w.agrupado:
                 cuentas_analiticas = set([])
                 for l in w.nomina_id.slip_ids:
@@ -60,7 +61,13 @@ class rrhh_planilla_wizard(models.TransientModel):
                         hoja.write(linea, columna, c.name, estilo)
                         columna += 1
                         totales.append(0)
+
+                    for entrada in w.planilla_id.entrada_id:
+                        hoja.write(linea, columna, entrada.input_id.name, estilo)
+                        columna += 1
+                        totales.append(0)
                     totales.append(0)
+
                     hoja.write(linea, columna, 'Liquido a recibir', estilo)
                     hoja.write(linea, columna+1, 'Banco a depositar', estilo)
                     hoja.write(linea, columna+2, 'Cuenta a depositar', estilo)
@@ -133,6 +140,17 @@ class rrhh_planilla_wizard(models.TransientModel):
                                 hoja.write(linea, columna, total_columna)
                                 columna += 1
 
+                            for entrada in w.planilla_id.entrada_id:
+                                entradas = [x.name for x in entrada.input_id]
+                                total_columna = 0
+                                for r in l.input_line_ids:
+                                    if r.name in entradas:
+                                        total_columna += r.amount
+
+                                totales[columna-6] += total_columna
+                                hoja.write(linea, columna, total_columna)
+                                columna += 1
+
                             totales[columna-6] += total_salario
                             hoja.write(linea, columna, total_salario)
                             hoja.write(linea, columna+1, l.employee_id.bank_account_id.bank_id.name)
@@ -170,6 +188,11 @@ class rrhh_planilla_wizard(models.TransientModel):
                     hoja.write(linea, columna, c.name, estilo)
                     columna += 1
                     totales.append(0)
+
+                for entrada in w.planilla_id.entrada_id:
+                    hoja.write(linea, columna, entrada.input_id.name, estilo)
+                    columna += 1
+                    totales.append(0)
                 totales.append(0)
 
                 hoja.write(linea, columna, 'Liquido a recibir', estilo)
@@ -204,6 +227,17 @@ class rrhh_planilla_wizard(models.TransientModel):
                             total_salario += total_columna
                         totales[columna-6] += total_columna
 
+                        hoja.write(linea, columna, total_columna)
+                        columna += 1
+
+                    for entrada in w.planilla_id.entrada_id:
+                        entradas = [x.name for x in entrada.input_id]
+                        total_columna = 0
+                        for r in l.input_line_ids:
+                            if r.name in entradas:
+                                total_columna += r.amount
+
+                        totales[columna-6] += total_columna
                         hoja.write(linea, columna, total_columna)
                         columna += 1
 
