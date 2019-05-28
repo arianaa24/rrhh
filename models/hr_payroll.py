@@ -127,7 +127,7 @@ class HrPayslipRun(models.Model):
                         'nomina_id': nomina.id
                     }
                     pago_id = self.env['account.payment'].create(pago)
-                    pago_id.post()
+                    #pago_id.post()
         return True
 
     @api.multi
