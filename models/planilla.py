@@ -9,8 +9,6 @@ class rrhh_planilla(models.Model):
     name = fields.Char('Nombre', size=40, required=True)
     descripcion = fields.Char('Descripción', size=120)
     columna_id = fields.One2many('rrhh.planilla.columna', 'planilla_id', 'Columnas')
-    entrada_id = fields.One2many('rrhh.entrada_planilla.linea','planilla_id',string='Entradas')
-
 
 class rrhh_planilla_columna(models.Model):
     _name = 'rrhh.planilla.columna'
@@ -19,6 +17,7 @@ class rrhh_planilla_columna(models.Model):
     name = fields.Char('Nombre', size=40, required=True)
     sequence = fields.Integer('Secuencia', required=True, select=True, default=5)
     regla_id = fields.Many2many('hr.salary.rule', id1='columna_id', id2='regla_id', string='Reglas')
+    entrada_id = fields.Many2many('hr.rule.input',id1='columna_id', id2='entrada_id',string='Entradas')
     planilla_id = fields.Many2one('rrhh.planilla', 'Planilla', required=False)
     sumar = fields.Boolean('Sumar en liquido a recibir', help="Seleccionar si se desea que se tome en cuenta en la suma del liquido a recibir.")
 
@@ -47,9 +46,3 @@ class rrhh_entrada_linea(models.Model):
 
     input_id = fields.Many2one('hr.rule.input',string='Entradas')
     recibo_id = fields.Many2one('rrhh.recibo','Recibo',required=False)
-
-class rrhh_entrada_planilla_linea(models.Model):
-    _name = 'rrhh.entrada_planilla.linea'
-
-    input_id = fields.Many2one('hr.rule.input',string='Entradas')
-    planilla_id = fields.Many2one('rrhh.recibo','Planilla',required=False)
