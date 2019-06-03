@@ -24,7 +24,6 @@ class rrhh_planilla_wizard(models.TransientModel):
             xlwt.add_palette_colour("custom_colour", 0x21)
             libro.set_colour_RGB(0x21, 200, 200, 200)
             estilo = xlwt.easyxf('pattern: pattern solid, fore_colour custom_colour')
-            logging.warn(w.planilla_id.entrada_id)
             if w.agrupado:
                 cuentas_analiticas = set([])
                 for l in w.nomina_id.slip_ids:
@@ -61,11 +60,6 @@ class rrhh_planilla_wizard(models.TransientModel):
                         hoja.write(linea, columna, c.name, estilo)
                         columna += 1
                         totales.append(0)
-
-                    for entrada in w.planilla_id.entrada_id:
-                        hoja.write(linea, columna, entrada.input_id.name, estilo)
-                        columna += 1
-                        totales.append(0)
                     totales.append(0)
 
                     hoja.write(linea, columna, 'Liquido a recibir', estilo)
@@ -92,10 +86,14 @@ class rrhh_planilla_wizard(models.TransientModel):
                             columna = 6
                             for c in w.planilla_id.columna_id:
                                 reglas = [x.id for x in c.regla_id]
+                                entradas = [x.name for x in c.entrada_id]
                                 total_columna = 0
                                 for r in l.line_ids:
                                     if r.salary_rule_id.id in reglas:
                                         total_columna += r.total
+                                for r in l.input_line_ids:
+                                    if r.name in entradas:
+                                        total_columna += r.amount
                                 if c.sumar:
                                     total_salario += total_columna
                                 totales[columna-6] += total_columna
@@ -129,10 +127,14 @@ class rrhh_planilla_wizard(models.TransientModel):
                             columna = 6
                             for c in w.planilla_id.columna_id:
                                 reglas = [x.id for x in c.regla_id]
+                                entradas = [x.name for x in c.entrada_id]
                                 total_columna = 0
                                 for r in l.line_ids:
                                     if r.salary_rule_id.id in reglas:
                                         total_columna += r.total
+                                for r in l.input_line_ids:
+                                    if r.name in entradas:
+                                        total_columna += r.amount
                                 if c.sumar:
                                     total_salario += total_columna
                                 totales[columna-6] += total_columna
@@ -146,7 +148,6 @@ class rrhh_planilla_wizard(models.TransientModel):
                                 for r in l.input_line_ids:
                                     if r.name in entradas:
                                         total_columna += r.amount
-
                                 totales[columna-6] += total_columna
                                 hoja.write(linea, columna, total_columna)
                                 columna += 1
@@ -188,11 +189,6 @@ class rrhh_planilla_wizard(models.TransientModel):
                     hoja.write(linea, columna, c.name, estilo)
                     columna += 1
                     totales.append(0)
-
-                for entrada in w.planilla_id.entrada_id:
-                    hoja.write(linea, columna, entrada.input_id.name, estilo)
-                    columna += 1
-                    totales.append(0)
                 totales.append(0)
 
                 hoja.write(linea, columna, 'Liquido a recibir', estilo)
@@ -219,25 +215,18 @@ class rrhh_planilla_wizard(models.TransientModel):
                     columna = 6
                     for c in w.planilla_id.columna_id:
                         reglas = [x.id for x in c.regla_id]
+                        entradas = [x.name for x in c.entrada_id]
                         total_columna = 0
                         for r in l.line_ids:
                             if r.salary_rule_id.id in reglas:
                                 total_columna += r.total
+                        for r in l.input_line_ids:
+                            if r.name in entradas:
+                                total_columna += r.amount
                         if c.sumar:
                             total_salario += total_columna
                         totales[columna-6] += total_columna
 
-                        hoja.write(linea, columna, total_columna)
-                        columna += 1
-
-                    for entrada in w.planilla_id.entrada_id:
-                        entradas = [x.name for x in entrada.input_id]
-                        total_columna = 0
-                        for r in l.input_line_ids:
-                            if r.name in entradas:
-                                total_columna += r.amount
-
-                        totales[columna-6] += total_columna
                         hoja.write(linea, columna, total_columna)
                         columna += 1
 
