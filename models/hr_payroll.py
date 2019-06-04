@@ -3,6 +3,8 @@
 from odoo import models, fields, api
 import logging
 import datetime
+import time
+import dateutil.parser
 from odoo.fields import Date, Datetime
 
 class HrPayslip(models.Model):
@@ -28,9 +30,22 @@ class HrPayslip(models.Model):
             mes_nomina = int(datetime.datetime.strptime(nomina.date_from, '%Y-%m-%d').date().strftime('%m'))
             dia_nomina = int(datetime.datetime.strptime(nomina.date_to, '%Y-%m-%d').date().strftime('%d'))
             anio_nomina = int(datetime.datetime.strptime(nomina.date_from, '%Y-%m-%d').date().strftime('%Y'))
+            tipos_ausencias_ids = self.env['hr.holidays'].search([('descontar_nomina','=',False),('state','=','validate'),('employee_id','=',nomina.employee_id.id)])
+            tipos_ausencias = []
+            dias_ausentados = 0
+            for ausencia in tipos_ausencias_ids:
+                fecha_ausencia = dateutil.parser.parse(ausencia.date_to).date()
+                if time.strptime(str(nomina.date_from), '%Y-%m-%d') < time.strptime(str(fecha_ausencia),'%Y-%m-%d')  and time.strptime(str(nomina.date_to),'%Y-%m-%d') > time.strptime(str(fecha_ausencia),'%Y-%m-%d'):
+                    tipos_ausencias.append(ausencia.holiday_status_id.name)
+                    logging.warn(tipos_ausencias)
             valor_pago = 0
             porcentaje_pagar = 0
+            for dias in nomina.worked_days_line_ids:
+                if dias.code in tipos_ausencias:
+                    dias_ausentados += dias.number_of_days
             for entrada in nomina.input_line_ids:
+                if entrada.code == 'FACNO':
+                    entrada.amount += dias_ausentados
                 for prestamo in nomina.employee_id.prestamo_ids:
                     anio_prestamo = int(datetime.datetime.strptime(prestamo.fecha_inicio, '%Y-%m-%d').date().strftime('%Y'))
                     if (prestamo.codigo == entrada.code) and ((prestamo.estado == 'nuevo') or (prestamo.estado == 'proceso')):

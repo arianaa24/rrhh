@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<odoo>
+
+        <record id="fitnessone_edit_holiday_new" model="ir.ui.view">
+            <field name="name">Fintessone Leave Request</field>
+            <field name="model">hr.holidays</field>
+            <field name="inherit_id" ref="hr_holidays.edit_holiday_new"/>
+            <field name="arch" type="xml">
+                <field name="payslip_status" position="after">
+                    <field name="descontar_nomina"/>
+                </field>
+            </field>
+        </record>
+
+</odoo>
