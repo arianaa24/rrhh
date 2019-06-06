@@ -29,6 +29,7 @@
         'wizard/planilla.xml',
         'views/libro_salarios.xml',
         'views/res_country_view.xml',
+        'views/hr_holidays_views.xml',
         'wizard/rrhh_libro_salarios_view.xml',
         'wizard/rrhh_informe_empleador_view.xml',
         'wizard/igss.xml',
