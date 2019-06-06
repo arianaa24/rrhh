@@ -27,9 +27,9 @@ class HrPayslip(models.Model):
     def compute_sheet(self):
         res =  super(HrPayslip, self).compute_sheet()
         for nomina in self:
-            mes_nomina = int(datetime.datetime.strptime(nomina.date_from, '%Y-%m-%d').date().strftime('%m'))
-            dia_nomina = int(datetime.datetime.strptime(nomina.date_to, '%Y-%m-%d').date().strftime('%d'))
-            anio_nomina = int(datetime.datetime.strptime(nomina.date_from, '%Y-%m-%d').date().strftime('%Y'))
+            mes_nomina = int(datetime.datetime.strptime(str(nomina.date_from), '%Y-%m-%d').date().strftime('%m'))
+            dia_nomina = int(datetime.datetime.strptime(str(nomina.date_to), '%Y-%m-%d').date().strftime('%d'))
+            anio_nomina = int(datetime.datetime.strptime(str(nomina.date_from), '%Y-%m-%d').date().strftime('%Y'))
             tipos_ausencias_ids = self.env['hr.holidays.status'].search([])
             tipos_ausencias = {
                 'ausencias_sumar': [],
@@ -50,7 +50,7 @@ class HrPayslip(models.Model):
                 if dias.code in tipos_ausencias['ausencias_restar']:
                     dias_ausentados_restar += dias.number_of_days
             if nomina.date_from <= nomina.employee_id.contract_id.date_start <= nomina.date_to:
-                dias_laborados = nomina.employee_id.get_work_days_data(Datetime.from_string(nomina.employee_id.contract_id.date_start), Datetime.from_string(nomina.date_to), calendar=nomina.employee_id.contract_id.resource_calendar_id)
+                dias_laborados = nomina.employee_id.get_work_days_data(Datetime.from_string(str(nomina.employee_id.contract_id.date_start(), Datetime.from_string(str(nomina.date_to)), calendar=nomina.employee_id.contract_id.resource_calendar_id)
                 nomina.worked_days_line_ids = [(0, 0, {'name': 'Dias trabajados','code': 'TRABAJO100','number_of_days': dias_laborados['days'] + dias_ausentados_sumar, 'contract_id': nomina.employee_id.contract_id.id})]
             else:
                 if nomina.employee_id.contract_id.schedule_pay == 'monthly':
