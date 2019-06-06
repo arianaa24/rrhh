@@ -25,27 +25,15 @@ class HrPayslip(models.Model):
     def compute_sheet(self):
         res =  super(HrPayslip, self).compute_sheet()
         for nomina in self:
-            mes_nomina = int(datetime.datetime.strptime(nomina.date_from, '%Y-%m-%d').date().strftime('%m'))
-            dia_nomina = int(datetime.datetime.strptime(nomina.date_to, '%Y-%m-%d').date().strftime('%d'))
-            anio_nomina = int(datetime.datetime.strptime(nomina.date_from, '%Y-%m-%d').date().strftime('%Y'))
+
+            mes_nomina = int(datetime.datetime.strptime(str(nomina.date_from), '%Y-%m-%d').date().strftime('%m'))
+            dia_nomina = int(datetime.datetime.strptime(str(nomina.date_to), '%Y-%m-%d').date().strftime('%d'))
+            anio_nomina = int(datetime.datetime.strptime(str(nomina.date_from), '%Y-%m-%d').date().strftime('%Y'))
             valor_pago = 0
             porcentaje_pagar = 0
-            if nomina.employee_id.contract_id.date_start:
-                if nomina.date_from <= nomina.employee_id.contract_id.date_start <= nomina.date_to:
-                    dias_laborados = nomina.employee_id.get_work_days_data(Datetime.from_string(nomina.employee_id.contract_id.date_start), Datetime.from_string(nomina.date_to), calendar=nomina.employee_id.contract_id.resource_calendar_id)
-                    for linea in nomina.worked_days_line_ids:
-                        if linea.code == 'WORK100':
-                            linea.number_of_days = dias_laborados['days']
-                            linea.number_of_hours = dias_laborados['hours']
-            else:
-                dias_laborados = nomina.employee_id.get_work_days_data(Datetime.from_string(nomina.date_from), Datetime.from_string(nomina.date_to), calendar=nomina.employee_id.contract_id.resource_calendar_id)
-                for linea in nomina.worked_days_line_ids:
-                    if linea.code == 'WORK100':
-                        linea.number_of_days = dias_laborados['days']
-                        linea.number_of_hours = dias_laborados['hours']
             for entrada in nomina.input_line_ids:
                 for prestamo in nomina.employee_id.prestamo_ids:
-                    anio_prestamo = int(datetime.datetime.strptime(prestamo.fecha_inicio, '%Y-%m-%d').date().strftime('%Y'))
+                    anio_prestamo = int(datetime.datetime.strptime(str(prestamo.fecha_inicio), '%Y-%m-%d').date().strftime('%Y'))
                     if (prestamo.codigo == entrada.code) and ((prestamo.estado == 'nuevo') or (prestamo.estado == 'proceso')):
                         lista = []
                         for lineas in prestamo.prestamo_ids:
@@ -70,13 +58,13 @@ class HrPayslip(models.Model):
     def get_inputs(self, contracts, date_from, date_to):
         res = super(HrPayslip, self).get_inputs(contracts, date_from, date_to)
         for contract in contracts:
-            mes_nomina = int(datetime.datetime.strptime(date_from, '%Y-%m-%d').date().strftime('%m'))
-            anio_nomina = int(datetime.datetime.strptime(date_from, '%Y-%m-%d').date().strftime('%Y'))
-            dia_nomina = int(datetime.datetime.strptime(date_to, '%Y-%m-%d').date().strftime('%d'))
+            mes_nomina = int(datetime.datetime.strptime(str(date_from), '%Y-%m-%d').date().strftime('%m'))
+            anio_nomina = int(datetime.datetime.strptime(str(date_from), '%Y-%m-%d').date().strftime('%Y'))
+            dia_nomina = int(datetime.datetime.strptime(str(date_to), '%Y-%m-%d').date().strftime('%d'))
             monto_prestamo = 0
             for prestamo in contract.employee_id.prestamo_ids:
                 for r in res:
-                    anio_prestamo = int(datetime.datetime.strptime(prestamo.fecha_inicio, '%Y-%m-%d').date().strftime('%Y'))
+                    anio_prestamo = int(datetime.datetime.strptime(str(prestamo.fecha_inicio), '%Y-%m-%d').date().strftime('%Y'))
                     if (prestamo.codigo == r['code']) and ((prestamo.estado == 'nuevo') or (prestamo.estado == 'proceso')):
                         for lineas in prestamo.prestamo_ids:
                             if mes_nomina == lineas.mes and anio_nomina == lineas.anio:
@@ -87,20 +75,24 @@ class HrPayslip(models.Model):
                                     if active_id:
                                         [data] = self.env['hr.payslip.run'].browse(active_id).read(['porcentaje_prestamo'])
                                         r['amount'] = lineas.monto*(data.get('porcentaje_prestamo')/100)
-            # dias_nomina = contract.employee_id.get_work_days_data(Datetime.from_string(date_from), Datetime.from_string(date_to), calendar=contract.resource_calendar_id)
-            # res.append({'name': 'Dias de nómina','code': 'DINO','amount': dias_nomina['days'], 'contract_id': contract.id})
-            dias_nomina = (datetime.datetime.strptime(date_to, '%Y-%m-%d') - datetime.datetime.strptime(date_from, '%Y-%m-%d')).days
-            res.append({'name': 'Dias de nomina','code': 'DINO','amount': dias_nomina + 1, 'contract_id': contract.id})
+            if date_from <= contract.date_start <= date_to:
+                dias_laborados = contract.employee_id.get_work_days_data(Datetime.from_string(contract.date_start), Datetime.from_string(date_to), calendar=contract.resource_calendar_id)
+                res.append({'name': 'Factor nomina','code': 'FACNO','amount': dias_laborados['days'], 'contract_id': contract.id})
+            else:
+                if contract.schedule_pay == 'monthly':
+                    res.append({'name': 'Factor nomina','code': 'FACNO','amount': 30, 'contract_id': contract.id})
+                if contract.schedule_pay == 'bi-monthly':
+                    res.append({'name': 'Factor nomina','code': 'FACNO','amount': 15, 'contract_id': contract.id})
         return res
 
     @api.onchange('employee_id', 'date_from', 'date_to','porcentaje_prestamo')
     def onchange_employee(self):
         res = super(HrPayslip, self).onchange_employee()
-        mes_nomina = int(datetime.datetime.strptime(self.date_from, '%Y-%m-%d').date().strftime('%m'))
-        anio_nomina = int(datetime.datetime.strptime(self.date_from, '%Y-%m-%d').date().strftime('%Y'))
-        dia_nomina = int(datetime.datetime.strptime(self.date_to, '%Y-%m-%d').date().strftime('%d'))
+        mes_nomina = int(datetime.datetime.strptime(str(self.date_from), '%Y-%m-%d').date().strftime('%m'))
+        anio_nomina = int(datetime.datetime.strptime(str(self.date_from), '%Y-%m-%d').date().strftime('%Y'))
+        dia_nomina = int(datetime.datetime.strptime(str(self.date_to), '%Y-%m-%d').date().strftime('%d'))
         for prestamo in self.employee_id.prestamo_ids:
-            anio_prestamo = int(datetime.datetime.strptime(prestamo.fecha_inicio, '%Y-%m-%d').date().strftime('%Y'))
+            anio_prestamo = int(datetime.datetime.strptime(str(prestamo.fecha_inicio), '%Y-%m-%d').date().strftime('%Y'))
             for inmput in self.input_line_ids:
                 if (prestamo.codigo == inmput.code) and ((prestamo.estado == 'nuevo') or (prestamo.estado == 'proceso')):
                     for lineas in prestamo.prestamo_ids:
@@ -135,7 +127,7 @@ class HrPayslipRun(models.Model):
                         'nomina_id': nomina.id
                     }
                     pago_id = self.env['account.payment'].create(pago)
-                    pago_id.post()
+                    #pago_id.post()
         return True
 
     @api.multi

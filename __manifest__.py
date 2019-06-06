@@ -18,6 +18,7 @@
 
     'data': [
         'data/rrhh_data.xml',
+        'data/paperformat_libro_salarios.xml',
         'views/hr_views.xml',
         'views/hr_contract_views.xml',
         'views/hr_payroll_views.xml',

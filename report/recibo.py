@@ -27,11 +27,13 @@ class ReportRecibo(models.AbstractModel):
                     lineas_reglas[l.salary_rule_id.id] = 0
                 lineas_reglas[l.salary_rule_id.id] += l.total
 
+            entradas = {}
             for l in o.input_line_ids:
-                input_id = self.env['hr.rule.input'].search([('name', '=', l.name )])
-                if input_id.id not in lineas_reglas:
-                    lineas_reglas[input_id.id] = 0
-                lineas_reglas[input_id.id] += l.amount
+                input_id = self.env['hr.rule.input'].search([('code', '=', l.code )])
+                if len(input_id):
+                    if input_id[0].code not in entradas:
+                        entradas[input_id[0].code] = 0
+                    entradas[input_id[0].code] += l.amount
 
             recibo = o.employee_id.recibo_id
             lineas_ingresos = []
@@ -51,18 +53,10 @@ class ReportRecibo(models.AbstractModel):
                 lineas_deducciones.append(datos)
 
             lineas_entradas = []
-            entradas = []
-            entradas_datos = []
-            for le in recibo.entrada_id:
-               entradas.append(le.input_id.name)
-               entradas_datos.append({'nombre': le.input_id.name, 'input_id': le.input_id.id})
-            for entrada in o.input_line_ids:
-                if entrada.name in entradas:
-                    datos = {'nombre': entrada.name, 'total': entrada.amount, 'regla_id': entrada.id}
-                    for regla_entrada in entradas_datos:
-                        if entrada.name == regla_entrada['nombre']:
-                            result['totales'][2] += lineas_reglas.get(regla_entrada['input_id'], 0)
-                            lineas_entradas.append(datos)
+            for entrada in recibo.entrada_id:
+                datos = {'nombre': entrada.input_id.name, 'total': 0}
+                datos['total'] = entradas.get(entrada.input_id.code, 0)
+                lineas_entradas.append(datos)
 
             largo = max(len(lineas_ingresos), len(lineas_deducciones), len(lineas_entradas))
             lineas_ingresos += [None] * (largo - len(lineas_ingresos))
