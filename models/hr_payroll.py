@@ -30,21 +30,34 @@ class HrPayslip(models.Model):
             mes_nomina = int(datetime.datetime.strptime(nomina.date_from, '%Y-%m-%d').date().strftime('%m'))
             dia_nomina = int(datetime.datetime.strptime(nomina.date_to, '%Y-%m-%d').date().strftime('%d'))
             anio_nomina = int(datetime.datetime.strptime(nomina.date_from, '%Y-%m-%d').date().strftime('%Y'))
-            tipos_ausencias_ids = self.env['hr.holidays'].search([('descontar_nomina','=',False),('state','=','validate'),('employee_id','=',nomina.employee_id.id)])
-            tipos_ausencias = []
-            dias_ausentados = 0
+            tipos_ausencias_ids = self.env['hr.holidays.status'].search([])
+            tipos_ausencias = {
+                'ausencias_sumar': [],
+                'ausencias_restar': []
+            }
+            dias_ausentados_sumar = 0
+            dias_ausentados_restar = 0
             for ausencia in tipos_ausencias_ids:
-                fecha_ausencia = dateutil.parser.parse(ausencia.date_to).date()
-                if time.strptime(str(nomina.date_from), '%Y-%m-%d') < time.strptime(str(fecha_ausencia),'%Y-%m-%d')  and time.strptime(str(nomina.date_to),'%Y-%m-%d') > time.strptime(str(fecha_ausencia),'%Y-%m-%d'):
-                    tipos_ausencias.append(ausencia.holiday_status_id.name)
+                if ausencia.descontar_nomina == False:
+                    tipos_ausencias['ausencias_sumar'].append(ausencia.name)
+                else:
+                    tipos_ausencias['ausencias_restar'].append(ausencia.name)
             valor_pago = 0
             porcentaje_pagar = 0
             for dias in nomina.worked_days_line_ids:
-                if dias.code in tipos_ausencias:
-                    dias_ausentados += dias.number_of_days
+                if dias.code in tipos_ausencias['ausencias_sumar']:
+                    dias_ausentados_sumar += dias.number_of_days
+                if dias.code in tipos_ausencias['ausencias_restar']:
+                    dias_ausentados_restar += dias.number_of_days
+            if nomina.date_from <= nomina.employee_id.contract_id.date_start <= nomina.date_to:
+                dias_laborados = nomina.employee_id.get_work_days_data(Datetime.from_string(nomina.employee_id.contract_id.date_start), Datetime.from_string(nomina.date_to), calendar=nomina.employee_id.contract_id.resource_calendar_id)
+                nomina.worked_days_line_ids = [(0, 0, {'name': 'Dias trabajados','code': 'TRABAJO100','number_of_days': dias_laborados['days'] + dias_ausentados_sumar, 'contract_id': nomina.employee_id.contract_id.id})]
+            else:
+                if nomina.employee_id.contract_id.schedule_pay == 'monthly':
+                    nomina.worked_days_line_ids = [(0, 0, {'name': 'Dias trabajados','code': 'TRABAJO100','number_of_days': 30 - dias_ausentados_restar, 'contract_id': nomina.employee_id.contract_id.id})]
+                if nomina.employee_id.contract_id.schedule_pay == 'bi-monthly':
+                    nomina.worked_days_line_ids = [(0, 0, {'name': 'Dias trabajados','code': 'TRABAJO100','number_of_days': 15 - dias_ausentados_restar, 'contract_id': nomina.employee_id.contract_id.id})]
             for entrada in nomina.input_line_ids:
-                if entrada.code == 'FACNO':
-                    entrada.amount += dias_ausentados
                 for prestamo in nomina.employee_id.prestamo_ids:
                     anio_prestamo = int(datetime.datetime.strptime(str(prestamo.fecha_inicio), '%Y-%m-%d').date().strftime('%Y'))
                     if (prestamo.codigo == entrada.code) and ((prestamo.estado == 'nuevo') or (prestamo.estado == 'proceso')):
@@ -88,14 +101,6 @@ class HrPayslip(models.Model):
                                     if active_id:
                                         [data] = self.env['hr.payslip.run'].browse(active_id).read(['porcentaje_prestamo'])
                                         r['amount'] = lineas.monto*(data.get('porcentaje_prestamo')/100)
-            if date_from <= contract.date_start <= date_to:
-                dias_laborados = contract.employee_id.get_work_days_data(Datetime.from_string(contract.date_start), Datetime.from_string(date_to), calendar=contract.resource_calendar_id)
-                res.append({'name': 'Factor nomina','code': 'FACNO','amount': dias_laborados['days'], 'contract_id': contract.id})
-            else:
-                if contract.schedule_pay == 'monthly':
-                    res.append({'name': 'Factor nomina','code': 'FACNO','amount': 30, 'contract_id': contract.id})
-                if contract.schedule_pay == 'bi-monthly':
-                    res.append({'name': 'Factor nomina','code': 'FACNO','amount': 15, 'contract_id': contract.id})
         return res
 
     @api.onchange('employee_id', 'date_from', 'date_to','porcentaje_prestamo')
