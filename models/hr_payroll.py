@@ -51,7 +51,7 @@ class HrPayslip(models.Model):
                     dias_ausentados_restar += dias.number_of_days
             if nomina.date_from <= nomina.employee_id.contract_id.date_start <= nomina.date_to:
                 dias_laborados = nomina.employee_id.get_work_days_data(Datetime.from_string(str(nomina.employee_id.contract_id.date_start(), Datetime.from_string(str(nomina.date_to)), calendar=nomina.employee_id.contract_id.resource_calendar_id)
-                nomina.worked_days_line_ids = [(0, 0, {'name': 'Dias trabajados','code': 'TRABAJO100','number_of_days': dias_laborados['days'] + dias_ausentados_sumar, 'contract_id': nomina.employee_id.contract_id.id})]
+                nomina.worked_days_line_ids = [(0, 0, {'name': 'Dias trabajados', 'code': 'TRABAJO100', 'number_of_days': (dias_laborados['days'] + dias_ausentados_sumar), 'contract_id': nomina.employee_id.contract_id.id})]
             else:
                 if nomina.employee_id.contract_id.schedule_pay == 'monthly':
                     nomina.worked_days_line_ids = [(0, 0, {'name': 'Dias trabajados','code': 'TRABAJO100','number_of_days': 30 - dias_ausentados_restar, 'contract_id': nomina.employee_id.contract_id.id})]
