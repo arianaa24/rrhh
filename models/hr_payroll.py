@@ -30,33 +30,34 @@ class HrPayslip(models.Model):
             mes_nomina = int(datetime.datetime.strptime(str(nomina.date_from), '%Y-%m-%d').date().strftime('%m'))
             dia_nomina = int(datetime.datetime.strptime(str(nomina.date_to), '%Y-%m-%d').date().strftime('%d'))
             anio_nomina = int(datetime.datetime.strptime(str(nomina.date_from), '%Y-%m-%d').date().strftime('%Y'))
-            tipos_ausencias_ids = self.env['hr.holidays.status'].search([])
-            tipos_ausencias = {
-                'ausencias_sumar': [],
-                'ausencias_restar': []
-            }
-            dias_ausentados_sumar = 0
-            dias_ausentados_restar = 0
-            for ausencia in tipos_ausencias_ids:
-                if ausencia.descontar_nomina == False:
-                    tipos_ausencias['ausencias_sumar'].append(ausencia.name)
-                else:
-                    tipos_ausencias['ausencias_restar'].append(ausencia.name)
+            # tipos_ausencias_ids = self.env['hr.holidays.status'].search([])
+            # tipos_ausencias = {
+            #     'ausencias_sumar': [],
+            #     'ausencias_restar': []
+            # }
+            # dias_ausentados_sumar = 0
+            # dias_ausentados_restar = 0
+            # for ausencia in tipos_ausencias_ids:
+            #     if ausencia.descontar_nomina == False:
+            #         tipos_ausencias['ausencias_sumar'].append(ausencia.name)
+            #     else:
+            #         tipos_ausencias['ausencias_restar'].append(ausencia.name)
             valor_pago = 0
             porcentaje_pagar = 0
-            for dias in nomina.worked_days_line_ids:
-                if dias.code in tipos_ausencias['ausencias_sumar']:
-                    dias_ausentados_sumar += dias.number_of_days
-                if dias.code in tipos_ausencias['ausencias_restar']:
-                    dias_ausentados_restar += dias.number_of_days
-            if nomina.date_from <= nomina.employee_id.contract_id.date_start <= nomina.date_to:
-                dias_laborados = nomina.employee_id.get_work_days_data(Datetime.from_string(nomina.employee_id.contract_id.date_start), Datetime.from_string(nomina.date_to), calendar=nomina.employee_id.contract_id.resource_calendar_id)
-                nomina.worked_days_line_ids = [(0, 0, {'name': 'Dias trabajados', 'code': 'TRABAJO100', 'number_of_days': (dias_laborados['days'] + dias_ausentados_sumar), 'contract_id': nomina.employee_id.contract_id.id})]
-            else:
-                if nomina.employee_id.contract_id.schedule_pay == 'monthly':
-                    nomina.worked_days_line_ids = [(0, 0, {'name': 'Dias trabajados','code': 'TRABAJO100','number_of_days': 30 - dias_ausentados_restar, 'contract_id': nomina.employee_id.contract_id.id})]
-                if nomina.employee_id.contract_id.schedule_pay == 'bi-monthly':
-                    nomina.worked_days_line_ids = [(0, 0, {'name': 'Dias trabajados','code': 'TRABAJO100','number_of_days': 15 - dias_ausentados_restar, 'contract_id': nomina.employee_id.contract_id.id})]
+            # for dias in nomina.worked_days_line_ids:
+            #     if dias.code in tipos_ausencias['ausencias_sumar']:
+            #         dias_ausentados_sumar += dias.number_of_days
+            #     if dias.code in tipos_ausencias['ausencias_restar']:
+            #         dias_ausentados_restar += dias.number_of_days
+            # if nomina.date_from <= nomina.employee_id.contract_id.date_start <= nomina.date_to:
+            #     dias_laborados = nomina.employee_id.get_work_days_data(Datetime.from_string(nomina.employee_id.contract_id.date_start), Datetime.from_string(nomina.date_to), calendar=nomina.employee_id.contract_id.resource_calendar_id)
+            #     nomina.worked_days_line_ids = [(0, 0, {'name': 'Dias trabajados', 'sequence': 10,'code': 'TRABAJO100', 'number_of_days': (dias_laborados['days'] + dias_ausentados_sumar), 'contract_id': nomina.employee_id.contract_id.id})]
+            # else:
+            #     if nomina.employee_id.contract_id.schedule_pay == 'monthly':
+            #         nomina.worked_days_line_ids = [(0, 0, {'name': 'Dias trabajados','sequence': 10,'code': 'TRABAJO100','number_of_days': 30 - dias_ausentados_restar, 'contract_id': nomina.employee_id.contract_id.id})]
+            #     if nomina.employee_id.contract_id.schedule_pay == 'bi-monthly':
+            #         nomina.worked_days_line_ids = [(0, 0, {'name': 'Dias trabajados','sequence': 10,'code': 'TRABAJO100','number_of_days': 15 - dias_ausentados_restar, 'contract_id': nomina.employee_id.contract_id.id})]
+            # logging.warn(nomina.worked_days_line_ids)
             for entrada in nomina.input_line_ids:
                 for prestamo in nomina.employee_id.prestamo_ids:
                     anio_prestamo = int(datetime.datetime.strptime(str(prestamo.fecha_inicio), '%Y-%m-%d').date().strftime('%Y'))
@@ -118,6 +119,38 @@ class HrPayslip(models.Model):
                             inmput.amount = lineas.monto*(self.porcentaje_prestamo/100)
         return res
 
+
+    @api.model
+    def get_worked_day_lines(self, contracts, date_from, date_to):
+        res = super(HrPayslip, self).get_worked_day_lines(contracts,date_from,date_to)
+        if self.employee_id.contract_id:
+            contracts = self.employee_id.contract_id
+        tipos_ausencias_ids = self.env['hr.holidays.status'].search([])
+        tipos_ausencias = {
+            'ausencias_sumar': [],
+            'ausencias_restar': []
+        }
+        dias_ausentados_sumar = 0
+        dias_ausentados_restar = 0
+        for ausencia in tipos_ausencias_ids:
+            if ausencia.descontar_nomina :
+                tipos_ausencias['ausencias_restar'].append(ausencia.name)
+        for dias in res:
+            if dias['code'] in tipos_ausencias['ausencias_sumar']:
+                dias_ausentados_sumar += dias['number_of_days']
+            if dias['code'] in tipos_ausencias['ausencias_restar']:
+                dias_ausentados_restar += dias['number_of_days']
+        if date_from <= contracts.date_start <= date_to:
+            dias_laborados = self.employee_id.get_work_days_data(Datetime.from_string(contracts.date_start), Datetime.from_string(date_to), calendar=contracts.resource_calendar_id)
+            logging.warn(dias_laborados)
+            logging.warn(dias_ausentados_sumar)
+            res.append({'name': 'Dias trabajados', 'sequence': 10,'code': 'TRABAJO100', 'number_of_days': (dias_laborados['days'] - dias_ausentados_restar), 'contract_id': contracts.id})
+        else:
+            if contracts.schedule_pay == 'monthly':
+                res.append({'name': 'Dias trabajados','sequence': 10,'code': 'TRABAJO100','number_of_days': 30 - dias_ausentados_restar, 'contract_id': contracts.id})
+            if contracts.schedule_pay == 'bi-monthly':
+                res.append({'name': 'Dias trabajados','sequence': 10,'code': 'TRABAJO100','number_of_days': 15 - dias_ausentados_restar, 'contract_id': contracts.id})
+        return res
 
 class HrPayslipRun(models.Model):
     _inherit = 'hr.payslip.run'
