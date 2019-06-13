@@ -142,16 +142,6 @@ class rrhh_planilla_wizard(models.TransientModel):
                                 hoja.write(linea, columna, total_columna)
                                 columna += 1
 
-                            for entrada in w.planilla_id.entrada_id:
-                                entradas = [x.name for x in entrada.input_id]
-                                total_columna = 0
-                                for r in l.input_line_ids:
-                                    if r.name in entradas:
-                                        total_columna += r.amount
-                                totales[columna-6] += total_columna
-                                hoja.write(linea, columna, total_columna)
-                                columna += 1
-
                             totales[columna-6] += total_salario
                             hoja.write(linea, columna, total_salario)
                             hoja.write(linea, columna+1, l.employee_id.bank_account_id.bank_id.name)
