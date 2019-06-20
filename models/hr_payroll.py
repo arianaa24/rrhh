@@ -127,7 +127,6 @@ class HrPayslip(models.Model):
             contracts = self.employee_id.contract_id
         tipos_ausencias_ids = self.env['hr.holidays.status'].search([])
         ausencias_restar = []
-        dias_ausentados_sumar = 0
         dias_ausentados_restar = 0
         for ausencia in tipos_ausencias_ids:
             if ausencia.descontar_nomina:
@@ -135,14 +134,12 @@ class HrPayslip(models.Model):
         for dias in res:
             if dias['code'] in ausencias_restar:
                 dias_ausentados_restar += dias['number_of_days']
-        if date_from <= contracts.date_start <= date_to:
+        if contracts.date_start and date_from <= contracts.date_start <= date_to:
             dias_laborados = self.employee_id.get_work_days_data(Datetime.from_string(contracts.date_start), Datetime.from_string(date_to), calendar=contracts.resource_calendar_id)
             res.append({'name': 'Dias trabajados', 'sequence': 10,'code': 'TRABAJO100', 'number_of_days': (dias_laborados['days'] + 1 - dias_ausentados_restar ), 'contract_id': contracts.id})
         elif contracts.date_end and date_from <= contracts.date_end <= date_to:
-            dias_mes_nomina = int(datetime.datetime.strptime(str(date_to), '%Y-%m-%d').date().strftime('%d'))
-            logging.warn(dias_mes_nomina)
-            dias_laborados = self.employee_id.get_work_days_data(Datetime.from_string(contracts.date_end), Datetime.from_string(date_to), calendar=contracts.resource_calendar_id)
-            res.append({'name': 'Dias trabajados', 'sequence': 10,'code': 'TRABAJO100', 'number_of_days': (dias_mes_nomina - dias_laborados['days'] - dias_ausentados_restar), 'contract_id': contracts.id})
+            dias_laborados = self.employee_id.get_work_days_data(Datetime.from_string(date_from), Datetime.from_string(contracts.date_end), calendar=contracts.resource_calendar_id)
+            res.append({'name': 'Dias trabajados', 'sequence': 10,'code': 'TRABAJO100', 'number_of_days': ( dias_laborados['days'] + 1 - dias_ausentados_restar), 'contract_id': contracts.id})
         else:
             if contracts.schedule_pay == 'monthly':
                 res.append({'name': 'Dias trabajados','sequence': 10,'code': 'TRABAJO100','number_of_days': 30 - dias_ausentados_restar, 'contract_id': contracts.id})
