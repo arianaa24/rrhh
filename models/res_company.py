@@ -43,7 +43,7 @@ class res_company(models.Model):
     bonificacion_ids = fields.Many2many('hr.salary.rule','rrhh_bonificacion_rel',string='Bonificacion incentivo')
     bono_ids = fields.Many2many('hr.salary.rule','bono_company_rel',string='Bono 14')
     aguinaldo_ids = fields.Many2many('hr.salary.rule','rrhh_aguinaldo_rel',string='Aguinaldo')
-    indemnizacion_ids= fields.Many2many('hr.salary.rule','rrhh_indemnizacion_rel',string='Indemnizacion')
+    indemnizacion_ids= fields.Many2many('hr.salary.rule','rrhh_indemnizacion_rel',string='Retribución por Indemnización')
     salario_ids = fields.Many2many('hr.salary.rule','rrhh_salario_rel',string='Salario')
     origen_compania = fields.Selection([('nacional', 'Nacional'),
                                     ('extranjero', 'Extranjero')], 'Nacional o Extranjero')
@@ -77,3 +77,4 @@ class res_company(models.Model):
     decreto_ids = fields.Many2many('hr.salary.rule','rrhh_decretro_rel', string="Decreto")
     fija_ids = fields.Many2many('hr.salary.rule','rrhh_fija_rel', string="Fija")
     variable_ids = fields.Many2many('hr.salary.rule','rrhh_decretro_rel', string="Variable")
+    salario_promedio_ids = fields.Many2many('hr.salary.rule','rrhh_salario_promedio_rel', string="Salario promedio")
