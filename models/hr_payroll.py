@@ -5,6 +5,7 @@ import logging
 import datetime
 import time
 import dateutil.parser
+from dateutil.relativedelta import relativedelta
 from odoo.fields import Date, Datetime
 
 class HrPayslip(models.Model):
@@ -82,6 +83,30 @@ class HrPayslip(models.Model):
                             prestamo.estado = "pagado"
         return res
 
+    def salario_promedio(self, empleado_id, reglas):
+        fecha_hoy = datetime.datetime.now()
+        salario = 0
+        nomina_ids = self.env['hr.payslip'].search([['employee_id', '=', empleado_id.id]])
+        nominas = []
+        contador = 1
+        meses_nominas = []
+        while contador <= 12:
+            mes = relativedelta(months=contador)
+            resta_mes = fecha_hoy - mes
+            for nomina in nomina_ids:
+                nomina_mes = datetime.datetime.strptime(nomina.date_from,"%Y-%m-%d")
+                if nomina_mes.month == resta_mes.month and nomina_mes.year == resta_mes.year:
+                    if resta_mes not in meses_nominas:
+                        meses_nominas.append({resta_mes.month: resta_mes.month})
+                    else:
+                        meses_nominas[resta_mes.month] = resta_mes.month
+                    nominas.append(nomina)
+                    for linea in nomina.line_ids:
+                        if linea.salary_rule_id.id in reglas:
+                            salario += linea.total
+            contador += 1
+        return salario / len(meses_nominas)
+
     def get_inputs(self, contracts, date_from, date_to):
         res = super(HrPayslip, self).get_inputs(contracts, date_from, date_to)
         for contract in contracts:
@@ -102,6 +127,8 @@ class HrPayslip(models.Model):
                                     if active_id:
                                         [data] = self.env['hr.payslip.run'].browse(active_id).read(['porcentaje_prestamo'])
                                         r['amount'] = lineas.monto*(data.get('porcentaje_prestamo')/100)
+            salario = self.salario_promedio(contract.employee_id,contract.company_id.salario_promedio_ids.ids)
+            res.append({'name': 'Salario promedio', 'code': 'SalarioPromedio','amount': salario,'contract_id': contract.id})
         return res
 
     @api.onchange('employee_id', 'date_from', 'date_to','porcentaje_prestamo')
