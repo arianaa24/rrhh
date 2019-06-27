@@ -163,10 +163,10 @@ class HrPayslip(models.Model):
                 dias_ausentados_restar += dias['number_of_days']
         if contracts.date_start and date_from <= contracts.date_start <= date_to:
             dias_laborados = self.employee_id.get_work_days_data(Datetime.from_string(contracts.date_start), Datetime.from_string(date_to), calendar=contracts.resource_calendar_id)
-            res.append({'name': 'Dias trabajados', 'sequence': 10,'code': 'TRABAJO100', 'number_of_days': (dias_laborados['days'] + 1 - dias_ausentados_restar ), 'contract_id': contracts.id})
+            res.append({'name': 'Dias trabajados', 'sequence': 10,'code': 'TRABAJO100', 'number_of_days': (dias_laborados['days'] + 1 - dias_ausentados_restar) if (dias_laborados['days'] + 1 - dias_ausentados_restar) <= 30 else 30, 'contract_id': contracts.id})
         elif contracts.date_end and date_from <= contracts.date_end <= date_to:
             dias_laborados = self.employee_id.get_work_days_data(Datetime.from_string(date_from), Datetime.from_string(contracts.date_end), calendar=contracts.resource_calendar_id)
-            res.append({'name': 'Dias trabajados', 'sequence': 10,'code': 'TRABAJO100', 'number_of_days': ( dias_laborados['days'] + 1 - dias_ausentados_restar), 'contract_id': contracts.id})
+            res.append({'name': 'Dias trabajados', 'sequence': 10,'code': 'TRABAJO100', 'number_of_days': (dias_laborados['days'] + 1 - dias_ausentados_restar) if (dias_laborados['days'] + 1 - dias_ausentados_restar) <= 30 else 30, 'contract_id': contracts.id})
         else:
             if contracts.schedule_pay == 'monthly':
                 res.append({'name': 'Dias trabajados','sequence': 10,'code': 'TRABAJO100','number_of_days': 30 - dias_ausentados_restar, 'contract_id': contracts.id})
