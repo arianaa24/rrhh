@@ -6,6 +6,7 @@ import datetime
 import time
 import dateutil.parser
 from dateutil.relativedelta import relativedelta
+from dateutil import relativedelta as rdelta
 from odoo.fields import Date, Datetime
 
 class HrPayslip(models.Model):
@@ -24,6 +25,21 @@ class HrPayslip(models.Model):
                 slip.move_id.post()
         return res
 
+    # Dias trabajdas de los ultimos 12 meses hasta la fecha
+    def dias_trabajados_ultimos_meses(self,empleado_id,fecha):
+        dias = {'days': 0}
+        if empleado_id.contract_id.date_start:
+            fecha_nomina = datetime.datetime.strptime(str(fecha), '%Y-%m-%d').date()
+            fecha_contrato = datetime.datetime.strptime(str(empleado_id.contract_id.date_start), '%Y-%m-%d').date()
+            diferencia_meses = relativedelta(fecha_nomina,fecha_contrato)
+            if int(diferencia_meses.years) == 0:
+                dias = empleado_id.get_work_days_data(Datetime.from_string(empleado_id.contract_id.date_start), Datetime.from_string(fecha), calendar=empleado_id.contract_id.resource_calendar_id)
+            else:
+                mes = relativedelta(months=12)
+                fecha_inicio = datetime.datetime.strptime(str(fecha_nomina - mes), '%Y-%m-%d').date()
+                dias = empleado_id.get_work_days_data(Datetime.from_string(fecha_inicio.strftime('%Y-%m-%d')), Datetime.from_string(fecha), calendar=empleado_id.contract_id.resource_calendar_id)
+        return dias['days']
+
     @api.multi
     def compute_sheet(self):
         res =  super(HrPayslip, self).compute_sheet()
@@ -31,6 +47,7 @@ class HrPayslip(models.Model):
             mes_nomina = int(datetime.datetime.strptime(str(nomina.date_from), '%Y-%m-%d').date().strftime('%m'))
             dia_nomina = int(datetime.datetime.strptime(str(nomina.date_to), '%Y-%m-%d').date().strftime('%d'))
             anio_nomina = int(datetime.datetime.strptime(str(nomina.date_from), '%Y-%m-%d').date().strftime('%Y'))
+            dias_meses = []
             # tipos_ausencias_ids = self.env['hr.holidays.status'].search([])
             # tipos_ausencias = {
             #     'ausencias_sumar': [],
@@ -60,6 +77,8 @@ class HrPayslip(models.Model):
             #         nomina.worked_days_line_ids = [(0, 0, {'name': 'Dias trabajados','sequence': 10,'code': 'TRABAJO100','number_of_days': 15 - dias_ausentados_restar, 'contract_id': nomina.employee_id.contract_id.id})]
             # logging.warn(nomina.worked_days_line_ids)
             for entrada in nomina.input_line_ids:
+                if entrada.code == 'DiasTrabajados12Meses':
+                    dias_meses.append(entrada.code)
                 for prestamo in nomina.employee_id.prestamo_ids:
                     anio_prestamo = int(datetime.datetime.strptime(str(prestamo.fecha_inicio), '%Y-%m-%d').date().strftime('%Y'))
                     if (prestamo.codigo == entrada.code) and ((prestamo.estado == 'nuevo') or (prestamo.estado == 'proceso')):
@@ -81,6 +100,9 @@ class HrPayslip(models.Model):
                             prestamo.estado = "proceso"
                         if cantidad_pagados == cantidad_pagos and cantidad_pagos > 0:
                             prestamo.estado = "pagado"
+            dias = self.dias_trabajados_ultimos_meses(self.employee_id,nomina.date_to)
+            if 'DiasTrabajados12Meses' not in dias_meses:
+                nomina.write({'input_line_ids': [(0,0, {'name': 'Dias Trabajados 12 Meses','code':'DiasTrabajados12Meses','amount': dias,'contract_id': nomina.employee_id.contract_id.id})]})
         return res
 
     def salario_promedio(self, empleado_id, reglas):
@@ -105,7 +127,10 @@ class HrPayslip(models.Model):
                         if linea.salary_rule_id.id in reglas:
                             salario += linea.total
             contador += 1
-        return salario / len(meses_nominas)
+        promedio = salario
+        if len(meses_nominas) > 0:
+            promedio = salario / len(meses_nominas)
+        return promedio
 
     def get_inputs(self, contracts, date_from, date_to):
         res = super(HrPayslip, self).get_inputs(contracts, date_from, date_to)
@@ -129,6 +154,9 @@ class HrPayslip(models.Model):
                                         r['amount'] = lineas.monto*(data.get('porcentaje_prestamo')/100)
             salario = self.salario_promedio(contract.employee_id,contract.company_id.salario_promedio_ids.ids)
             res.append({'name': 'Salario promedio', 'code': 'SalarioPromedio','amount': salario,'contract_id': contract.id})
+            if self.mapped('date_to'):
+                dias = self.dias_trabajados_ultimos_meses(contract.employee_id,self.mapped('date_to')[0])
+                res.append({'name': 'Dias Trabajados 12 Meses','code':'DiasTrabajados12Meses','amount': dias,'contract_id': contract.id})
         return res
 
     @api.onchange('employee_id', 'date_from', 'date_to','porcentaje_prestamo')

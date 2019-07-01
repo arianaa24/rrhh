@@ -58,15 +58,24 @@ class rrhh_informe_empleador(models.TransientModel):
 
     def dias_trabajados_anual(self,empleado_id,anio):
         anio_inicio_contrato = int(datetime.strptime(str(empleado_id.contract_id.date_start), '%Y-%m-%d').date().strftime('%Y'))
-        dias_laborados = 0
+        anio_inicio = datetime.strptime(str(anio)+'-01'+'-01', '%Y-%m-%d').date().strftime('%Y-%m-%d')
         anio_fin = datetime.strptime(str(anio)+'-12'+'-31', '%Y-%m-%d').date().strftime('%Y-%m-%d')
-        if anio_inicio_contrato == anio:
-            dias = empleado_id.get_work_days_data(Datetime.from_string(empleado_id.contract_id.date_start), Datetime.from_string(anio_fin), calendar=empleado_id.contract_id.resource_calendar_id)
-            dias_laborados = dias['days']
-        else:
-            anio_inicio = datetime.strptime(str(anio)+'-01'+'-01', '%Y-%m-%d').date().strftime('%Y-%m-%d')
-            dias = empleado_id.get_work_days_data(Datetime.from_string(anio_inicio), Datetime.from_string(anio_fin), calendar=empleado_id.contract_id.resource_calendar_id)
-            dias_laborados = dias['days']
+        dias_laborados = 0
+        if empleado_id.contract_id.date_start and empleado_id.contract_id.date_end:
+            anio_fin_contrato = int(datetime.strptime(str(empleado_id.contract_id.date_end), '%Y-%m-%d').date().strftime('%Y'))
+            if anio_inicio_contrato == anio and anio_fin_contrato == anio:
+                dias = empleado_id.get_work_days_data(Datetime.from_string(empleado_id.contract_id.date_start), Datetime.from_string(empleado_id.contract_id.date_end), calendar=empleado_id.contract_id.resource_calendar_id)
+                dias_laborados = dias['days']
+            if anio_inicio_contrato != anio and anio_fin_contrato == anio:
+                dias = empleado_id.get_work_days_data(Datetime.from_string(anio_inicio), Datetime.from_string(empleado_id.contract_id.date_end), calendar=empleado_id.contract_id.resource_calendar_id)
+                dias_laborados = dias['days']
+        if empleado_id.contract_id.date_start and empleado_id.contract_id.date_end == False:
+            if anio_inicio_contrato == anio:
+                dias = empleado_id.get_work_days_data(Datetime.from_string(empleado_id.contract_id.date_start), Datetime.from_string(anio_fin), calendar=empleado_id.contract_id.resource_calendar_id)
+                dias_laborados = dias['days']
+            else:
+                dias = empleado_id.get_work_days_data(Datetime.from_string(anio_inicio), Datetime.from_string(anio_fin), calendar=empleado_id.contract_id.resource_calendar_id)
+                dias_laborados = dias['days']
         return dias_laborados
 
     def print_report_excel(self):
