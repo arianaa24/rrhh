@@ -100,9 +100,9 @@ class HrPayslip(models.Model):
                             prestamo.estado = "proceso"
                         if cantidad_pagados == cantidad_pagos and cantidad_pagos > 0:
                             prestamo.estado = "pagado"
-            dias = self.dias_trabajados_ultimos_meses(self.employee_id,nomina.date_to)
-            if 'DiasTrabajados12Meses' not in dias_meses:
-                nomina.write({'input_line_ids': [(0,0, {'name': 'Dias Trabajados 12 Meses','code':'DiasTrabajados12Meses','amount': dias,'contract_id': nomina.employee_id.contract_id.id})]})
+            # dias = self.dias_trabajados_ultimos_meses(self.employee_id,nomina.date_to)
+            # if 'DiasTrabajados12Meses' not in dias_meses:
+            #     nomina.write({'input_line_ids': [(0,0, {'name': 'Dias Trabajados 12 Meses','code':'DiasTrabajados12Meses','amount': dias,'contract_id': nomina.employee_id.contract_id.id})]})
         return res
 
     def salario_promedio(self, empleado_id, reglas):
