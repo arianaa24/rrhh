@@ -48,34 +48,8 @@ class HrPayslip(models.Model):
             dia_nomina = int(datetime.datetime.strptime(str(nomina.date_to), '%Y-%m-%d').date().strftime('%d'))
             anio_nomina = int(datetime.datetime.strptime(str(nomina.date_from), '%Y-%m-%d').date().strftime('%Y'))
             dias_meses = []
-            # tipos_ausencias_ids = self.env['hr.holidays.status'].search([])
-            # tipos_ausencias = {
-            #     'ausencias_sumar': [],
-            #     'ausencias_restar': []
-            # }
-            # dias_ausentados_sumar = 0
-            # dias_ausentados_restar = 0
-            # for ausencia in tipos_ausencias_ids:
-            #     if ausencia.descontar_nomina == False:
-            #         tipos_ausencias['ausencias_sumar'].append(ausencia.name)
-            #     else:
-            #         tipos_ausencias['ausencias_restar'].append(ausencia.name)
             valor_pago = 0
             porcentaje_pagar = 0
-            # for dias in nomina.worked_days_line_ids:
-            #     if dias.code in tipos_ausencias['ausencias_sumar']:
-            #         dias_ausentados_sumar += dias.number_of_days
-            #     if dias.code in tipos_ausencias['ausencias_restar']:
-            #         dias_ausentados_restar += dias.number_of_days
-            # if nomina.date_from <= nomina.employee_id.contract_id.date_start <= nomina.date_to:
-            #     dias_laborados = nomina.employee_id.get_work_days_data(Datetime.from_string(nomina.employee_id.contract_id.date_start), Datetime.from_string(nomina.date_to), calendar=nomina.employee_id.contract_id.resource_calendar_id)
-            #     nomina.worked_days_line_ids = [(0, 0, {'name': 'Dias trabajados', 'sequence': 10,'code': 'TRABAJO100', 'number_of_days': (dias_laborados['days'] + dias_ausentados_sumar), 'contract_id': nomina.employee_id.contract_id.id})]
-            # else:
-            #     if nomina.employee_id.contract_id.schedule_pay == 'monthly':
-            #         nomina.worked_days_line_ids = [(0, 0, {'name': 'Dias trabajados','sequence': 10,'code': 'TRABAJO100','number_of_days': 30 - dias_ausentados_restar, 'contract_id': nomina.employee_id.contract_id.id})]
-            #     if nomina.employee_id.contract_id.schedule_pay == 'bi-monthly':
-            #         nomina.worked_days_line_ids = [(0, 0, {'name': 'Dias trabajados','sequence': 10,'code': 'TRABAJO100','number_of_days': 15 - dias_ausentados_restar, 'contract_id': nomina.employee_id.contract_id.id})]
-            # logging.warn(nomina.worked_days_line_ids)
             for entrada in nomina.input_line_ids:
                 if entrada.code == 'DiasTrabajados12Meses':
                     dias_meses.append(entrada.code)
@@ -100,9 +74,6 @@ class HrPayslip(models.Model):
                             prestamo.estado = "proceso"
                         if cantidad_pagados == cantidad_pagos and cantidad_pagos > 0:
                             prestamo.estado = "pagado"
-            # dias = self.dias_trabajados_ultimos_meses(self.employee_id,nomina.date_to)
-            # if 'DiasTrabajados12Meses' not in dias_meses:
-            #     nomina.write({'input_line_ids': [(0,0, {'name': 'Dias Trabajados 12 Meses','code':'DiasTrabajados12Meses','amount': dias,'contract_id': nomina.employee_id.contract_id.id})]})
         return res
 
     def salario_promedio(self, empleado_id, reglas):
@@ -154,9 +125,8 @@ class HrPayslip(models.Model):
                                         r['amount'] = lineas.monto*(data.get('porcentaje_prestamo')/100)
             salario = self.salario_promedio(contract.employee_id,contract.company_id.salario_promedio_ids.ids)
             res.append({'name': 'Salario promedio', 'code': 'SalarioPromedio','amount': salario,'contract_id': contract.id})
-            if self.mapped('date_to'):
-                dias = self.dias_trabajados_ultimos_meses(contract.employee_id,self.mapped('date_to')[0])
-                res.append({'name': 'Dias Trabajados 12 Meses','code':'DiasTrabajados12Meses','amount': dias,'contract_id': contract.id})
+            dias = self.dias_trabajados_ultimos_meses(contract.employee_id,date_to)
+            res.append({'name': 'Dias Trabajados 12 Meses','code':'DiasTrabajados12Meses','amount': dias,'contract_id': contract.id})
         return res
 
     @api.onchange('employee_id', 'date_from', 'date_to','porcentaje_prestamo')
