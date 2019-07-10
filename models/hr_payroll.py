@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
+from odoo.release import version_info
 import logging
 import datetime
 import time
@@ -84,7 +85,7 @@ class HrPayslip(models.Model):
             mes = relativedelta(months=contador)
             resta_mes = fecha_hoy - mes
             for nomina in nomina_ids:
-                nomina_mes = datetime.datetime.strptime(nomina.date_from,"%Y-%m-%d")
+                nomina_mes = datetime.datetime.strptime(str(nomina.date_from),"%Y-%m-%d")
                 if nomina_mes.month == resta_mes.month and nomina_mes.year == resta_mes.year:
                     if resta_mes not in meses_nominas:
                         meses_nominas.append({resta_mes.month: resta_mes.month})
@@ -145,9 +146,13 @@ class HrPayslip(models.Model):
     @api.model
     def get_worked_day_lines(self, contracts, date_from, date_to):
         res = super(HrPayslip, self).get_worked_day_lines(contracts,date_from,date_to)
+        tipos_ausencias_ids = []
         if self.employee_id.contract_id:
             contracts = self.employee_id.contract_id
-        tipos_ausencias_ids = self.env['hr.holidays.status'].search([])
+        if version_info[0] == 12:
+            tipos_ausencias_ids = self.env['hr.leave.type'].search([])
+        else:
+            tipos_ausencias_ids = self.env['hr.holidays.status'].search([])
         ausencias_restar = []
         dias_ausentados_restar = 0
         for ausencia in tipos_ausencias_ids:
