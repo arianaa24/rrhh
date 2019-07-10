@@ -68,6 +68,10 @@ class ReportRecibo(models.AbstractModel):
         return result
 
     @api.model
+    def _get_report_values(self, docids, data=None):
+        return self.get_report_values(docids, data)
+
+    @api.model
     def get_report_values(self, docids, data=None):
         self.model = 'hr.payslip'
         docs = self.env[self.model].browse(docids)

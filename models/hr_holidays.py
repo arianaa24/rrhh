@@ -1,7 +1,14 @@
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models
+from odoo.release import version_info
 
-class HolidaysStatus(models.Model):
-    _inherit = "hr.holidays.status"
+if version_info[0] == 12:
+    class HolidaysType(models.Model):
+        _inherit = "hr.leave.type"
 
-    descontar_nomina = fields.Boolean('Descontar en nómina')
+        descontar_nomina = fields.Boolean('Descontar en nómina')
+else:
+    class HolidaysStatus(models.Model):
+        _inherit = "hr.holidays.status"
+
+        descontar_nomina = fields.Boolean('Descontar en nómina')
