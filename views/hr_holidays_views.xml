@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <odoo>
 
-        <!-- <record id="fitnessone_edit_holiday_status_form" model="ir.ui.view">
+        <record id="fitnessone_edit_holiday_status_form" model="ir.ui.view">
             <field name="name">Fintessone status form</field>
             <field name="model" eval="'hr.leave.type' if ref('hr_holidays.model_hr_leave_type') else 'hr.holidays.status'"></field>
             <field name="inherit_id" ref="hr_holidays.edit_holiday_status_form"/>
@@ -10,6 +10,6 @@
                     <field name="descontar_nomina"/>
                 </field>
             </field>
-        </record> -->
+        </record>
 
 </odoo>
