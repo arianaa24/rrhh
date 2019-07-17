@@ -32,9 +32,10 @@ class rrhh_prestamo(models.Model):
             total_prestamo = 0
             total_prestamo_pagado = 0
             for linea in prestamo.prestamo_ids:
-                for nomina_entrada in linea.nomina_id.input_line_ids:
-                    if prestamo.codigo == nomina_entrada.code:
-                        total_prestamo_pagado += nomina_entrada.amount
+                for nomina in linea.nomina_id:
+                    for nomina_entrada in nomina.input_line_ids:
+                        if prestamo.codigo == nomina_entrada.code:
+                            total_prestamo_pagado += nomina_entrada.amount
                 total_prestamo += linea.monto
             prestamo.pendiente_pagar_prestamo = total_prestamo - total_prestamo_pagado
             if prestamo.pendiente_pagar_prestamo == 0:
