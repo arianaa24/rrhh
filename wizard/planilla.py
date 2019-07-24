@@ -27,7 +27,7 @@ class rrhh_planilla_wizard(models.TransientModel):
             if w.agrupado:
                 cuentas_analiticas = set([])
                 for l in w.nomina_id.slip_ids:
-                    if l.move_id:
+                    if l.move_id and len(l.move_id.line_ids) > 0 and l.move_id.line_ids[0].analytic_account_id:
                         if l.move_id.line_ids[0].analytic_account_id:
                             cuentas_analiticas.add(l.move_id.line_ids[0].analytic_account_id.name)
                         else:
