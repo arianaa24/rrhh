@@ -74,7 +74,7 @@ class rrhh_planilla_wizard(models.TransientModel):
                     hoja.write(linea, columna+3, 'Observaciones', estilo)
                     hoja.write(linea, columna+4, 'Cuenta analítica', estilo)
                     for l in w.nomina_id.slip_ids:
-                        if l.move_id:
+                        if l.move_id and len(l.move_id.line_ids) > 0 and l.move_id.line_ids[0].analytic_account_id:
                             if l.move_id.line_ids[0].analytic_account_id.name == i:
                                 linea += 1
                                 dias = 0
@@ -169,7 +169,7 @@ class rrhh_planilla_wizard(models.TransientModel):
                                 hoja.write(linea, 3, l.contract_id.date_start)
                                 hoja.write(linea, 4, l.employee_id.job_id.name)
                                 for d in l.worked_days_line_ids:
-                                    if d.code == 'WORK100':
+                                    if d.code == 'TRABAJO100':
                                         dias += d.number_of_days
                                 hoja.write(linea, 5, dias)
 
@@ -274,7 +274,7 @@ class rrhh_planilla_wizard(models.TransientModel):
                     hoja.write(linea, columna+1, l.employee_id.bank_account_id.bank_id.name)
                     hoja.write(linea, columna+2, l.employee_id.bank_account_id.acc_number)
                     hoja.write(linea, columna+3, l.note)
-                    if l.move_id:
+                    if l.move_id and len(l.move_id.line_ids) > 0 and l.move_id.line_ids[0].analytic_account_id:
                         if l.move_id.line_ids[0].analytic_account_id:
                             hoja.write(linea, columna+4, l.move_id.line_ids[0].analytic_account_id.name)
                         else:
