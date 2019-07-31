@@ -85,9 +85,17 @@ class rrhh_planilla_wizard(models.TransientModel):
                                 hoja.write(linea, 2, l.employee_id.name)
                                 hoja.write(linea, 3, l.contract_id.date_start)
                                 hoja.write(linea, 4, l.employee_id.job_id.name)
+                                work = -1
+                                trabajo = -1
                                 for d in l.worked_days_line_ids:
                                     if d.code == 'TRABAJO100':
-                                        dias += d.number_of_days
+                                        trabajo = d.number_of_days
+                                    elif d.code == 'WORK100':
+                                        work = d.number_of_days
+                                if trabajo >= 0:
+                                    dias += trabajo
+                                else:
+                                    dias += work
                                 hoja.write(linea, 5, dias)
 
                                 columna = 6
@@ -127,9 +135,17 @@ class rrhh_planilla_wizard(models.TransientModel):
                                 hoja.write(linea, 2, l.employee_id.name)
                                 hoja.write(linea, 3, l.contract_id.date_start)
                                 hoja.write(linea, 4, l.employee_id.job_id.name)
+                                work = -1
+                                trabajo = -1
                                 for d in l.worked_days_line_ids:
                                     if d.code == 'TRABAJO100':
-                                        dias += d.number_of_days
+                                        trabajo = d.number_of_days
+                                    elif d.code == 'WORK100':
+                                        work = d.number_of_days
+                                if trabajo >= 0:
+                                    dias += trabajo
+                                else:
+                                    dias += work
                                 hoja.write(linea, 5, dias)
 
                                 columna = 6
@@ -168,9 +184,17 @@ class rrhh_planilla_wizard(models.TransientModel):
                                 hoja.write(linea, 2, l.employee_id.name)
                                 hoja.write(linea, 3, l.contract_id.date_start)
                                 hoja.write(linea, 4, l.employee_id.job_id.name)
+                                work = -1
+                                trabajo = -1
                                 for d in l.worked_days_line_ids:
                                     if d.code == 'TRABAJO100':
-                                        dias += d.number_of_days
+                                        trabajo = d.number_of_days
+                                    elif d.code == 'WORK100':
+                                        work = d.number_of_days
+                                if trabajo >= 0:
+                                    dias += trabajo
+                                else:
+                                    dias += work
                                 hoja.write(linea, 5, dias)
 
                                 columna = 6
@@ -246,9 +270,17 @@ class rrhh_planilla_wizard(models.TransientModel):
                     hoja.write(linea, 2, l.employee_id.name)
                     hoja.write(linea, 3, l.contract_id.date_start)
                     hoja.write(linea, 4, l.employee_id.job_id.name)
+                    work = -1
+                    trabajo = -1
                     for d in l.worked_days_line_ids:
                         if d.code == 'TRABAJO100':
-                            dias += d.number_of_days
+                            trabajo = d.number_of_days
+                        elif d.code == 'WORK100':
+                            work = d.number_of_days
+                    if trabajo >= 0:
+                        dias += trabajo
+                    else:
+                        dias += work
                     hoja.write(linea, 5, dias)
 
                     columna = 6
