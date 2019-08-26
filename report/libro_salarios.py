@@ -50,41 +50,41 @@ class ReportLibroSalarios(models.AbstractModel):
                 variable = 0
                 otras_deducciones = 0
                 for linea in nomina.line_ids:
-                    if linea.salary_rule_id in nomina.company_id.salario_ids:
+                    if linea.salary_rule_id.id in nomina.company_id.salario_ids.ids:
                         salario += linea.total
-                    if linea.salary_rule_id in nomina.company_id.ordinarias_ids:
+                    if linea.salary_rule_id.id in nomina.company_id.ordinarias_ids.ids:
                         ordinarias += linea.total
-                    if linea.salary_rule_id in nomina.company_id.extras_ordinarias_ids:
+                    if linea.salary_rule_id.id in nomina.company_id.extras_ordinarias_ids.ids:
                         extra_ordinarias += linea.total
-                    if linea.salary_rule_id in nomina.company_id.ordinario_ids:
+                    if linea.salary_rule_id.id in nomina.company_id.ordinario_ids.ids:
                         ordinario += linea.total
-                    if linea.salary_rule_id in nomina.company_id.extra_ordinario_ids:
+                    if linea.salary_rule_id.id in nomina.company_id.extra_ordinario_ids.ids:
                         extra_ordinario += linea.total
-                    if linea.salary_rule_id in nomina.company_id.igss_ids:
+                    if linea.salary_rule_id.id in nomina.company_id.igss_ids.ids:
                         igss += linea.total
-                    if linea.salary_rule_id in nomina.company_id.isr_ids:
+                    if linea.salary_rule_id.id in nomina.company_id.isr_ids.ids:
                         isr += linea.total
                         otras_deducciones += isr
-                    if linea.salary_rule_id in nomina.company_id.anticipos_ids:
+                    if linea.salary_rule_id.id in nomina.company_id.anticipos_ids.ids:
                         anticipos += linea.total
                         otras_deducciones += anticipos
-                    if linea.salary_rule_id in nomina.company_id.bonificacion_ids:
+                    if linea.salary_rule_id.id in nomina.company_id.bonificacion_ids.ids:
                         bonificacion += linea.total
-                    if linea.salary_rule_id in nomina.company_id.bono_ids:
+                    if linea.salary_rule_id.id in nomina.company_id.bono_ids.ids:
                         bono += linea.total
-                    if linea.salary_rule_id in nomina.company_id.aguinaldo_ids:
+                    if linea.salary_rule_id.id in nomina.company_id.aguinaldo_ids.ids:
                         aguinaldo += linea.total
-                    if linea.salary_rule_id in nomina.company_id.indemnizacion_ids:
+                    if linea.salary_rule_id.id in nomina.company_id.indemnizacion_ids.ids:
                         indemnizacion += linea.total
-                    if linea.salary_rule_id in nomina.company_id.septimos_asuetos_ids:
+                    if linea.salary_rule_id.id in nomina.company_id.septimos_asuetos_ids.ids:
                         septimos_asuetos += linea.total
-                    if linea.salary_rule_id in nomina.company_id.vacaciones_ids:
+                    if linea.salary_rule_id.id in nomina.company_id.vacaciones_ids.ids:
                         vacaciones += linea.total
-                    if linea.salary_rule_id in nomina.company_id.decreto_ids:
+                    if linea.salary_rule_id.id in nomina.company_id.decreto_ids.ids:
                         decreto += linea.total
-                    if linea.salary_rule_id in nomina.company_id.fija_ids:
+                    if linea.salary_rule_id.id in nomina.company_id.fija_ids.ids:
                         fija += linea.total
-                    if linea.salary_rule_id in nomina.company_id.variable_ids:
+                    if linea.salary_rule_id.id in nomina.company_id.variable_ids.ids:
                         variable += linea.total
                 for linea in nomina.worked_days_line_ids:
                     dias_trabajados += linea.number_of_days
