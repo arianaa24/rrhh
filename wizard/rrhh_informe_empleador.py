@@ -26,12 +26,14 @@ class rrhh_informe_empleador(models.TransientModel):
         empleado_ids = self.env['hr.employee'].search([['company_id', '=', company_id]])
         for empleado in empleado_ids:
             if empleado.contract_ids:
-                anio_fin_contrato = 0
-                anio_inicio_contrato = datetime.strptime(empleado.contract_ids.date_start, "%Y-%m-%d").year
-                if empleado.contract_ids.date_end:
-                    anio_fin_contrato = datetime.strptime(empleado.contract_ids.date_end, "%Y-%m-%d").year
-                if anio_inicio_contrato < anio and (empleado.contract_ids.date_end == False or anio_fin_contrato < anio) :
-                    empleados += 1
+                for contrato in empleado.contract_ids:
+                    if contrato.state == 'open':
+                        anio_fin_contrato = 0
+                        anio_inicio_contrato = datetime.strptime(contrato.date_start, "%Y-%m-%d").year
+                        if contrato.date_end:
+                            anio_fin_contrato = datetime.strptime(contrato.date_end, "%Y-%m-%d").year
+                        if anio_inicio_contrato < anio and (contrato.date_end == False or anio_fin_contrato < anio) :
+                            empleados += 1
         return empleados
 
     def empleados_fin_anio(self,company_id,anio):
@@ -39,12 +41,14 @@ class rrhh_informe_empleador(models.TransientModel):
         empleado_ids = self.env['hr.employee'].search([['company_id', '=', company_id]])
         for empleado in empleado_ids:
             if empleado.contract_ids:
-                anio_fin_contrato = 0
-                anio_inicio_contrato = datetime.strptime(empleado.contract_ids.date_start, "%Y-%m-%d").year
-                if empleado.contract_ids.date_end:
-                    anio_fin_contrato = datetime.strptime(empleado.contract_ids.date_end, "%Y-%m-%d").year
-                if anio_inicio_contrato <= anio and (empleado.contract_ids.date_end == False or anio_fin_contrato <= anio) :
-                    empleados += 1
+                for contrato in empleado.contract_ids:
+                    if contrato.state == 'open':
+                        anio_fin_contrato = 0
+                        anio_inicio_contrato = datetime.strptime(contrato.date_start, "%Y-%m-%d").year
+                        if contrato.date_end:
+                            anio_fin_contrato = datetime.strptime(contrato.date_end, "%Y-%m-%d").year
+                        if anio_inicio_contrato <= anio and (contrato.date_end == False or anio_fin_contrato <= anio) :
+                            empleados += 1
         return empleados
 
     @api.multi
@@ -289,7 +293,7 @@ class rrhh_informe_empleador(models.TransientModel):
                 nombre_empleado = empleado.name.split( )
                 if len(nombre_empleado) >=4:
                     nominas_lista = []
-                    contrato = self.env['hr.contract'].search([['employee_id', '=', empleado.id]])
+                    contrato = self.env['hr.contract'].search([('employee_id', '=', empleado.id),('state','=','open')])
                     nomina_id = self.env['hr.payslip'].search([['employee_id', '=', empleado.id]])
                     dias_trabajados = 0
                     salario_anual_nominal = 0
