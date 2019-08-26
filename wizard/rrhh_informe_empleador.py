@@ -311,28 +311,28 @@ class rrhh_informe_empleador(models.TransientModel):
                             for linea in nomina.worked_days_line_ids:
                                 dias_trabajados += linea.number_of_days
                             for linea in nomina.line_ids:
-                                if linea.salary_rule_id in nomina.company_id.salario_ids:
+                                if linea.salary_rule_id.id in nomina.company_id.salario_ids.ids:
                                     salario_anual_nominal += linea.total
-                                if linea.salary_rule_id in nomina.company_id.bonificacion_ids:
+                                if linea.salary_rule_id.id in nomina.company_id.bonificacion_ids.ids:
                                     bonificacion += linea.total
-                                if linea.salary_rule_id in nomina.company_id.aguinaldo_ids:
+                                if linea.salary_rule_id.id in nomina.company_id.aguinaldo_ids.ids:
                                     aguinaldo += linea.total
-                                if linea.salary_rule_id in nomina.company_id.bono_ids:
+                                if linea.salary_rule_id.id in nomina.company_id.bono_ids.ids:
                                     bono += linea.total
-                                if linea.salary_rule_id in nomina.company_id.horas_extras_ids:
+                                if linea.salary_rule_id.id in nomina.company_id.horas_extras_ids.ids:
                                     horas_extras += linea.quantity
                                     valor_horas_extras += linea.total
-                                if linea.salary_rule_id in nomina.company_id.retribucion_comisiones_ids:
+                                if linea.salary_rule_id.id in nomina.company_id.retribucion_comisiones_ids.ids:
                                     retribucion_comisiones += linea.total
-                                if linea.salary_rule_id in nomina.company_id.viaticos_ids:
+                                if linea.salary_rule_id.id in nomina.company_id.viaticos_ids.ids:
                                     viaticos += linea.total
-                                if linea.salary_rule_id in nomina.company_id.retribucion_vacaciones_ids:
+                                if linea.salary_rule_id.id in nomina.company_id.retribucion_vacaciones_ids.ids:
                                     retribucion_vacaciones += linea.total
-                                if linea.salary_rule_id in nomina.company_id.indemnizacion_ids:
+                                if linea.salary_rule_id.id in nomina.company_id.indemnizacion_ids.ids:
                                     indemnizacion += linea.total
-                                if linea.salary_rule_id in nomina.company_id.bonificaciones_adicionales_ids:
+                                if linea.salary_rule_id.id in nomina.company_id.bonificaciones_adicionales_ids.ids:
                                     bonificaciones_adicionales += linea.total
-                                if linea.salary_rule_id in nomina.company_id.decreto_ids:
+                                if linea.salary_rule_id.id in nomina.company_id.decreto_ids.ids:
                                     bonificacion_decreto += linea.total
                     if empleado.gender == 'male':
                         genero = 'H'
