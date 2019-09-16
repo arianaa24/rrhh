@@ -54,6 +54,11 @@ class hr_employee(models.Model):
     pais_trabajo_extranjero_id = fields.Many2one('res.country','Pais trabajado en el extranjero')
     finalizacion_laboral_extranjero = fields.Char('Motivo de finalización de la relación laboral en el extranjero')
     pueblo_pertenencia = fields.Char('Pueblo de pertenencia')
+    primer_nombre = fields.Char('Primer nombre')
+    segundo_nombre = fields.Char('Segundo nombre')
+    primer_apellido = fields.Char('Primer apellido')
+    segundo_apellido = fields.Char('Segundo apellido')
+    apellido_casada = fields.Char('Apellido casada')
 
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):

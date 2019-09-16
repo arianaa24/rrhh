@@ -109,7 +109,7 @@ class ReportLibroSalarios(models.AbstractModel):
                     'igss': igss,
                     'isr': isr,
                     'anticipos': anticipos,
-                    'otras_deducciones': otras_deducciones,
+                    'otras_deducciones': otras_deducciones + bono,
                     'total_deducciones': total_deducciones,
                     'bonificacion_id': bonificacion,
                     'decreto': decreto,
