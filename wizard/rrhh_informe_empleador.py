@@ -312,6 +312,11 @@ class rrhh_informe_empleador(models.TransientModel):
                     for nomina in nomina_id:
                         nomina_anio = datetime.strptime(nomina.date_from, "%Y-%m-%d").year
                         if w['anio'] == nomina_anio:
+                            if nomina.input_line_ids:
+                                for entrada in nomina.input_line_ids:
+                                    for horas_entrada in nomina.company_id.numero_horas_extras_ids:
+                                        if entrada.code == horas_entrada.code:
+                                            valor_horas_extras += entrada.amount
                             for linea in nomina.worked_days_line_ids:
                                 dias_trabajados += linea.number_of_days
                             for linea in nomina.line_ids:
@@ -324,8 +329,7 @@ class rrhh_informe_empleador(models.TransientModel):
                                 if linea.salary_rule_id.id in nomina.company_id.bono_ids.ids:
                                     bono += linea.total
                                 if linea.salary_rule_id.id in nomina.company_id.horas_extras_ids.ids:
-                                    horas_extras += linea.quantity
-                                    valor_horas_extras += linea.total
+                                    horas_extras += linea.total
                                 if linea.salary_rule_id.id in nomina.company_id.retribucion_comisiones_ids.ids:
                                     retribucion_comisiones += linea.total
                                 if linea.salary_rule_id.id in nomina.company_id.viaticos_ids.ids:
@@ -393,7 +397,7 @@ class rrhh_informe_empleador(models.TransientModel):
                     hoja_empleado.write(fila, 34, (contrato.wage + contrato.base_extra) * 12,estilo_borde)
                     hoja_empleado.write(fila, 35, bonificacion_decreto,estilo_borde)
                     hoja_empleado.write(fila, 36, horas_extras,estilo_borde)
-                    hoja_empleado.write(fila, 37, valor_horas_extras,estilo_borde)
+                    hoja_empleado.write(fila, 37, ((horas_extras / valor_horas_extras) if valor_horas_extras > 0 else horas_extras),estilo_borde)
                     hoja_empleado.write(fila, 38, aguinaldo,estilo_borde)
                     hoja_empleado.write(fila, 39, bono,estilo_borde)
                     hoja_empleado.write(fila, 40, retribucion_comisiones,estilo_borde)

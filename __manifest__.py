@@ -27,6 +27,7 @@
         'views/report.xml',
         'views/recibo.xml',
         'wizard/planilla.xml',
+        'wizard/vacaciones.xml',
         'views/libro_salarios.xml',
         'views/res_country_view.xml',
         'views/hr_holidays_views.xml',
