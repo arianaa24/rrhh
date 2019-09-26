@@ -21,6 +21,7 @@ class rrhh_vacaciones_wizard(models.TransientModel):
             anio_actual = datetime.strptime(str(fecha_actual), '%Y-%m-%d').strftime('%Y')
             for empleado in self.env['hr.employee'].browse(self.env.context.get('active_ids', [])):
                 ausencias = self.env['hr.holidays'].search([('state', '=', 'validate'), ('employee_id', '=', empleado.id),('number_of_days_temp','>',0)])
+                asusencia_anio = []
                 if empleado.contract_ids:
                     for contrato in empleado.contract_ids:
                         contrato_anio = int(datetime.strptime(str(contrato.date_start), '%Y-%m-%d').date().strftime('%Y'))
@@ -29,10 +30,12 @@ class rrhh_vacaciones_wizard(models.TransientModel):
                             anio_ausencia = 0
                             for ausencia in ausencias:
                                 anio_ausencia = int(datetime.strptime(str(ausencia.create_date), '%Y-%m-%d %H:%M:%S').date().strftime('%Y'))
-                            if contrato.state == 'open' and dias_trabajados.days >= 365 and int(anio_ausencia) < int(anio_actual):
-                                empleado.remaining_leaves += self.dias
-                            elif contrato.state == 'open' and dias_trabajados.days >= 365 and int(anio_ausencia) == int(anio_actual):
+                                if contrato.state == 'open' and ausencia.number_of_days > 0 and int(anio_ausencia) == int(anio_actual):
+                                    asusencia_anio.append(ausencia)
+                            if len(asusencia_anio) > 0 and dias_trabajados.days >= 365:
                                 empleado.remaining_leaves += 0
+                            elif len(asusencia_anio) == 0 and dias_trabajados.days >= 365:
+                                empleado.remaining_leaves += self.dias
                         else:
                             if contrato.state == 'open' and dias_trabajados.days >= 365:
                                 empleado.remaining_leaves += self.dias
