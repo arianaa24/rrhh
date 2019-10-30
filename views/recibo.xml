@@ -35,7 +35,7 @@
                                     <tr>
                                         <td><strong>Sueldo base mensual:</strong> <span t-field="o.contract_id.wage"/></td>
                                         <t t-set="horas" t-value="horas_extras(o)"/>
-                                        <td></td>
+                                        <td><strong>DPI: </strong><span t-field="o.employee_id.vecindad_dpi"/></td>
                                         <t t-set="dias" t-value="0.0"/>
                                         <tr t-foreach="o.worked_days_line_ids" t-as="i">
                                             <t t-if="i.code == 'WORK100'">
@@ -46,75 +46,71 @@
                                     </tr>
                                 </tbody>
                             </table>
-
-                            <div class="row">
-                                <div class="col-xs-4">
-                                    <strong>Ingresos</strong>
-                                </div>
-                                <div class="col-xs-4">
-                                    <strong>Deducciones</strong>
-                                </div>
-                                <div class="col-xs-4">
-                                    <strong>Horas extras</strong>
-                                </div>
-                            </div>
-                            <div class="row" t-foreach="lineas(o)['lineas']" t-as="l">
-                                <div class="col-xs-2">
-                                    <t t-if="l[0]">
-                                        <span t-esc="l[0]['nombre']"></span>
-                                    </t>
-                                </div>
-                                <div class="col-xs-2 text-right">
-                                    <t t-if="l[0]">
-                                        <span t-esc="l[0]['total']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
-                                    </t>
-                                </div>
-
-                                <div class="col-xs-2">
-                                    <t t-if="l[1]">
-                                        <span t-esc="l[1]['nombre']"></span>
-                                    </t>
-                                </div>
-                                <div class="col-xs-2 text-right">
-                                    <t t-if="l[1]">
-                                        <span t-esc="l[1]['total']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
-                                    </t>
-                                </div>
-
-                                <div class="col-xs-2">
-                                    <t t-if="l[2]">
-                                        <span t-esc="l[2]['nombre']"></span>
-                                    </t>
-                                </div>
-                                <div class="col-xs-2 text-right">
-                                    <t t-if="l[2]">
-                                        <span t-esc="l[2]['total']"/>
-                                    </t>
-                                </div>
-
-                            </div>
-
-                            <div class="row">
-                                <div class="col-xs-2">
-                                    Subtotal
-                                </div>
-                                <div class="col-xs-2 text-right">
-                                    <span t-esc="lineas(o)['totales'][0]" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
-                                </div>
-
-                                <div class="col-xs-2">
-                                    Subtotal
-                                </div>
-                                <div class="col-xs-2 text-right">
-                                    <span t-esc="lineas(o)['totales'][1]" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
-                                </div>
-
-                                <div class="col-xs-2">
-                                    Subtotal
-                                </div>
-                                <div class="col-xs-2 text-right">
-                                    <span t-esc="lineas(o)['totales'][2]"/>
-                                </div>
+                            <div class="centro" style="margin: 0 auto;">
+                                <table style="width:700px">
+                                    <tr>
+                                        <td>
+                                            <table>
+                                                <tr>
+                                                    <td><strong>Ingresos</strong></td>
+                                                    <td></td>
+                                                </tr>
+                                                <t t-foreach="lineas(o)['lineas']" t-as="l">
+                                                    <tr>
+                                                        <t t-if="l[0]">
+                                                            <td><span t-esc="l[0]['nombre']"></span></td>
+                                                            <td><span t-esc="l[0]['total']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
+                                                        </t>
+                                                    </tr>
+                                                </t>
+                                                <tr>
+                                                    <td>Subtotal</td>
+                                                    <td><span t-esc="lineas(o)['totales'][0]" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table>
+                                                <tr>
+                                                    <td><strong>Deducciones</strong></td>
+                                                    <td></td>
+                                                </tr>
+                                                <t t-foreach="lineas(o)['lineas']" t-as="l">
+                                                    <tr>
+                                                        <t t-if="l[1]">
+                                                            <td><span t-esc="l[1]['nombre']"></span></td>
+                                                            <td><span t-esc="l[1]['total']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
+                                                        </t>
+                                                    </tr>
+                                                </t>
+                                                <tr>
+                                                    <td>Subtotal</td>
+                                                    <td><span t-esc="lineas(o)['totales'][1]" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table>
+                                                <tr>
+                                                    <td><strong>Horas extras</strong></td>
+                                                    <td></td>
+                                                </tr>
+                                                <t t-foreach="lineas(o)['lineas']" t-as="l">
+                                                    <tr>
+                                                        <t t-if="l[2]">
+                                                            <td><span t-esc="l[2]['nombre']"></span></td>
+                                                            <td><span t-esc="l[2]['total']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
+                                                        </t>
+                                                    </tr>
+                                                </t>
+                                                <tr>
+                                                    <td>Subtotal</td>
+                                                    <td><span t-esc="lineas(o)['totales'][2]" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
                             </div>
 
                             <div class="row mt32">
@@ -162,7 +158,7 @@
                                     <tr>
                                         <td><strong>Sueldo base mensual:</strong> <span t-field="o.contract_id.wage"/></td>
                                         <t t-set="horas" t-value="horas_extras(o)"/>
-                                        <td></td>
+                                        <td><strong>DPI: </strong><span t-field="o.employee_id.vecindad_dpi"/></td>
                                         <t t-set="dias" t-value="0.0"/>
                                         <tr t-foreach="o.worked_days_line_ids" t-as="i">
                                             <t t-if="i.code == 'WORK100'">
@@ -173,75 +169,71 @@
                                     </tr>
                                 </tbody>
                             </table>
-
-                            <div class="row">
-                                <div class="col-xs-4">
-                                    <strong>Ingresos</strong>
-                                </div>
-                                <div class="col-xs-4">
-                                    <strong>Deducciones</strong>
-                                </div>
-                                <div class="col-xs-4">
-                                    <strong>Horas extras</strong>
-                                </div>
-                            </div>
-                            <div class="row" t-foreach="lineas(o)['lineas']" t-as="l">
-                                <div class="col-xs-2">
-                                    <t t-if="l[0]">
-                                        <span t-esc="l[0]['nombre']"></span>
-                                    </t>
-                                </div>
-                                <div class="col-xs-2 text-right">
-                                    <t t-if="l[0]">
-                                        <span t-esc="l[0]['total']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
-                                    </t>
-                                </div>
-
-                                <div class="col-xs-2">
-                                    <t t-if="l[1]">
-                                        <span t-esc="l[1]['nombre']"></span>
-                                    </t>
-                                </div>
-                                <div class="col-xs-2 text-right">
-                                    <t t-if="l[1]">
-                                        <span t-esc="l[1]['total']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
-                                    </t>
-                                </div>
-
-                                <div class="col-xs-2">
-                                    <t t-if="l[2]">
-                                        <span t-esc="l[2]['nombre']"></span>
-                                    </t>
-                                </div>
-                                <div class="col-xs-2 text-right">
-                                    <t t-if="l[2]">
-                                        <span t-esc="l[2]['total']"/>
-                                    </t>
-                                </div>
-
-                            </div>
-
-                            <div class="row">
-                                <div class="col-xs-2">
-                                    Subtotal
-                                </div>
-                                <div class="col-xs-2 text-right">
-                                    <span t-esc="lineas(o)['totales'][0]" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
-                                </div>
-
-                                <div class="col-xs-2">
-                                    Subtotal
-                                </div>
-                                <div class="col-xs-2 text-right">
-                                    <span t-esc="lineas(o)['totales'][1]" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/>
-                                </div>
-
-                                <div class="col-xs-2">
-                                    Subtotal
-                                </div>
-                                <div class="col-xs-2 text-right">
-                                    <span t-esc="lineas(o)['totales'][2]"/>
-                                </div>
+                            <div class="centro" style="margin: 0 auto;">
+                                <table style="width:700px">
+                                    <tr>
+                                        <td>
+                                            <table>
+                                                <tr>
+                                                    <td><strong>Ingresos</strong></td>
+                                                    <td></td>
+                                                </tr>
+                                                <t t-foreach="lineas(o)['lineas']" t-as="l">
+                                                    <tr>
+                                                        <t t-if="l[0]">
+                                                            <td><span t-esc="l[0]['nombre']"></span></td>
+                                                            <td><span t-esc="l[0]['total']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
+                                                        </t>
+                                                    </tr>
+                                                </t>
+                                                <tr>
+                                                    <td>Subtotal</td>
+                                                    <td><span t-esc="lineas(o)['totales'][0]" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table>
+                                                <tr>
+                                                    <td><strong>Deducciones</strong></td>
+                                                    <td></td>
+                                                </tr>
+                                                <t t-foreach="lineas(o)['lineas']" t-as="l">
+                                                    <tr>
+                                                        <t t-if="l[1]">
+                                                            <td><span t-esc="l[1]['nombre']"></span></td>
+                                                            <td><span t-esc="l[1]['total']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
+                                                        </t>
+                                                    </tr>
+                                                </t>
+                                                <tr>
+                                                    <td>Subtotal</td>
+                                                    <td><span t-esc="lineas(o)['totales'][1]" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <table>
+                                                <tr>
+                                                    <td><strong>Horas extras</strong></td>
+                                                    <td></td>
+                                                </tr>
+                                                <t t-foreach="lineas(o)['lineas']" t-as="l">
+                                                    <tr>
+                                                        <t t-if="l[2]">
+                                                            <td><span t-esc="l[2]['nombre']"></span></td>
+                                                            <td><span t-esc="l[2]['total']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
+                                                        </t>
+                                                    </tr>
+                                                </t>
+                                                <tr>
+                                                    <td>Subtotal</td>
+                                                    <td><span t-esc="lineas(o)['totales'][2]" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
                             </div>
 
                             <div class="row mt32">
