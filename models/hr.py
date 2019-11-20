@@ -59,6 +59,7 @@ class hr_employee(models.Model):
     primer_apellido = fields.Char('Primer apellido')
     segundo_apellido = fields.Char('Segundo apellido')
     apellido_casada = fields.Char('Apellido casada')
+    centro_trabajo_id = fields.Many2one('res.company.centro_trabajo','Centro de trabajo')
 
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):

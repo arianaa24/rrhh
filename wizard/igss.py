@@ -42,7 +42,8 @@ class rrhh_igss_wizard(models.TransientModel):
         for w in self:
             datos += str(w.payslip_run_id.slip_ids[0].company_id.version_mensaje) + '|' + str(datetime.today().strftime('%d/%m/%Y')) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.numero_patronal) + '|'+ str(datetime.strptime(w.payslip_run_id.date_start,'%Y-%m-%d').date().strftime('%m')).lstrip('0')+ '|' + str(datetime.strptime(w.payslip_run_id.date_start,'%Y-%m-%d').date().strftime('%Y')).lstrip('0') + '|' + str(w.payslip_run_id.slip_ids[0].company_id.name) + '|' +str(w.payslip_run_id.slip_ids[0].company_id.vat) + '|'+ str(w.payslip_run_id.slip_ids[0].company_id.email) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.tipo_planilla) + '\r\n'
             datos += '[centros]' + '\r\n'
-            datos += str(w.payslip_run_id.slip_ids[0].company_id.codigo_centro_trabajo) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.nombre_centro_trabajo) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.direccion_centro_trabajo) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.zona_centro_trabajo) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.telefonos) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.fax) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.nombre_contacto) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.correo_electronico) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.codigo_departamento) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.codigo_municipio) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.codigo_actividad_economica) + '\r\n'
+            for centro in w.payslip_run_id.slip_ids[0].company_id.centro_trabajo_ids:
+                datos += str(centro.codigo) + '|' + str(centro.nombre) + '|' + str(centro.direccion) + '|' + str(centro.zona) + '|' + str(centro.telefono) + '|' + str(centro.fax) + '|' + str(centro.nombre_contacto) + '|' + str(centro.correo_electronico) + '|' + str(centro.codigo_departamento) + '|' + str(centro.codigo_municipio) + '|' + str(centro.codigo_actividad_economica) + '\r\n'
             datos += '[tiposplanilla]' + '\r\n'
             # datos += str(w.payslip_run_id.slip_ids[0].company_id.identificacion_tipo_planilla) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.nombre_tipo_planilla) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.tipo_afiliados) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.periodo_planilla) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.departamento_republica) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.actividad_economica) + '|' + str(w.payslip_run_id.slip_ids[0].company_id.clase_planilla) + '\r\n'
             datos += self.identificacion_tipo_planilla + '|' + self.nombre_tipo_planilla + '|' + self.tipo_afiliados + '|' + self.periodo_planilla + '|' + self.departamento_republica + '|' + self.actividad_economica + '|' + self.clase_planilla + '|' +'\r\n'
@@ -74,7 +75,7 @@ class rrhh_igss_wizard(models.TransientModel):
                             datos += str(contrato.wage) + '|' + '|' + '' + '|'
                 else:
                     datos += '|' + '|' + '|'
-                datos += str(slip.employee_id.codigo_centro_trabajo) + '|' + str(slip.employee_id.nit) + '|' + str(slip.employee_id.codigo_ocupacion) + '|' + str(slip.employee_id.condicion_laboral) + '|' + '|' + '\r\n'
+                datos += str(slip.employee_id.centro_trabajo_id.codigo) + '|' + str(slip.employee_id.nit) + '|' + str(slip.employee_id.codigo_ocupacion) + '|' + str(slip.employee_id.condicion_laboral) + '|' + '|' + '\r\n'
             datos += '[suspendidos]' + '\r\n'
             datos += '[licencias]' + '\r\n'
             datos += '[juramento]' + '\r\n'

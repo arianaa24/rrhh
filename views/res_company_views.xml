@@ -86,11 +86,27 @@
                                     <field name="indemnizacion_ids" widget="many2many_tags"/>
                                     <field name="retribucion_vacaciones_ids" widget="many2many_tags"/>
                                     <field name="bonificaciones_adicionales_ids" widget="many2many_tags"/>
-                                    <field name="decreto_ids"/>
-                                    <field name="fija_ids"/>
-                                    <field name="variable_ids"/>
+                                    <field name="decreto_ids" widget="many2many_tags"/>
+                                    <field name="fija_ids" widget="many2many_tags"/>
+                                    <field name="variable_ids" widget="many2many_tags"/>
                                 </group>
                             </group>
+                            <label for="centro" string="Centros de trabajo"/>
+                            <field name="centro_trabajo_ids">
+                                <tree string="Centros" editable="bottom">
+                                    <field name="codigo"/>
+                                    <field name="nombre"/>
+                                    <field name="direccion"/>
+                                    <field name="zona"/>
+                                    <field name="telefono"/>
+                                    <field name="fax"/>
+                                    <field name="nombre_contacto"/>
+                                    <field name="correo_electronico"/>
+                                    <field name="codigo_departamento"/>
+                                    <field name="codigo_municipio"/>
+                                    <field name="codigo_actividad_economica"/>
+                                </tree>
+                            </field>
                         </page>
                     </notebook>
                 </data>

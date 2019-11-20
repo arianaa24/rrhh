@@ -42,6 +42,7 @@
                                 <group string="IGSS">
                                     <field name="numero_liquidacion"/>
                                     <field name="codigo_centro_trabajo"/>
+                                    <field name="centro_trabajo_id"/>
                                     <field name="codigo_ocupacion"/>
                                     <field name="condicion_laboral"/>
                                 </group>
@@ -54,7 +55,7 @@
                                     <field name="segundo_nombre"/>
                                     <field name="primer_apellido"/>
                                     <field name="segundo_apellido"/>
-                                    <field name="apellido_casada"/>                                    
+                                    <field name="apellido_casada"/>
                                     <field name="pueblo_pertenencia"/>
                                     <field name="codigo_empleado"/>
                                     <field name="igss"/>
