@@ -79,3 +79,21 @@ class res_company(models.Model):
     variable_ids = fields.Many2many('hr.salary.rule','rrhh_variable_rel', string="Variable")
     salario_promedio_ids = fields.Many2many('hr.salary.rule','rrhh_salario_promedio_rel', string="Salario promedio")
     numero_horas_extras_ids = fields.Many2many('hr.rule.input','rrhh_num_horas_extras_rel', string='Numero horas extras')
+    centro_trabajo_ids = fields.One2many('res.company.centro_trabajo','company_id',string="Centros de trabajo")
+
+class res_company_centro_trabajo(models.Model):
+    _name = 'res.company.centro_trabajo'
+    _rec_name = 'nombre'
+
+    company_id = fields.Many2one('res.company','Compañia')
+    codigo = fields.Char('Código')
+    nombre = fields.Char('Nombre')
+    direccion = fields.Char('Dirección')
+    zona = fields.Char('Zona')
+    telefono = fields.Char('Teléfono')
+    fax = fields.Char('Fax')
+    nombre_contacto = fields.Char('Nombre contacto')
+    correo_electronico = fields.Char('Correo electronico')
+    codigo_departamento = fields.Char('Codigo departamento')
+    codigo_municipio = fields.Char('Código municipio')
+    codigo_actividad_economica = fields.Char('Codigo actividad economica')
