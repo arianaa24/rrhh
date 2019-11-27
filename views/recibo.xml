@@ -18,7 +18,7 @@
                                 <span t-field="o.date_from"/> al <span t-field="o.date_to"/>
                             </p>
 
-                            <table class="table table-condensed">
+                            <table style="margin: 0px auto;width:100%">
                                 <tbody>
                                     <tr>
                                         <td><strong>Codigo:</strong> <span t-field="o.employee_id.codigo_empleado"/></td>
@@ -46,8 +46,9 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            <br/>
                             <div class="centro" style="margin: 0 auto;">
-                                <table style="width:700px">
+                                <table style="width:100%">
                                     <tr>
                                         <td>
                                             <table>
@@ -117,7 +118,7 @@
                                 <p>Liquido a recibir: <span t-esc="lineas(o)['totales'][0] + lineas(o)['totales'][1]" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></p>
                             </div>
 
-                            <div class="row">
+                            <div class="derecha" style="float:right">
                                 <div class="col-xs-5 col-xs-offset-7" style="border-top: 2px solid black">
                                     <p class="text-center"><strong t-field="o.employee_id.name"></strong></p>
                                 </div>
@@ -141,7 +142,7 @@
                                 <span t-field="o.date_from"/> al <span t-field="o.date_to"/>
                             </p>
 
-                            <table class="table table-condensed">
+                            <table style="margin: 0px auto;width:100%">
                                 <tbody>
                                     <tr>
                                         <td><strong>Codigo:</strong> <span t-field="o.employee_id.codigo_empleado"/></td>
@@ -169,8 +170,9 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            <br/>
                             <div class="centro" style="margin: 0 auto;">
-                                <table style="width:700px">
+                                <table style="width:100%">
                                     <tr>
                                         <td>
                                             <table>
@@ -240,7 +242,7 @@
                                 <p>Liquido a recibir: <span t-esc="lineas(o)['totales'][0] + lineas(o)['totales'][1]" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></p>
                             </div>
 
-                            <div class="row">
+                            <div class="derecha" style="float:right">
                                 <div class="col-xs-5 col-xs-offset-7" style="border-top: 2px solid black">
                                     <p class="text-center"><strong t-field="o.employee_id.name"></strong></p>
                                 </div>
