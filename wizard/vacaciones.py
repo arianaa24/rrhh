@@ -22,7 +22,7 @@ class rrhh_vacaciones_wizard(models.TransientModel):
             anio_actual = datetime.strptime(str(fecha_actual), '%Y-%m-%d').strftime('%Y')
             for empleado in self.env['hr.employee'].browse(self.env.context.get('active_ids', [])):
                 if version_info[0] == 12:
-                    ausencias = self.env['hr.leave'].search([('state', '=', 'validate'), ('employee_id', '=', empleado.id),('number_of_days','>',0)])
+                    ausencias = self.env['hr.leave.allocation'].search([('state', '=', 'validate'), ('employee_id', '=', empleado.id),('number_of_days','>',0)])
                 else:
                     ausencias = self.env['hr.holidays'].search([('state', '=', 'validate'), ('employee_id', '=', empleado.id),('number_of_days','>',0)])
                 asusencia_anio = []
@@ -36,8 +36,16 @@ class rrhh_vacaciones_wizard(models.TransientModel):
                                 if contrato.state == 'open' and ausencia.number_of_days > 0 and int(anio_ausencia) == int(anio_actual):
                                     asusencia_anio.append(ausencia)
                             if len(asusencia_anio) == 0 and dias_trabajados.days >= 365:
-                                empleado.remaining_leaves += self.dias
+                                if version_info[0] == 12:
+                                    vacacion_id = self.env['hr.leave.allocation'].create({'name': 'Vacaciones '+str(empleado.name),'number_of_days': self.dias,'employee_id': empleado.id})
+                                    vacacion_id.action_approve()
+                                else:
+                                    empleado.remaining_leaves += self.dias
                         else:
                             if contrato.state == 'open' and dias_trabajados.days >= 365:
-                                empleado.remaining_leaves += self.dias
+                                if version_info[0] == 12:
+                                    vacacion_id = self.env['hr.leave.allocation'].create({'name': 'Vacaciones '+str(empleado.name),'number_of_days': self.dias,'employee_id': empleado.id})
+                                    vacacion_id.action_approve()
+                                else:
+                                    empleado.remaining_leaves += self.dias
         return {'type': 'ir.actions.act_window_close'}

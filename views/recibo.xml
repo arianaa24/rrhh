@@ -7,13 +7,11 @@
             <t t-set="data_report_dpi" t-value="110"/>
             <t t-foreach="docs" t-as="o">
                 <div class="article">
-                    <div class="header">
-                        <div class="derecha" style="float:right">
-                            <img src="/web/binary/company_logo" style="width:200px;height:75px"/>
-                        </div>
-                    </div>
                     <div class="page">
                         <div class="copia">
+                            <div class="derecha" style="float:right">
+                                <img src="/web/binary/company_logo" style="height:75px"/>
+                            </div>
                             <h2>Recibo</h2>
                             <strong>Compañia:</strong><span t-field="o.company_id.name"/>
                             <p t-field="o.name"/>
@@ -71,13 +69,13 @@
                                                     <tr>
                                                         <t t-if="l[0]">
                                                             <td><span t-esc="l[0]['nombre']"></span></td>
-                                                            <td><span t-esc="l[0]['total']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
+                                                            <td><span t-esc="l[0]['total']" t-options="{'widget': 'monetary', 'display_currency': o.company_id.currency_id}"/></td>
                                                         </t>
                                                     </tr>
                                                 </t>
                                                 <tr>
                                                     <td>Subtotal</td>
-                                                    <td><span t-esc="lineas(o)['totales'][0]" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
+                                                    <td><span t-esc="lineas(o)['totales'][0]" t-options="{'widget': 'monetary', 'display_currency': o.company_id.currency_id}"/></td>
                                                 </tr>
                                             </table>
                                         </td>
@@ -91,13 +89,13 @@
                                                     <tr>
                                                         <t t-if="l[1]">
                                                             <td><span t-esc="l[1]['nombre']"></span></td>
-                                                            <td><span t-esc="l[1]['total']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
+                                                            <td><span t-esc="l[1]['total']" t-options="{'widget': 'monetary', 'display_currency': o.company_id.currency_id}"/></td>
                                                         </t>
                                                     </tr>
                                                 </t>
                                                 <tr>
                                                     <td>Subtotal</td>
-                                                    <td><span t-esc="lineas(o)['totales'][1]" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
+                                                    <td><span t-esc="lineas(o)['totales'][1]" t-options="{'widget': 'monetary', 'display_currency': o.company_id.currency_id}"/></td>
                                                 </tr>
                                             </table>
                                         </td>
@@ -111,13 +109,13 @@
                                                     <tr>
                                                         <t t-if="l[2]">
                                                             <td><span t-esc="l[2]['nombre']"></span></td>
-                                                            <td><span t-esc="l[2]['total']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
+                                                            <td><span t-esc="l[2]['total']" t-options="{'widget': 'monetary', 'display_currency': o.company_id.currency_id}"/></td>
                                                         </t>
                                                     </tr>
                                                 </t>
                                                 <tr>
                                                     <td>Subtotal</td>
-                                                    <td><span t-esc="lineas(o)['totales'][2]" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
+                                                    <td><span t-esc="lineas(o)['totales'][2]" t-options="{'widget': 'monetary', 'display_currency': o.company_id.currency_id}"/></td>
                                                 </tr>
                                             </table>
                                         </td>
@@ -126,7 +124,7 @@
                             </div>
 
                             <div class="row mt32">
-                                <p>Liquido a recibir: <span t-esc="lineas(o)['totales'][0] + lineas(o)['totales'][1]" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></p>
+                                <p>Liquido a recibir: <span t-esc="lineas(o)['totales'][0] + lineas(o)['totales'][1]" t-options="{'widget': 'monetary', 'display_currency': o.company_id.currency_id}"/></p>
                             </div>
 
                             <div class="derecha" style="float:right">
@@ -143,7 +141,12 @@
                                 <p></p>
                             </t>
                         </div>
+                        <br/>
+                        <br/>
                         <div class="copia">
+                            <div class="derecha" style="float:right">
+                                <img src="/web/binary/company_logo" style="height:75px"/>
+                            </div>
                             <h2>Recibo</h2>
                             <strong>Compañia:</strong><span t-field="o.company_id.name"/>
                             <p t-field="o.name"/>
@@ -201,13 +204,13 @@
                                                     <tr>
                                                         <t t-if="l[0]">
                                                             <td><span t-esc="l[0]['nombre']"></span></td>
-                                                            <td><span t-esc="l[0]['total']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
+                                                            <td><span t-esc="l[0]['total']" t-options="{'widget': 'monetary', 'display_currency': o.company_id.currency_id}"/></td>
                                                         </t>
                                                     </tr>
                                                 </t>
                                                 <tr>
                                                     <td>Subtotal</td>
-                                                    <td><span t-esc="lineas(o)['totales'][0]" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
+                                                    <td><span t-esc="lineas(o)['totales'][0]" t-options="{'widget': 'monetary', 'display_currency': o.company_id.currency_id}"/></td>
                                                 </tr>
                                             </table>
                                         </td>
@@ -221,13 +224,13 @@
                                                     <tr>
                                                         <t t-if="l[1]">
                                                             <td><span t-esc="l[1]['nombre']"></span></td>
-                                                            <td><span t-esc="l[1]['total']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
+                                                            <td><span t-esc="l[1]['total']" t-options="{'widget': 'monetary', 'display_currency': o.company_id.currency_id}"/></td>
                                                         </t>
                                                     </tr>
                                                 </t>
                                                 <tr>
                                                     <td>Subtotal</td>
-                                                    <td><span t-esc="lineas(o)['totales'][1]" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
+                                                    <td><span t-esc="lineas(o)['totales'][1]" t-options="{'widget': 'monetary', 'display_currency': o.company_id.currency_id}"/></td>
                                                 </tr>
                                             </table>
                                         </td>
@@ -241,13 +244,13 @@
                                                     <tr>
                                                         <t t-if="l[2]">
                                                             <td><span t-esc="l[2]['nombre']"></span></td>
-                                                            <td><span t-esc="l[2]['total']" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
+                                                            <td><span t-esc="l[2]['total']" t-options="{'widget': 'monetary', 'display_currency': o.company_id.currency_id}"/></td>
                                                         </t>
                                                     </tr>
                                                 </t>
                                                 <tr>
                                                     <td>Subtotal</td>
-                                                    <td><span t-esc="lineas(o)['totales'][2]" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></td>
+                                                    <td><span t-esc="lineas(o)['totales'][2]" t-options="{'widget': 'monetary', 'display_currency': o.company_id.currency_id}"/></td>
                                                 </tr>
                                             </table>
                                         </td>
@@ -256,7 +259,7 @@
                             </div>
 
                             <div class="row mt32">
-                                <p>Liquido a recibir: <span t-esc="lineas(o)['totales'][0] + lineas(o)['totales'][1]" t-esc-options="{'widget': 'monetary', 'display_currency': user.company_id.currency_id}"/></p>
+                                <p>Liquido a recibir: <span t-esc="lineas(o)['totales'][0] + lineas(o)['totales'][1]" t-options="{'widget': 'monetary', 'display_currency': o.company_id.currency_id}"/></p>
                             </div>
 
                             <div class="derecha" style="float:right">
