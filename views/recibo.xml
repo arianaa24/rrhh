@@ -7,7 +7,7 @@
             <t t-set="data_report_dpi" t-value="110"/>
             <t t-foreach="docs" t-as="o">
                 <div class="article">
-                    <div class="page">
+                    <div class="page" style="font-size:13px">
                         <div class="copia">
                             <div class="derecha" style="float:right">
                                 <img src="/web/binary/company_logo" style="height:75px"/>
@@ -141,6 +141,8 @@
                                 <p></p>
                             </t>
                         </div>
+                        <br/>
+                        <br/>
                         <br/>
                         <br/>
                         <div class="copia">
