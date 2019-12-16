@@ -121,7 +121,7 @@ class HrPayslip(models.Model):
                                     if active_id:
                                         [data] = self.env['hr.payslip.run'].browse(active_id).read(['porcentaje_prestamo'])
                                         r['amount'] = lineas.monto*(data.get('porcentaje_prestamo')/100)
-            salario = self.salario_promedio(contract.employee_id,contract.company_id.salario_promedio_ids.ids)
+            salario = self.salario_promedio(contract.employee_id,contract.company_id.salario_ids.ids)
             res.append({'name': 'Salario promedio', 'code': 'SalarioPromedio','amount': salario,'contract_id': contract.id})
             dias = self.dias_trabajados_ultimos_meses(contract.employee_id,date_to)
             res.append({'name': 'Dias Trabajados 12 Meses','code':'DiasTrabajados12Meses','amount': dias,'contract_id': contract.id})
