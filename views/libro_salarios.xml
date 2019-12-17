@@ -172,6 +172,7 @@
                                     <th>Vacaciones</th>
                                     <th>SALARIO TOTAL</th>
                                     <th>IGSS</th>
+                                    <th>ISR</th>
                                     <th>Otras deducciones</th>
                                     <th>Total deducciones</th>
                                     <th>Decreto 42-92, Aguinaldo, y otros</th>
@@ -197,6 +198,7 @@
                                     <td><span t-esc="nomina['vacaciones']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
                                     <td><span t-esc="nomina['total_salario_devengado']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
                                     <td><span t-esc="nomina['igss']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
+                                    <td><span t-esc="nomina['isr']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
                                     <td><span t-esc="nomina['otras_deducciones']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
                                     <td><span t-esc="nomina['total_deducciones']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
                                     <td><span t-esc="nomina['bono_agui_indem']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
