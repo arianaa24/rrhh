@@ -92,7 +92,7 @@ class ReportLibroSalarios(models.AbstractModel):
                         fija += linea.total
                     if linea.salary_rule_id.id in nomina.company_id.variable_ids.ids:
                         variable += linea.total
-                total_salario_devengado = ordi narias + extra_ordinarias + ordinario + extra_ordinario + septimos_asuetos + vacaciones
+                total_salario_devengado = ordinarias + extra_ordinarias + ordinario + extra_ordinario + septimos_asuetos + vacaciones
                 # total_descuentos = igss + isr + anticipos
                 total_deducciones = igss + otras_deducciones
                 bono_agui_indem = bono + aguinaldo + indemnizacion
