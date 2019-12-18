@@ -25,7 +25,7 @@ class ReportLibroSalarios(models.AbstractModel):
         return empleado
 
     def _get_nominas(self,id,anio):
-        nomina_id = self.env['hr.payslip'].search([['employee_id', '=', id]],order="date_from asc")
+        nomina_id = self.env['hr.payslip'].search([['employee_id', '=', id]],order="date_to asc")
         nominas_lista = []
         numero_orden = 0
         for nomina in nomina_id:
@@ -114,7 +114,7 @@ class ReportLibroSalarios(models.AbstractModel):
                     'igss': igss,
                     'isr': isr,
                     'anticipos': anticipos,
-                    'otras_deducciones': otras_deducciones + bono,
+                    'otras_deducciones': otras_deducciones,
                     'total_deducciones': total_deducciones,
                     'bonificacion_id': bonificacion,
                     'decreto': decreto,
