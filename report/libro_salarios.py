@@ -30,6 +30,7 @@ class ReportLibroSalarios(models.AbstractModel):
         numero_orden = 0
         for nomina in nomina_id:
             nomina_anio = datetime.strptime(nomina.date_from, "%Y-%m-%d").year
+            contiene_bono = False
             if anio == nomina_anio:
                 salario = 0
                 dias_trabajados = 0
@@ -50,6 +51,10 @@ class ReportLibroSalarios(models.AbstractModel):
                 fija = 0
                 variable = 0
                 otras_deducciones = 0
+                for linea in nomina.worked_days_line_ids:
+                    dias_trabajados += linea.number_of_days
+                    if linea.number_of_days > 31:
+                        contiene_bono = True
                 for linea in nomina.line_ids:
                     if linea.salary_rule_id.id in nomina.company_id.salario_ids.ids:
                         salario += linea.total
@@ -65,15 +70,15 @@ class ReportLibroSalarios(models.AbstractModel):
                         igss += linea.total
                     if linea.salary_rule_id.id in nomina.company_id.isr_ids.ids:
                         isr += linea.total
-                        otras_deducciones += isr
+                        # otras_deducciones += isr
                     if linea.salary_rule_id.id in nomina.company_id.anticipos_ids.ids:
                         anticipos += linea.total
                         otras_deducciones += anticipos
                     if linea.salary_rule_id.id in nomina.company_id.bonificacion_ids.ids:
                         bonificacion += linea.total
-                    if linea.salary_rule_id.id in nomina.company_id.bono_ids.ids:
+                    if linea.salary_rule_id.id in nomina.company_id.bono_ids.ids and contiene_bono:
                         bono += linea.total
-                    if linea.salary_rule_id.id in nomina.company_id.aguinaldo_ids.ids:
+                    if linea.salary_rule_id.id in nomina.company_id.aguinaldo_ids.ids and contiene_bono:
                         aguinaldo += linea.total
                     if linea.salary_rule_id.id in nomina.company_id.indemnizacion_ids.ids:
                         indemnizacion += linea.total
@@ -87,9 +92,7 @@ class ReportLibroSalarios(models.AbstractModel):
                         fija += linea.total
                     if linea.salary_rule_id.id in nomina.company_id.variable_ids.ids:
                         variable += linea.total
-                for linea in nomina.worked_days_line_ids:
-                    dias_trabajados += linea.number_of_days
-                total_salario_devengado = ordinarias + extra_ordinarias + ordinario + extra_ordinario + septimos_asuetos + vacaciones
+                total_salario_devengado = ordi narias + extra_ordinarias + ordinario + extra_ordinario + septimos_asuetos + vacaciones
                 # total_descuentos = igss + isr + anticipos
                 total_deducciones = igss + otras_deducciones
                 bono_agui_indem = bono + aguinaldo + indemnizacion
