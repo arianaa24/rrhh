@@ -29,7 +29,7 @@ class ReportLibroSalarios(models.AbstractModel):
         nominas_lista = []
         numero_orden = 0
         for nomina in nomina_id:
-            nomina_anio = datetime.strptime(nomina.date_from, "%Y-%m-%d").year
+            nomina_anio = datetime.strptime(nomina.date_to, "%Y-%m-%d").year
             contiene_bono = False
             if anio == nomina_anio:
                 salario = 0
