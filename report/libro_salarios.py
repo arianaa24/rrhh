@@ -5,6 +5,7 @@ import time
 import datetime
 from datetime import date
 from datetime import datetime, date, time
+from odoo.fields import Date, Datetime
 import logging
 
 class ReportLibroSalarios(models.AbstractModel):
@@ -23,6 +24,33 @@ class ReportLibroSalarios(models.AbstractModel):
             empleado_id = self.env['hr.employee'].search([['id', '=', id],['active', '=', False]])
             empleado = empleado_id
         return empleado
+
+    def dias_trabajados(self,employee_id,nomina_id):
+        contracts = False
+        dias = 0
+        if employee_id.contract_id:
+            contracts = employee_id.contract_id
+        tipos_ausencias_ids = self.env['hr.holidays.status'].search([])
+        ausencias_restar = []
+        dias_ausentados_restar = 0
+        for ausencia in tipos_ausencias_ids:
+            if ausencia.descontar_nomina:
+                ausencias_restar.append(ausencia.name)
+        for dias in nomina_id.worked_days_line_ids:
+            if dias.code in ausencias_restar:
+                dias_ausentados_restar += dias.number_of_days
+        if contracts.date_start and nomina_id.date_from <= contracts.date_start <= nomina_id.date_to:
+            dias_laborados = employee_id.get_work_days_data(Datetime.from_string(contracts.date_start), Datetime.from_string(nomina_id.date_to), calendar=contracts.resource_calendar_id)
+            dias = (dias_laborados['days'] + 1 - dias_ausentados_restar) if (dias_laborados['days'] + 1 - dias_ausentados_restar) >= 30 else 30
+        elif contracts.date_end and nomina_id.date_from <= contracts.date_end <= nomina_id.date_to:
+            dias_laborados = employee_id.get_work_days_data(Datetime.from_string(nomina_id.date_from), Datetime.from_string(contracts.date_end), calendar=contracts.resource_calendar_id)
+            dias = (dias_laborados['days'] + 1 - dias_ausentados_restar) if (dias_laborados['days'] + 1 - dias_ausentados_restar) <= 30 else 30
+        else:
+            if contracts.schedule_pay == 'monthly':
+                dias = 30 - dias_ausentados_restar
+            if contracts.schedule_pay == 'bi-monthly':
+                dias = 15 - dias_ausentados_restar
+        return dias
 
     def _get_nominas(self,id,anio):
         nomina_id = self.env['hr.payslip'].search([['employee_id', '=', id]],order="date_to asc")
@@ -53,6 +81,7 @@ class ReportLibroSalarios(models.AbstractModel):
                 otras_deducciones = 0
                 work = -1
                 trabajo = -1
+                dias_calculados = self.dias_trabajados(nomina.employee_id,nomina)
                 for linea in nomina.worked_days_line_ids:
                     if linea.number_of_days > 31:
                         contiene_bono = True
@@ -68,9 +97,13 @@ class ReportLibroSalarios(models.AbstractModel):
                     if linea.salary_rule_id.id in nomina.company_id.salario_ids.ids:
                         salario += linea.total
                     if linea.salary_rule_id.id in nomina.company_id.ordinarias_ids.ids:
-                        ordinarias += linea.total
+                        for entrada in nomina.input_line_ids:
+                            if linea.code == entrada.code:
+                                ordinarias += entrada.amount
                     if linea.salary_rule_id.id in nomina.company_id.extras_ordinarias_ids.ids:
-                        extra_ordinarias += linea.total
+                        for entrada in nomina.input_line_ids:
+                            if linea.code == entrada.code:
+                                extra_ordinarias += entrada.amount
                     if linea.salary_rule_id.id in nomina.company_id.ordinario_ids.ids:
                         ordinario += linea.total
                     if linea.salary_rule_id.id in nomina.company_id.extra_ordinario_ids.ids:
@@ -101,7 +134,7 @@ class ReportLibroSalarios(models.AbstractModel):
                         fija += linea.total
                     if linea.salary_rule_id.id in nomina.company_id.variable_ids.ids:
                         variable += linea.total
-                total_salario_devengado = ordinarias + extra_ordinarias + ordinario + extra_ordinario + septimos_asuetos + vacaciones
+                total_salario_devengado =  ordinario + extra_ordinario + septimos_asuetos + vacaciones
                 # total_descuentos = igss + isr + anticipos
                 total_deducciones = igss + otras_deducciones + isr
                 bono_agui_indem = bono + aguinaldo + indemnizacion
@@ -112,7 +145,7 @@ class ReportLibroSalarios(models.AbstractModel):
                     'fecha_fin': nomina.date_to,
                     'moneda_id': nomina.company_id.currency_id,
                     'salario': salario,
-                    'dias_trabajados': dias_trabajados,
+                    'dias_trabajados': dias_calculados,
                     'ordinarias': ordinarias,
                     'extra_ordinarias': extra_ordinarias,
                     'ordinario': ordinario,
