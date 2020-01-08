@@ -14,6 +14,7 @@ class HrPayslip(models.Model):
     _inherit = 'hr.payslip'
 
     porcentaje_prestamo = fields.Float(related="payslip_run_id.porcentaje_prestamo",string='Prestamo (%)',store=True)
+    etiqueta_empleado_ids = fields.Many2many('hr.employee.category',string='Etiqueta empleado', related='employee_id.category_ids')
 
     @api.multi
     def action_payslip_done(self):
