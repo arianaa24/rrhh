@@ -56,7 +56,7 @@ class rrhh_igss_wizard(models.TransientModel):
                 anio_planilla = fecha_planilla.year
                 contrato_ids = self.env['hr.contract'].search( [['employee_id', '=', slip.employee_id.id]],offset=0,limit=1,order='date_start desc')
                 logging.warn(contrato_ids)
-                datos += '1' + '|' + str(slip.employee_id.igss) + '|' + slip.employee_id.primer_nombre + '|'+slip.employee_id.segundo_nombre + '|' + slip.employee_id.primer_apellido + '|' + slip.employee_id.segundo_apellido + '|'+ (slip.employee_id.apellido_casada if slip.employee_id.apellido_casada else '') + '|'
+                datos += '1' + '|' + str(slip.employee_id.igss) + '|' + slip.employee_id.primer_nombre + '|'+(slip.employee_id.segundo_nombre if slip.employee_id.segundo_nombre else '' ) + '|' + (slip.employee_id.primer_apellido if slip.employee_id.primer_apellido else '' )+ '|' + (slip.employee_id.segundo_apellido if slip.employee_id.segundo_apellido else '') + '|'+ (slip.employee_id.apellido_casada if slip.employee_id.apellido_casada else '') + '|'
                 if contrato_ids:
                     contrato = self.env['hr.contract'].browse([contrato_ids.id])
                     if contrato.date_end:
