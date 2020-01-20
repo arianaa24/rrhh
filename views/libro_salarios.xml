@@ -17,7 +17,7 @@
                                     <span t-field="empleado.company_id.vat"/>
                                 </p>
                                 <p style="tex-align:center">
-                                     LIBRO DE SALARIOS PARA TRABAJADORES PERMANENTES>
+                                     LIBRO DE SALARIOS PARA TRABAJADORES PERMANENTES
                                 </p>
                                 <p style="tex-align:center">
                                     AUTORIZADO POR EL MINISTERIO DE TRABAJO Y PREVISION SOCIAL, SEGÚN ARTÍCULO 102 DEL CODIGO DE TRABAJO
@@ -25,7 +25,7 @@
                         </div>
                     </div>
                     <div class="page">
-                        <div style="height:5.0cm"/>
+                        <div style="height:1.7cm"/>
                         <table style="margin: 0px auto;">
                             <tr>
                                 <td style="text-align:center">
@@ -172,6 +172,7 @@
                                     <th>Vacaciones</th>
                                     <th>SALARIO TOTAL</th>
                                     <th>IGSS</th>
+                                    <th>ISR</th>
                                     <th>Otras deducciones</th>
                                     <th>Total deducciones</th>
                                     <th>Decreto 42-92, Aguinaldo, y otros</th>
@@ -189,14 +190,15 @@
                                     <td><span t-esc="nomina['fecha_inicio']" t-options="{'widget': 'date'}"/>-<span t-esc="nomina['fecha_fin']" t-options="{'widget': 'date'}"/></td>
                                     <td><span t-esc="nomina['salario']"  t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
                                     <td><span t-esc="nomina['dias_trabajados']"/></td>
-                                    <td><span t-esc="nomina['ordinarias']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
-                                    <td><span t-esc="nomina['extra_ordinarias']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
+                                    <td><span t-esc="nomina['ordinarias']"/></td>
+                                    <td><span t-esc="nomina['extra_ordinarias']"/></td>
                                     <td><span t-esc="nomina['ordinario']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
                                     <td><span t-esc="nomina['extra_ordinario']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
                                     <td><span t-esc="nomina['septimos_asuetos']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
                                     <td><span t-esc="nomina['vacaciones']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
                                     <td><span t-esc="nomina['total_salario_devengado']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
                                     <td><span t-esc="nomina['igss']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
+                                    <td><span t-esc="nomina['isr']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
                                     <td><span t-esc="nomina['otras_deducciones']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
                                     <td><span t-esc="nomina['total_deducciones']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>
                                     <td><span t-esc="nomina['bono_agui_indem']" t-options="{'widget': 'monetary', 'display_currency': nomina['moneda_id']}"/></td>

@@ -11,6 +11,7 @@ import time
 import datetime
 from datetime import date
 from datetime import datetime, date, time
+from odoo.fields import Date, Datetime
 import itertools
 
 class rrhh_informe_empleador(models.TransientModel):
@@ -25,12 +26,14 @@ class rrhh_informe_empleador(models.TransientModel):
         empleado_ids = self.env['hr.employee'].search([['company_id', '=', company_id]])
         for empleado in empleado_ids:
             if empleado.contract_ids:
-                anio_fin_contrato = 0
-                anio_inicio_contrato = datetime.strptime(empleado.contract_ids.date_start, "%Y-%m-%d").year
-                if empleado.contract_ids.date_end:
-                    anio_fin_contrato = datetime.strptime(empleado.contract_ids.date_end, "%Y-%m-%d").year
-                if anio_inicio_contrato < anio and (empleado.contract_ids.date_end == False or anio_fin_contrato < anio) :
-                    empleados += 1
+                for contrato in empleado.contract_ids:
+                    if contrato.state == 'open':
+                        anio_fin_contrato = 0
+                        anio_inicio_contrato = datetime.strptime(contrato.date_start, "%Y-%m-%d").year
+                        if contrato.date_end:
+                            anio_fin_contrato = datetime.strptime(contrato.date_end, "%Y-%m-%d").year
+                        if anio_inicio_contrato < anio and (contrato.date_end == False or anio_fin_contrato < anio) :
+                            empleados += 1
         return empleados
 
     def empleados_fin_anio(self,company_id,anio):
@@ -38,12 +41,14 @@ class rrhh_informe_empleador(models.TransientModel):
         empleado_ids = self.env['hr.employee'].search([['company_id', '=', company_id]])
         for empleado in empleado_ids:
             if empleado.contract_ids:
-                anio_fin_contrato = 0
-                anio_inicio_contrato = datetime.strptime(empleado.contract_ids.date_start, "%Y-%m-%d").year
-                if empleado.contract_ids.date_end:
-                    anio_fin_contrato = datetime.strptime(empleado.contract_ids.date_end, "%Y-%m-%d").year
-                if anio_inicio_contrato <= anio and (empleado.contract_ids.date_end == False or anio_fin_contrato <= anio) :
-                    empleados += 1
+                for contrato in empleado.contract_ids:
+                    if contrato.state == 'open':
+                        anio_fin_contrato = 0
+                        anio_inicio_contrato = datetime.strptime(contrato.date_start, "%Y-%m-%d").year
+                        if contrato.date_end:
+                            anio_fin_contrato = datetime.strptime(contrato.date_end, "%Y-%m-%d").year
+                        if anio_inicio_contrato <= anio and (contrato.date_end == False or anio_fin_contrato <= anio) :
+                            empleados += 1
         return empleados
 
     @api.multi
@@ -55,15 +60,39 @@ class rrhh_informe_empleador(models.TransientModel):
         datas['form'] = res
         return self.env.ref('rrhh.action_informe_empleador').report_action([], data=datas)
 
+    def dias_trabajados_anual(self,empleado_id,anio):
+        anio_inicio_contrato = int(datetime.strptime(str(empleado_id.contract_id.date_start), '%Y-%m-%d').date().strftime('%Y'))
+        anio_inicio = datetime.strptime(str(anio)+'-01'+'-01', '%Y-%m-%d').date().strftime('%Y-%m-%d')
+        anio_fin = datetime.strptime(str(anio)+'-12'+'-31', '%Y-%m-%d').date().strftime('%Y-%m-%d')
+        dias_laborados = 0
+        if empleado_id.contract_id.date_start and empleado_id.contract_id.date_end:
+            anio_fin_contrato = int(datetime.strptime(str(empleado_id.contract_id.date_end), '%Y-%m-%d').date().strftime('%Y'))
+            if anio_inicio_contrato == anio and anio_fin_contrato == anio:
+                dias = empleado_id.get_work_days_data(Datetime.from_string(empleado_id.contract_id.date_start), Datetime.from_string(empleado_id.contract_id.date_end), calendar=empleado_id.contract_id.resource_calendar_id)
+                dias_laborados = dias['days']
+            if anio_inicio_contrato != anio and anio_fin_contrato == anio:
+                dias = empleado_id.get_work_days_data(Datetime.from_string(anio_inicio), Datetime.from_string(empleado_id.contract_id.date_end), calendar=empleado_id.contract_id.resource_calendar_id)
+                dias_laborados = dias['days']
+        if empleado_id.contract_id.date_start and empleado_id.contract_id.date_end == False:
+            if anio_inicio_contrato == anio:
+                dias = empleado_id.get_work_days_data(Datetime.from_string(empleado_id.contract_id.date_start), Datetime.from_string(anio_fin), calendar=empleado_id.contract_id.resource_calendar_id)
+                dias_laborados = dias['days']
+            else:
+                dias = empleado_id.get_work_days_data(Datetime.from_string(anio_inicio), Datetime.from_string(anio_fin), calendar=empleado_id.contract_id.resource_calendar_id)
+                dias_laborados = dias['days']
+        return dias_laborados
+
     def print_report_excel(self):
         for w in self:
             dict = {}
             empleados_id = self.env.context.get('active_ids', [])
-            datos_compania = self.env['hr.employee'].search([['id', '=', empleados_id[0]]]).company_id
             libro = xlwt.Workbook()
             dict['anio'] = w['anio']
-            empleados = self.env['hr.employee'].search([['id', 'in', empleados_id]])
-            responsable_id = self.env['hr.employee'].search([['id', '=', self.env.user.id]])
+            empleados_archivados = self.env['hr.employee'].sudo().search([('active','=',False),('id', 'in', empleados_id)])
+            empleados_activos = self.env['hr.employee'].sudo().search([('active','=',True),('id', 'in', empleados_id)])
+            empleados = empleados_archivados + empleados_activos
+            responsable_id = self.env['hr.employee'].sudo().search([['id', '=', self.env.user.id]])
+            datos_compania = empleados[0].company_id
 
             # ESTILOS
             estilo_borde = xlwt.easyxf('border: bottom thin, left thin,right thin, top thin')
@@ -266,7 +295,7 @@ class rrhh_informe_empleador(models.TransientModel):
                 nombre_empleado = empleado.name.split( )
                 if len(nombre_empleado) >=4:
                     nominas_lista = []
-                    contrato = self.env['hr.contract'].search([['employee_id', '=', empleado.id]])
+                    contrato = self.env['hr.contract'].search([('employee_id', '=', empleado.id),('state','=','open')])
                     nomina_id = self.env['hr.payslip'].search([['employee_id', '=', empleado.id]])
                     dias_trabajados = 0
                     salario_anual_nominal = 0
@@ -280,34 +309,41 @@ class rrhh_informe_empleador(models.TransientModel):
                     retribucion_comisiones = 0
                     viaticos = 0
                     retribucion_vacaciones = 0
+                    bonificacion_decreto = 0
                     indemnizacion = 0
                     for nomina in nomina_id:
                         nomina_anio = datetime.strptime(nomina.date_from, "%Y-%m-%d").year
                         if w['anio'] == nomina_anio:
+                            if nomina.input_line_ids:
+                                for entrada in nomina.input_line_ids:
+                                    for horas_entrada in nomina.company_id.numero_horas_extras_ids:
+                                        if entrada.code == horas_entrada.code:
+                                            valor_horas_extras += entrada.amount
                             for linea in nomina.worked_days_line_ids:
                                 dias_trabajados += linea.number_of_days
                             for linea in nomina.line_ids:
-                                if linea.salary_rule_id in nomina.company_id.salario_ids:
+                                if linea.salary_rule_id.id in nomina.company_id.salario_ids.ids:
                                     salario_anual_nominal += linea.total
-                                if linea.salary_rule_id in nomina.company_id.bonificacion_ids:
-                                    bonificacion = linea.total
-                                if linea.salary_rule_id in nomina.company_id.aguinaldo_ids:
-                                    aguinaldo = linea.total
-                                if linea.salary_rule_id in nomina.company_id.bono_ids:
-                                    bono = linea.total
-                                if linea.salary_rule_id in nomina.company_id.horas_extras_ids:
-                                    horas_extras = linea.quantity
-                                    valor_horas_extras = linea.total
-                                if linea.salary_rule_id in nomina.company_id.retribucion_comisiones_ids:
-                                    retribucion_comisiones = linea.total
-                                if linea.salary_rule_id in nomina.company_id.viaticos_ids:
-                                    viaticos = linea.total
-                                if linea.salary_rule_id in nomina.company_id.retribucion_vacaciones_ids:
-                                    retribucion_vacaciones = linea.total
-                                if linea.salary_rule_id in nomina.company_id.indemnizacion_ids:
-                                    indemnizacion = linea.total
-                                if linea.salary_rule_id in nomina.company_id.bonificaciones_adicionales_ids:
-                                    bonificaciones_adicionales = linea.total
+                                if linea.salary_rule_id.id in nomina.company_id.bonificacion_ids.ids:
+                                    bonificacion += linea.total
+                                if linea.salary_rule_id.id in nomina.company_id.aguinaldo_ids.ids:
+                                    aguinaldo += linea.total
+                                if linea.salary_rule_id.id in nomina.company_id.bono_ids.ids:
+                                    bono += linea.total
+                                if linea.salary_rule_id.id in nomina.company_id.horas_extras_ids.ids:
+                                    horas_extras += linea.total
+                                if linea.salary_rule_id.id in nomina.company_id.retribucion_comisiones_ids.ids:
+                                    retribucion_comisiones += linea.total
+                                if linea.salary_rule_id.id in nomina.company_id.viaticos_ids.ids:
+                                    viaticos += linea.total
+                                if linea.salary_rule_id.id in nomina.company_id.retribucion_vacaciones_ids.ids:
+                                    retribucion_vacaciones += linea.total
+                                if linea.salary_rule_id.id in nomina.company_id.indemnizacion_ids.ids:
+                                    indemnizacion += linea.total
+                                if linea.salary_rule_id.id in nomina.company_id.bonificaciones_adicionales_ids.ids:
+                                    bonificaciones_adicionales += linea.total
+                                if linea.salary_rule_id.id in nomina.company_id.decreto_ids.ids:
+                                    bonificacion_decreto += linea.total
                     if empleado.gender == 'male':
                         genero = 'H'
                     if empleado.gender == 'female':
@@ -324,12 +360,13 @@ class rrhh_informe_empleador(models.TransientModel):
                         estado_civil = 5
                     if empleado.marital == 'unido':
                         estado_civil = 6
+                    dias_trabajados_anual = self.dias_trabajados_anual(empleado,w['anio'])
                     hoja_empleado.write(fila, 0, empleado_numero,estilo_borde)
                     hoja_empleado.write(fila, 1, nombre_empleado[0],estilo_borde)
                     hoja_empleado.write(fila, 2, nombre_empleado[1],estilo_borde)
                     hoja_empleado.write(fila, 3, nombre_empleado[2],estilo_borde)
                     hoja_empleado.write(fila, 4, nombre_empleado[3],estilo_borde)
-                    hoja_empleado.write(fila, 5, empleado.country_id.informe_empleador_id,estilo_borde)
+                    hoja_empleado.write(fila, 5, empleado.country_id.name,estilo_borde)
                     hoja_empleado.write(fila, 6, estado_civil,estilo_borde)
                     hoja_empleado.write(fila, 7, empleado.documento_identificacion,estilo_borde)
                     hoja_empleado.write(fila, 8, empleado.identification_id,estilo_borde)
@@ -354,14 +391,15 @@ class rrhh_informe_empleador(models.TransientModel):
                     hoja_empleado.write(fila, 27, contrato.fecha_reinicio_labores,estilo_borde)
                     hoja_empleado.write(fila, 28, contrato.date_end,estilo_borde)
                     hoja_empleado.write(fila, 29, contrato.job_id.name,estilo_borde)
-                    hoja_empleado.write(fila, 30, contrato.resource_calendar_id.name,estilo_borde)
-                    hoja_empleado.write(fila, 31, dias_trabajados,estilo_borde)
+                    hoja_empleado.write(fila, 30, empleado.jornada_trabajo,estilo_borde)
+                    hoja_empleado.write(fila, 31, dias_trabajados_anual,estilo_borde)
                     hoja_empleado.write(fila, 32, empleado.permiso_trabajo,estilo_borde)
-                    hoja_empleado.write(fila, 33, contrato.wage + contrato.base_extra,estilo_borde)
-                    hoja_empleado.write(fila, 34, salario_anual_nominal,estilo_borde)
-                    hoja_empleado.write(fila, 35, bono,estilo_borde)
+                    hoja_empleado.write(fila, 33, contrato.wage,estilo_borde)
+                    # hoja_empleado.write(fila, 34, salario_anual_nominal,estilo_borde)
+                    hoja_empleado.write(fila, 34, (contrato.wage + contrato.base_extra) * 12,estilo_borde)
+                    hoja_empleado.write(fila, 35, bonificacion_decreto,estilo_borde)
                     hoja_empleado.write(fila, 36, horas_extras,estilo_borde)
-                    hoja_empleado.write(fila, 37, valor_horas_extras,estilo_borde)
+                    hoja_empleado.write(fila, 37, ((horas_extras / valor_horas_extras) if valor_horas_extras > 0 else horas_extras),estilo_borde)
                     hoja_empleado.write(fila, 38, aguinaldo,estilo_borde)
                     hoja_empleado.write(fila, 39, bono,estilo_borde)
                     hoja_empleado.write(fila, 40, retribucion_comisiones,estilo_borde)

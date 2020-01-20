@@ -24,6 +24,7 @@
             <field name="inherit_id" ref="hr_payroll.view_hr_payslip_form"/>
             <field name="arch" type="xml">
                 <field name="name" position="after">
+                    <field name="etiqueta_empleado_ids" widget="many2many_tags"/>
                     <field name="porcentaje_prestamo"/>
                 </field>
             </field>

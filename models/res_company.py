@@ -43,7 +43,7 @@ class res_company(models.Model):
     bonificacion_ids = fields.Many2many('hr.salary.rule','rrhh_bonificacion_rel',string='Bonificacion incentivo')
     bono_ids = fields.Many2many('hr.salary.rule','bono_company_rel',string='Bono 14')
     aguinaldo_ids = fields.Many2many('hr.salary.rule','rrhh_aguinaldo_rel',string='Aguinaldo')
-    indemnizacion_ids= fields.Many2many('hr.salary.rule','rrhh_indemnizacion_rel',string='Indemnizacion')
+    indemnizacion_ids= fields.Many2many('hr.salary.rule','rrhh_indemnizacion_rel',string='Retribución por Indemnización')
     salario_ids = fields.Many2many('hr.salary.rule','rrhh_salario_rel',string='Salario')
     origen_compania = fields.Selection([('nacional', 'Nacional'),
                                     ('extranjero', 'Extranjero')], 'Nacional o Extranjero')
@@ -76,4 +76,24 @@ class res_company(models.Model):
     vacaciones_ids = fields.Many2many('hr.salary.rule','rrhh_vacaiones_rel', string="Vacaiones")
     decreto_ids = fields.Many2many('hr.salary.rule','rrhh_decretro_rel', string="Decreto")
     fija_ids = fields.Many2many('hr.salary.rule','rrhh_fija_rel', string="Fija")
-    variable_ids = fields.Many2many('hr.salary.rule','rrhh_decretro_rel', string="Variable")
+    variable_ids = fields.Many2many('hr.salary.rule','rrhh_variable_rel', string="Variable")
+    salario_promedio_ids = fields.Many2many('hr.salary.rule','rrhh_salario_promedio_rel', string="Salario promedio")
+    numero_horas_extras_ids = fields.Many2many('hr.rule.input','rrhh_num_horas_extras_rel', string='Numero horas extras')
+    centro_trabajo_ids = fields.One2many('res.company.centro_trabajo','company_id',string="Centros de trabajo")
+
+class res_company_centro_trabajo(models.Model):
+    _name = 'res.company.centro_trabajo'
+    _rec_name = 'nombre'
+
+    company_id = fields.Many2one('res.company','Compañia')
+    codigo = fields.Char('Código')
+    nombre = fields.Char('Nombre')
+    direccion = fields.Char('Dirección')
+    zona = fields.Char('Zona')
+    telefono = fields.Char('Teléfono')
+    fax = fields.Char('Fax')
+    nombre_contacto = fields.Char('Nombre contacto')
+    correo_electronico = fields.Char('Correo electronico')
+    codigo_departamento = fields.Char('Codigo departamento')
+    codigo_municipio = fields.Char('Código municipio')
+    codigo_actividad_economica = fields.Char('Codigo actividad economica')
