@@ -86,11 +86,13 @@ class rrhh_informe_empleador(models.TransientModel):
         for w in self:
             dict = {}
             empleados_id = self.env.context.get('active_ids', [])
-            datos_compania = self.env['hr.employee'].search([['id', '=', empleados_id[0]]]).company_id
             libro = xlwt.Workbook()
             dict['anio'] = w['anio']
-            empleados = self.env['hr.employee'].search([['id', 'in', empleados_id]])
-            responsable_id = self.env['hr.employee'].search([['id', '=', self.env.user.id]])
+            empleados_archivados = self.env['hr.employee'].sudo().search([('active','=',False),('id', 'in', empleados_id)])
+            empleados_activos = self.env['hr.employee'].sudo().search([('active','=',True),('id', 'in', empleados_id)])
+            empleados = empleados_archivados + empleados_activos
+            responsable_id = self.env['hr.employee'].sudo().search([['id', '=', self.env.user.id]])
+            datos_compania = empleados[0].company_id
 
             # ESTILOS
             estilo_borde = xlwt.easyxf('border: bottom thin, left thin,right thin, top thin')
