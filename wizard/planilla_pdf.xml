@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="planilla_pdf">
+        <t t-call="web.basic_layout">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="reporte" t-value="reporte(data)"/>
+                <t t-foreach="reporte['cuentas_analiticas']" t-as="cuenta">
+                    <div class="page">
+                        <h2><center><span t-esc="reporte['encabezado']['nomina']"/><br/>FITNESS ONE</center></h2>
+                        <br/><span t-esc="reporte['cuentas_analiticas'][cuenta]"/><br/>
+                        <table style="margin:0px auto 0px auto;;width:32cm">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Cod. de empleado</th>
+                                    <th>Nombre de empleado</th>
+                                    <th>Fecha de ingreso</th>
+                                    <th>Puesto</th>
+                                    <th>Días</th>
+                                    <t t-foreach="reporte['columnas']" t-as="columna">
+                                        <th><span t-esc="columna"/></th>
+                                    </t>
+                                    <th>Banco a depositar</th>
+                                    <th>Cuenta a depositar</th>
+                                    <th>Observaciones</th>
+                                    <th>Cuenta analítica</th>
+                                </tr>
+                            </thead>
+                           <tbody>
+                                <tr t-foreach="reporte['lineas'][reporte['cuentas_analiticas'][cuenta]]['datos']" t-as="linea">
+                                    <td>
+                                        <span t-esc="linea['estatico']['numero']"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="linea['estatico']['codigo_empleado']"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="linea['estatico']['nombre_empleado']"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="linea['estatico']['fecha_ingreso']"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="linea['estatico']['puesto']"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="linea['estatico']['dias']"/>
+                                    </td>
+                                    <t t-foreach="linea['dinamico']" t-as="l">
+                                        <td class="text-right">
+                                            <span t-esc="l" t-options='{"widget": "monetary", "display_currency": user.company_id.currency_id}'/>
+                                        </td>
+                                    </t>
+                                    <td>
+                                        <span t-esc="linea['estatico']['banco_depositar']"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="linea['estatico']['cuenta_depositar']"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="linea['estatico']['observaciones']"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="linea['estatico']['cuenta_analitica']"/>
+                                    </td>
+                                </tr>
+                                <tr t-foreach="reporte['lineas'][reporte['cuentas_analiticas'][cuenta]]['totales']" t-as="totales">
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td class="text-right">
+                                        TOTALES
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td class="text-right">
+                                    </td>
+                                    <t t-foreach="totales" t-as="t">
+                                        <td class="text-right">
+                                            <span t-esc="t" t-options='{"widget": "monetary", "display_currency": user.company_id.currency_id}'/>
+                                        </td>
+                                    </t>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
