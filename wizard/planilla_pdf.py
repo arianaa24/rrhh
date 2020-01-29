@@ -90,7 +90,7 @@ class report_planilla_pdf(models.AbstractModel):
             linea['estatico']['cuenta_depositar'] = slip.employee_id.bank_account_id.acc_number
             linea['estatico']['observaciones'] = slip.note
             if slip.move_id and len(slip.move_id.line_ids) > 0 and slip.move_id.line_ids[0].analytic_account_id:
-                linea['estatico']['cuenta_analitica'] = slip.move_id.line_ids[0].analytic_account_id.name.name
+                linea['estatico']['cuenta_analitica'] = slip.move_id.line_ids[0].analytic_account_id.name
             else:
                 linea['estatico']['cuenta_analitica'] = llave
             lineas[llave]['datos'].append(linea)
