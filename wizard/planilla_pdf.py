@@ -49,9 +49,17 @@ class report_planilla_pdf(models.AbstractModel):
             linea['estatico']['puesto'] = slip.employee_id.job_id.name
 
             dias = 0
+            work = -1
+            trabajo = -1
             for d in slip.worked_days_line_ids:
-                if d.code == 'WORK100':
-                    dias += d.number_of_days
+                if d.code == 'TRABAJO100':
+                    trabajo = d.number_of_days
+                elif d.code == 'WORK100':
+                    work = d.number_of_days
+            if trabajo >= 0:
+                dias += trabajo
+            else:
+                dias += work
             linea['estatico']['dias'] = dias
 
             totales = [0 for c in planilla.columna_id]
@@ -76,24 +84,15 @@ class report_planilla_pdf(models.AbstractModel):
                 totales[x] += total_columna
                 x += 1
 
-#            for entrada in planilla.entrada_id:
-#                entradas = [x.name for x in entrada.input_id]
-#                total_columna = 0
-#                for r in l.input_line_ids:
-#                    if r.name in entradas:
-#                        total_columna += r.amount
-#                linea['dinamico'].append(total_columna)
-#                totales[x] += total_columna
-#                x += 1
-
-
             linea['dinamico'].append(total_salario)
             totales[len(totales) - 1] += total_salario
             linea['estatico']['banco_depositar'] = slip.employee_id.bank_account_id.bank_id.name
             linea['estatico']['cuenta_depositar'] = slip.employee_id.bank_account_id.acc_number
             linea['estatico']['observaciones'] = slip.note
-            linea['estatico']['cuenta_analitica'] = slip.contract_id.analytic_account_id.name
-
+            if slip.move_id and len(slip.move_id.line_ids) > 0 and slip.move_id.line_ids[0].analytic_account_id:
+                linea['estatico']['cuenta_analitica'] = slip.move_id.line_ids[0].analytic_account_id.name.name
+            else:
+                linea['estatico']['cuenta_analitica'] = llave
             lineas[llave]['datos'].append(linea)
 
         lineas[llave]['totales'] = []

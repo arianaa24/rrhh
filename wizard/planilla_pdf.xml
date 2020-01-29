@@ -7,23 +7,23 @@
                 <t t-foreach="reporte['cuentas_analiticas']" t-as="cuenta">
                     <div class="page">
                         <h2><center><span t-esc="reporte['encabezado']['nomina']"/><br/>FITNESS ONE</center></h2>
-                        <br/><span t-esc="reporte['cuentas_analiticas'][cuenta]"/><br/>
-                        <table style="margin:0px auto 0px auto;;width:32cm">
+                        <br/><center><span t-esc="reporte['cuentas_analiticas'][cuenta]"/></center><br/>
+                        <table style="margin:0px auto 0px auto;width:32cm">
                             <thead>
                                 <tr>
-                                    <th>No.</th>
-                                    <th>Cod. de empleado</th>
-                                    <th>Nombre de empleado</th>
-                                    <th>Fecha de ingreso</th>
-                                    <th>Puesto</th>
-                                    <th>Días</th>
+                                    <th style="width:1cm;padding:0.2cm">No.</th>
+                                    <th style="width:2cm;padding:0.2cm">Cod. de empleado</th>
+                                    <th style="width:4cm;padding:0.2cm">Nombre de empleado</th>
+                                    <th style="width:2.5cm;padding:0.2cm">Fecha de ingreso</th>
+                                    <th style="width:3cm;padding:0.2cm">Puesto</th>
+                                    <th style="width:1cm;padding:0.2cm">Días</th>
                                     <t t-foreach="reporte['columnas']" t-as="columna">
-                                        <th><span t-esc="columna"/></th>
+                                        <th style="width:3cm;padding:0.2cm"><span t-esc="columna"/></th>
                                     </t>
-                                    <th>Banco a depositar</th>
-                                    <th>Cuenta a depositar</th>
-                                    <th>Observaciones</th>
-                                    <th>Cuenta analítica</th>
+                                    <th style="width:2.5cm;padding:0.2cm">Banco a depositar</th>
+                                    <th style="width:3cm;padding:0.2cm">Cuenta a depositar</th>
+                                    <th style="width:3cm;padding:0.2cm">Observaciones</th>
+                                    <th style="width:3cm;padding:0.2cm">Cuenta analítica</th>
                                 </tr>
                             </thead>
                            <tbody>
