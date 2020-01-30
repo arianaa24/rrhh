@@ -6,8 +6,6 @@ import logging
 class report_planilla_pdf(models.AbstractModel):
     _name = 'report.rrhh.planilla_pdf'
 
-    
-    
     def reporte(self, datos):
         logging.getLogger('datos...').warn(datos)
         planilla = self.env['rrhh.planilla'].browse(datos['planilla_id'][0])
@@ -95,8 +93,8 @@ class report_planilla_pdf(models.AbstractModel):
                 linea['estatico']['cuenta_analitica'] = llave
             lineas[llave]['datos'].append(linea)
 
-        lineas[llave]['totales'] = []
-        lineas[llave]['totales'].append(totales)            
+            lineas[llave]['totales'] = []
+            lineas[llave]['totales'].append(totales)
         reporte['columnas'] = columnas
         reporte['lineas'] = lineas
         
