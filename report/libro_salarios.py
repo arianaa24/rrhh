@@ -14,9 +14,12 @@ class ReportLibroSalarios(models.AbstractModel):
     def _get_contrato(self,id):
         contract = False
         contrato_id = self.env['hr.contract'].search([['employee_id', '=', id]])
-        for contrato in contrato_id:
-            if contrato.state == 'open':
-                contract = contrato
+        if len(contrato_id) > 1:
+            for contrato in contrato_id:
+                if contrato.state == 'open':
+                    contract = contrato
+        else:
+            contract = contrato_id            
         return {'fecha_ingreso':contract.date_start,'fecha_finalizacion': contract.date_end}
 
     def _get_empleado(self,id):
@@ -56,6 +59,25 @@ class ReportLibroSalarios(models.AbstractModel):
                 dias = 15 - dias_ausentados_restar
         return dias
 
+    def _get_dias_laborados_netos(self,empleado,fecha_inicio,fecha_fin):
+        work = -1
+        trabajo = -1
+        dias_trabajados = 0
+        nominas = self.env['hr.payslip'].search([['employee_id','=',empleado.id],['date_from', '>=', fecha_inicio],['date_to','<=',fecha_fin]])
+        for nomina in nominas:
+            for linea in nomina.worked_days_line_ids:
+                if linea.number_of_days > 31:
+                    contiene_bono = True
+                if linea.code == 'TRABAJO100':
+                    trabajo = linea.number_of_days
+                elif linea.code == 'WORK100':
+                    work = linea.number_of_days
+            if trabajo >= 0:
+                dias_trabajados += trabajo
+            else:
+                dias_trabajados += work
+        return dias_trabajados
+
     def _get_nominas(self,id,anio):
         nomina_id = self.env['hr.payslip'].search([['employee_id', '=', id]],order="date_to asc")
         nominas_lista = []
@@ -86,6 +108,10 @@ class ReportLibroSalarios(models.AbstractModel):
                 work = -1
                 trabajo = -1
                 dias_calculados = self.dias_trabajados(nomina.employee_id,nomina)
+                dias_laborados = nomina.employee_id.get_work_days_data(Datetime.from_string(nomina.date_from), Datetime.from_string(nomina.date_to), calendar=nomina.employee_id.contract_id.resource_calendar_id)
+                dias_laborados_netos = 0
+                if dias_laborados['days'] > 60:
+                    dias_laborados_netos = self._get_dias_laborados_netos(nomina.employee_id,nomina.date_from,nomina.date_to)
                 for linea in nomina.worked_days_line_ids:
                     if linea.number_of_days > 31:
                         contiene_bono = True
@@ -149,7 +175,7 @@ class ReportLibroSalarios(models.AbstractModel):
                     'fecha_fin': nomina.date_to,
                     'moneda_id': nomina.company_id.currency_id,
                     'salario': salario,
-                    'dias_trabajados': dias_trabajados,
+                    'dias_trabajados': dias_laborados_netos if dias_laborados_netos > 0 else dias_trabajados,
                     'dias_calculados': dias_calculados,
                     'ordinarias': ordinarias,
                     'extra_ordinarias': extra_ordinarias,
