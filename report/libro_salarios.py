@@ -12,8 +12,12 @@ class ReportLibroSalarios(models.AbstractModel):
     _name = 'report.rrhh.libro_salarios'
 
     def _get_contrato(self,id):
+        contract = False
         contrato_id = self.env['hr.contract'].search([['employee_id', '=', id]])
-        return {'fecha_ingreso':contrato_id.date_start,'fecha_finalizacion': contrato_id.date_end}
+        for contrato in contrato_id:
+            if contrato.state == 'open':
+                contract = contrato
+        return {'fecha_ingreso':contract.date_start,'fecha_finalizacion': contract.date_end}
 
     def _get_empleado(self,id):
         empleado_id = self.env['hr.employee'].search([['id', '=', id]])
