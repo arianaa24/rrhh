@@ -63,8 +63,8 @@ class rrhh_planilla_wizard(models.TransientModel):
                     hoja.write(0, 0, 'Planilla', estilo)
                     hoja.write(0, 1, w.nomina_id.name, estilo)
                     hoja.write(0, 2, 'Periodo', estilo)
-                    hoja.write(0, 3, w.nomina_id.date_start, estilo)
-                    hoja.write(0, 4, w.nomina_id.date_end, estilo)
+                    hoja.write(0, 3, str(w.nomina_id.date_start), estilo)
+                    hoja.write(0, 4, str(w.nomina_id.date_end), estilo)
 
                     linea = 2
                     num = 1
@@ -99,7 +99,7 @@ class rrhh_planilla_wizard(models.TransientModel):
                                 hoja.write(linea, 0, num)
                                 hoja.write(linea, 1, l.employee_id.codigo_empleado)
                                 hoja.write(linea, 2, l.employee_id.name)
-                                hoja.write(linea, 3, l.contract_id.date_start)
+                                hoja.write(linea, 3, str(l.contract_id.date_start))
                                 hoja.write(linea, 4, l.employee_id.job_id.name)
                                 work = -1
                                 trabajo = -1
@@ -249,8 +249,9 @@ class rrhh_planilla_wizard(models.TransientModel):
                 hoja.write(0, 0, 'Planilla', estilo)
                 hoja.write(0, 1, w.nomina_id.name, estilo)
                 hoja.write(0, 2, 'Periodo', estilo)
-                hoja.write(0, 3, w.nomina_id.date_start, estilo)
-                hoja.write(0, 4, w.nomina_id.date_end, estilo)
+                logging.warn(w.nomina_id.date_start)
+                hoja.write(0, 3, str(w.nomina_id.date_start), estilo)
+                hoja.write(0, 4, str(w.nomina_id.date_end), estilo)
 
                 linea = 2
                 num = 1
@@ -284,7 +285,7 @@ class rrhh_planilla_wizard(models.TransientModel):
                     hoja.write(linea, 0, num)
                     hoja.write(linea, 1, l.employee_id.codigo_empleado)
                     hoja.write(linea, 2, l.employee_id.name)
-                    hoja.write(linea, 3, l.contract_id.date_start)
+                    hoja.write(linea, 3, str(l.contract_id.date_start))
                     hoja.write(linea, 4, l.employee_id.job_id.name)
                     work = -1
                     trabajo = -1
