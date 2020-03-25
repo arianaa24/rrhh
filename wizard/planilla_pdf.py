@@ -90,9 +90,6 @@ class report_planilla_pdf(models.AbstractModel):
                 dias += work
             linea['estatico']['dias'] = dias
 
-#            totales = [0 for c in planilla.columna_id]
-#            totales.append(0)
-
             total_salario = 0
             x = 0
             for c in planilla.columna_id:
@@ -113,15 +110,13 @@ class report_planilla_pdf(models.AbstractModel):
                 lineas[llave][slip.employee_id.job_id.name]['totales'][x] += total_columna
                 reporte['suma'][llave][x] += total_columna
                 reporte['total'][x] += total_columna
-#                totales[x] += total_columna
                 x += 1
             
             linea['dinamico'].append(total_salario)
-            lineas[llave][slip.employee_id.job_id.name]['totales'][len(totales) - 1] += total_salario
-            reporte['suma'][llave][len(totals) - 1] += total_salario
-            reporte['total'][len(totals) - 1] += total_salario
+            lineas[llave][slip.employee_id.job_id.name]['totales'][- 1] += total_salario
+            reporte['suma'][llave][- 1] += total_salario
+            reporte['total'][- 1] += total_salario
             
-#            totales[len(totales) - 1] += total_salario
             linea['estatico']['banco_depositar'] = slip.employee_id.bank_account_id.bank_id.name
             linea['estatico']['cuenta_depositar'] = slip.employee_id.bank_account_id.acc_number
             linea['estatico']['observaciones'] = slip.note
@@ -131,9 +126,6 @@ class report_planilla_pdf(models.AbstractModel):
                 linea['estatico']['cuenta_analitica'] = llave
             lineas[llave][slip.employee_id.job_id.name]['datos'].append(linea)
             
-
-#            lineas[llave]['totales'] = []
-#            lineas[llave]['totales'].append(totales)
         
         reporte['columnas'] = columnas
         reporte['lineas'] = lineas
